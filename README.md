@@ -4,14 +4,15 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 ## Getting Started
 
+### Setup the repository for development
+1. Clone the repository.
+2. Run `npm install` from the root directory of the repository to install all the dependencies.
+
+### Get started with development
 First, run the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
