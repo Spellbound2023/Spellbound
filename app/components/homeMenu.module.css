@@ -1,0 +1,28 @@
+.Header{ 
+    color: #FACB2E;
+    text-align: center;
+    padding: 3%;
+    font-size:x-large;
+    font-family: "Roboto Slab", serif;
+}
+
+.MenuContainer{
+    width: 100%;
+    margin: auto;
+    text-align: center;
+    justify-content:space-between;
+    
+}
+
+.Button{
+    padding: 9% 0.5% 5%;
+    width: 20%;
+    margin: 1.5%;
+    float: left;
+    border: 3px solid black;
+    background: rgba(114, 46, 154,.4);
+    color: #FACB2E;
+    border-radius: 10%;   
+    font-size: x-large;
+    font: bold;
+}
