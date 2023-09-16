@@ -1,0 +1,23 @@
+:root {
+    --pallet-color-1: #FFE863;
+    --pallet-color-2: #F5BD1F;
+}
+
+@font-face {
+    font-family: 'Playfair Display';
+    src: url('../public/fonts/PlayfairDisplay-VariableFont_wght.ttf');
+}
+
+* {
+    padding: 0;
+    margin: 0;
+}
+
+html, body {
+    height: 100%;
+}
+
+body {
+    background-image: url('../public/images/main-background.png');
+    background-size: cover;
+}
