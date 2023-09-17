@@ -11,18 +11,28 @@
     margin: auto;
     text-align: center;
     justify-content:space-between;
+    transition-duration: 0.5s;
+    
     
 }
 
 .Button{
-    padding: 9% 0.5% 5%;
+    
+    padding: 4% 0.5%;
     width: 20%;
     margin: 1.5%;
     float: left;
     border: 3px solid black;
     background: rgba(114, 46, 154,.4);
-    color: #FACB2E;
+    color: #FFE863;
     border-radius: 10%;   
     font-size: x-large;
-    font: bold;
 }
+
+.MenuContainer :hover:not(img):not(b){
+    box-shadow: 10px 10px 8px #F5BD1F;
+ 
+
+}
+
+

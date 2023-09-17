@@ -14,11 +14,10 @@
   
   body {
     color: rgb(var(--foreground-rgb));
-    padding: 1rem;
+    
     margin-left:10%;
     margin-right: 10%;
-    
-    
     background-image: url("/spellboundBackground.png");
     background-size:cover;
+    font-family: 'Roboto Slab', Arial;
   }
