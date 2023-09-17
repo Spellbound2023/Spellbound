@@ -24,8 +24,8 @@ You can start editing the page by modifying `app/page.js`. The page auto-updates
 ```
 Spellbound
 |            
-+---app         # application code
-+---components  # React components
++---app         # pages and page-specific React components
++---components  # reusable React components
 +---public      # static files
 +---styles      # CSS styles
 \---utils       # utility functions
