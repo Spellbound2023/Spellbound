@@ -1,11 +1,11 @@
-// components/HomeScreenButton.js
+
 import React from 'react';
 
 function HomeScreenButton() {
   const containerStyle = {
     display: 'flex',
     flexDirection: 'column',
-    alignItems: 'center', // Center horizontally
+    alignItems: 'center', 
   };
 
   const buttonStyle = {
@@ -18,8 +18,10 @@ function HomeScreenButton() {
     border: 'none',
     cursor: 'pointer',
     marginBottom: '20px',
-  };
+    fontFamily: "'Montserrat', sans-serif", 
 
+  };
+  
   const buttonRowStyle = {
     display: 'flex',
     flexDirection: 'row',
