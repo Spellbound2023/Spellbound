@@ -1,5 +1,6 @@
 import React from "react";
 import WordInfo from "./WordInfo";
+import WordInput from ".WordInput";
 import styles from "../../styles/classic/GameBox.module.css";
 
 const GameBox = () => {
