@@ -1,0 +1,23 @@
+@import url('https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Roboto+Slab&display=swap');
+
+
+
+:root {
+    --foreground-rgb: 0, 0, 0;
+  }
+  
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --foreground-rgb: 255, 255, 255;  
+    }
+  }
+  
+  body {
+    color: rgb(var(--foreground-rgb));
+    
+    margin-left:10%;
+    margin-right: 10%;
+    background-image: url("/spellboundBackground.png");
+    background-size:cover;
+    font-family: 'Roboto Slab', Arial;
+  }
