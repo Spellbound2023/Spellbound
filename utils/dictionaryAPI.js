@@ -2,24 +2,63 @@
  * Base API will fetch from Collegiate Dictionary
  */
 
-import React from "react";
-
 /* word count = 102774 */
 
-const APIContent = () => {
-  JSON.parse("https://dictionaryapi.com/api/v3/references/collegiate/json/${word}?key=41da6571-cf7a-4dd9-a41c-bce55ea8ca31")
+const MW_API_BASE_URL = "https://dictionaryapi.com/api/v3/references/";
+const MW_API_AUDIO_BASE_URL =
+  "https://media.merriam-webster.com/audio/prons/en/us/";
+
+const DICT_CODES = {
+  elementary: "sd2",
+  school: "sd4",
+  learners: "learners",
+  intermediate: "sd3",
+  collegiate: "collegiate",
+  medical: "medical",
 };
 
-const APIObject = () => {
-  word: wordTag,
-    definition: definitionTag,
-      audio: "https://media.merriam-webster.com/audio/prons/en/us/mp3/${audioTag}.mp3"
+const API_KEYS = {
+  elementary: process.env.MW_KEY_ELEMENTARY,
+  school: process.env.MW_KEY_SCHOOL,
+  learners: process.env.MW_KEY_LEARNERS,
+  intermediate: process.env.MW_KEY_INTERMEDIATE,
+  collegiate: process.env.MW_KEY_COLLEGIATE,
+  medical: process.env.MW_KEY_MEDICAL,
 };
 
-const DictionaryAPI = (APIObject) => {
-  return (
-    APIObject
+export function constructMWAPIUrl(word, dictName, apiKey) {
+  return new URL(
+    `${DICT_CODES[dictName]}/json/${word}?key=${apiKey}`,
+    MW_API_BASE_URL
   );
-};
+}
 
-export default DictionaryAPI;
+export async function getWordData(word, dictName) {
+  const apiUrl = constructMWAPIUrl(word, dictName, API_KEYS[dictName]);
+  const response = await fetch(apiUrl);
+  const wordData = await response.json();
+  return wordData;
+}
+
+export function getWordDefinition(wordData) {
+  return wordData[0]["shortdef"];
+}
+
+export function getAudioUrl(wordData) {
+  const audioClipName = wordData[0]["hwi"]["prs"][0]["sound"]["audio"];
+  const format = "mp3";
+  let subdirectory = "";
+  if (audioClipName.startsWith("bix")) {
+    subdirectory = "bix";
+  } else if (audioClipName.startsWith("gg")) {
+    subdirectory = "gg";
+  } else if (audioClipName.match(/^\d/)) {
+    subdirectory = "number";
+  } else {
+    subdirectory = audioClipName[0];
+  }
+  return new URL(
+    `${format}/${subdirectory}/${audioClipName}.${format}`,
+    MW_API_AUDIO_BASE_URL
+  ).href;
+}
