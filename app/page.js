@@ -1,4 +1,3 @@
-import Link from "next/link";
 import React from "react";
 import styles from "../styles/page.module.css";
 import LinkButton from "./LinkButton";
@@ -11,7 +10,7 @@ const page = () => {
           Spell<span>Bound</span>
         </h1>
         <div className={styles.linkButtonContainer}>
-          <LinkButton path="/classic" text="Start Game" />
+          <LinkButton path="/home" text="Start Game" />
         </div>
         <div className={styles.loginSignupContainer}>
           <div className={styles.linkButtonContainer}>

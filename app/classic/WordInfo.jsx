@@ -21,7 +21,7 @@ const WordInfo = ({ definition }) => {
           src="https://media.merriam-webster.com/audio/prons/en/us/mp3/v/volumi02.mp3"
         ></audio>
         <a onClick={playAudio}>
-          <object className={styles.soundIcon} data="/sound_icon.svg">
+          <object className={styles.soundIcon} data="/images/sound_icon.svg">
             {" "}
           </object>
         </a>
