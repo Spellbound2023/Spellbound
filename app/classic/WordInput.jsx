@@ -1,3 +1,4 @@
+/* Text input and submit button to validate a typed word */
 const WordInput = () => {
   return (
     <div className={styles.mainContainer}>

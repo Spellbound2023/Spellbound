@@ -3,6 +3,7 @@
 import React from "react";
 import styles from "../../styles/classic/WordInfo.module.css";
 
+/* Audio player button for word pronounciation */
 const playAudio = (e) => {
   e.preventDefault();
   document.getElementById("pronounciation").play();

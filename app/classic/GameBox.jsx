@@ -6,6 +6,7 @@ import WordInput from "./WordInput";
 import styles from "../../styles/classic/GameBox.module.css";
 import { getRandomWord } from "@/utils/dictionaryAPI";
 
+/* Container for WordInfo and WordInput */
 const GameBox = () => {
   const [definition, setDefinition] = useState("");
   const [audioUrl, setAudioUrl] = useState("");

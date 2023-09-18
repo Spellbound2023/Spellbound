@@ -1,5 +1,6 @@
 import React from 'react';
 
+/* Style settings for difficulty selection dropdown menu */
 const DifficultyDropdown = ({ isDropdownOpen, onSelectDifficulty }) => {
   const DropdownMenuStyle = {
     display: isDropdownOpen ? 'block' : 'none',
@@ -16,10 +17,10 @@ const DifficultyDropdown = ({ isDropdownOpen, onSelectDifficulty }) => {
   const menuItemStyle = {
     padding: '8px 16px',
     cursor: 'pointer',
-    color: '#000', 
+    color: '#000',
   };
-  
-  
+
+
   return (
     <div>
       <div style={DropdownMenuStyle}>
