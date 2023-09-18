@@ -4,10 +4,12 @@
 
 /* word count = 102774 */
 
+/* Source URL bases */
 const MW_API_BASE_URL = "https://dictionaryapi.com/api/v3/references/";
 const MW_API_AUDIO_BASE_URL =
   "https://media.merriam-webster.com/audio/prons/en/us/";
 
+/* Dictionay codes to add to MW_API_BASE_URL */
 const DICT_CODES = {
   elementary: "sd2",
   school: "sd4",
@@ -17,6 +19,7 @@ const DICT_CODES = {
   medical: "medical",
 };
 
+/* The API Keys should be accessible in `.env.local` */
 const API_KEYS = {
   elementary: process.env.MW_KEY_ELEMENTARY,
   school: process.env.MW_KEY_SCHOOL,
@@ -26,6 +29,7 @@ const API_KEYS = {
   medical: process.env.MW_KEY_MEDICAL,
 };
 
+/* Function to construct an API URL from a dictionary, word and API key. */
 export function constructMWAPIUrl(word, dictName, apiKey) {
   return new URL(
     `${DICT_CODES[dictName]}/json/${word}?key=${apiKey}`,
@@ -33,6 +37,7 @@ export function constructMWAPIUrl(word, dictName, apiKey) {
   );
 }
 
+/* Gets all word data from API URL */
 export async function getWordData(word, dictName) {
   const apiUrl = constructMWAPIUrl(word, dictName, API_KEYS[dictName]);
   const response = await fetch(apiUrl);
@@ -40,10 +45,12 @@ export async function getWordData(word, dictName) {
   return wordData;
 }
 
+/* Gets the first short definition from the word data */
 export function getWordDefinition(wordData) {
   return wordData[0]["shortdef"];
 }
 
+/* Gets word audio data from API URL */
 export function getAudioUrl(wordData) {
   const audioClipName = wordData[0]["hwi"]["prs"][0]["sound"]["audio"];
   const format = "mp3";
