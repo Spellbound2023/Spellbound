@@ -1,0 +1,21 @@
+.linkContainer {
+    display: flex;
+    justify-content: center;
+    width: max-content;
+}
+
+.link > div {
+    width: 200px;
+    background: linear-gradient(180deg, #47297B 0%, #5D2689 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50px;
+}
+
+.linkText{
+    font-family: 'Playfair Display';
+    font-size: 20px;
+    color: var(--pallet-color-1);
+    padding: 15px 40px;
+}

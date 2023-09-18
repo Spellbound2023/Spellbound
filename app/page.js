@@ -1,21 +1,28 @@
-// pages/Home.js (or your component file)
-import HomeScreenButton from '../components/HomeScreenButton';
-import Tagline from '../components/Tagline';
-import SpellBoundTitle from '../components/SpellBoundTitle';
-import styles from './page.module.css';
-import NavBar from '@/components/NavBar';
+import React from "react";
+import styles from "../styles/page.module.css";
+import LinkButton from "./LinkButton";
 
-export default function Home() {
+const page = () => {
   return (
-    <div>
-      <main className={styles.main}>
-      <NavBar/>
-        {/* <div className={styles.content}>
-          <SpellBoundTitle />
-          <Tagline />
-          <HomeScreenButton />
-        </div> */}
-      </main>
+    <div className={styles.flexContainer}>
+      <div className={styles.contentContainer}>
+        <h1 className={styles.nameHeading}>
+          Spell<span>Bound</span>
+        </h1>
+        <div className={styles.linkButtonContainer}>
+          <LinkButton path="/Home" text="Start Game" />
+        </div>
+        <div className={styles.loginSignupContainer}>
+          <div className={styles.linkButtonContainer}>
+            <LinkButton path="/" text="Log In" />
+          </div>
+          <div className={styles.linkButtonContainer}>
+            <LinkButton path="/" text="Sign Up" />
+          </div>
+        </div>
+      </div>
     </div>
   );
-}
+};
+
+export default page;

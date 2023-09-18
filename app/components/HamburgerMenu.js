@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from 'react';
-import Link from 'next/link'; // Import the Link component
+import Link from 'next/link';
 
 
 const HamburgerMenu = () => {
@@ -35,17 +35,18 @@ const HamburgerMenu = () => {
     backgroundColor: 'transparent',
     zIndex: 1,
     width: '10vw'
+    
   };
 
   const listStyle = {
     listStyleType: 'none', // Remove list item bullets
-    padding: 0, // Remove default list padding
+    padding: '12px', // Add padding to list items
   };
   const listItemStyle = {
-    color: '#F5BD1F', // Text color for list items
-    fontSize: '1.4rem',
+    color: '#F5BD1F', 
+    textDecoration: 'none',
+    fontSize: '1.5rem',
     lineHeight: 'normal',
-    padding: '12px 16px', // Add padding to list items
   };
 
   return (
@@ -59,17 +60,17 @@ const HamburgerMenu = () => {
       </button>
       <div style={dropdownStyle} className="dropdown-menu">
         <ul style={listStyle}>
-          <li style={listItemStyle}>
-            <Link href="#">Login</Link>
+          <li>
+            <Link href="#" style={listItemStyle}>Login</Link>
           </li>
-          <li style={listItemStyle}>
-            <Link href="#">Stats</Link>
+          <li >
+            <Link href="#" style={listItemStyle}>Stats</Link>
           </li>
-          <li style={listItemStyle}>
-            <Link href="#">Challenges</Link>
+          <li>
+            <Link href="#" style={listItemStyle}>Challenges</Link>
           </li>
-          <li style={listItemStyle}>
-            <Link href="#">1v1 Mode</Link>
+          <li>
+            <Link href="#" style={listItemStyle}>1v1 Mode</Link>
           </li>
         </ul>
       </div>

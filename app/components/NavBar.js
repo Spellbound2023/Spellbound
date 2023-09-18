@@ -1,8 +1,8 @@
 "use client";
 import React from 'react';
-import SpellBoundTitle from '../components/SpellBoundTitle';
-import DifficultyText from '../components/DifficultyText'; // Import the RightComponent
-import HamburgerMenu from '../components/HamburgerMenu';
+import SpellBoundTitle from './SpellBoundTitle';
+import DifficultyText from './DifficultyText';
+import HamburgerMenu from './HamburgerMenu';
 
 const NavBar = () => {
   return (
