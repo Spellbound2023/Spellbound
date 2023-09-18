@@ -8,7 +8,7 @@ const playAudio = (e) => {
   document.getElementById("pronounciation").play();
 };
 
-const WordInfo = ({ definition }) => {
+const WordInfo = ({ definition, audioUrl }) => {
   return (
     <div className={styles.mainContainer}>
       <div className={styles.defContainer}>
@@ -18,7 +18,7 @@ const WordInfo = ({ definition }) => {
       <div className={styles.audioContainer}>
         <audio
           id="pronounciation"
-          src="https://media.merriam-webster.com/audio/prons/en/us/mp3/v/volumi02.mp3"
+          src={audioUrl}
         ></audio>
         <a onClick={playAudio}>
           <object className={styles.soundIcon} data="/images/sound_icon.svg">
