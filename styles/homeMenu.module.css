@@ -1,17 +1,8 @@
-.Header{ 
-    color: #FACB2E;
-    text-align: center;
-    padding: 3%;
-    font-size:x-large;
-}
-
 .MenuContainer{
     width: 100%;
     margin: auto;
     text-align: center;
     justify-content:space-between;
-    
-    
 }
 
 .Button{

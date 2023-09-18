@@ -1,6 +1,15 @@
+@import url('https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Roboto+Slab&display=swap');
+
 :root {
     --pallet-color-1: #FFE863;
     --pallet-color-2: #F5BD1F;
+    --foreground-rgb: 0, 0, 0;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --foreground-rgb: 255, 255, 255;
+    }
 }
 
 @font-face {
@@ -13,13 +22,17 @@
     margin: 0;
 }
 
-html, body {
+html,
+body {
     height: 100%;
 }
 
 body {
     background-image: url('/images/main-background.png');
     background-size: cover;
+    color: rgb(var(--foreground-rgb));
+    margin-left: 10%;
+    margin-right: 10%;
 }
 
 object {
