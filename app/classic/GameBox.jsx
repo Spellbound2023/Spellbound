@@ -3,6 +3,7 @@ import WordInfo from "./WordInfo";
 import WordInput from "./WordInput";
 import styles from "../../styles/classic/GameBox.module.css";
 
+/* Container for WordInfo and WordInput */
 const GameBox = () => {
   return (
     <div className={styles.mainContainer}>

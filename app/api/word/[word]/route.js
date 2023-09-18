@@ -1,3 +1,6 @@
+/*
+ * Imports dictionaryAPI functions
+ */
 import {
   getWordData,
   getWordDefinition,
@@ -6,6 +9,7 @@ import {
 } from "@/utils/dictionaryAPI";
 import { NextResponse } from "next/server";
 
+/* The word request thing */
 export const GET = async (request, { params }) => {
   const word = params.word;
   const wordData = await getWordData(word, "collegiate");
