@@ -11,7 +11,7 @@ const page = () => {
           Spell<span>Bound</span>
         </h1>
         <div className={styles.linkButtonContainer}>
-          <LinkButton path="/classic" text="Start Game" />
+          <LinkButton path="/Home" text="Start Game" />
         </div>
         <div className={styles.loginSignupContainer}>
           <div className={styles.linkButtonContainer}>

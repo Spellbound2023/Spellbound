@@ -3,7 +3,6 @@
     text-align: center;
     padding: 3%;
     font-size:x-large;
-    font-family: "Roboto Slab", serif;
 }
 
 .MenuContainer{
@@ -11,7 +10,6 @@
     margin: auto;
     text-align: center;
     justify-content:space-between;
-    transition-duration: 0.5s;
     
     
 }
@@ -22,16 +20,17 @@
     width: 20%;
     margin: 1.5%;
     float: left;
-    border: 3px solid black;
-    background: rgba(114, 46, 154,.4);
+    backdrop-filter: blur(30px);
     color: #FFE863;
     border-radius: 10%;   
     font-size: x-large;
+    font-family: 'Playfair Display', Ariel;
 }
 
 .MenuContainer :hover:not(img):not(b){
-    box-shadow: 10px 10px 8px #F5BD1F;
- 
+    box-shadow: 0 0 10px #F5BD1F;
+    background: linear-gradient(180deg, #47297B 0%, #5D2689 100%);
+    backdrop-filter: opacity(20px);
 
 }
 

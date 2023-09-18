@@ -2,57 +2,58 @@
 import React from 'react'
 import styles from './homeMenu.module.css'
 import Image from 'next/image'
+import Link from 'next/link'
 
 
 const MainMenu = () => {
   return (
     <div class={styles.MenuContainer}>
           <div class={styles.ButtonOuter}>
-            <a href="/classic">
+            <Link href="/classic">
               <div class={styles.Button}>
                 <Image src='/Bookmark.png'
                 width={100}
                 height={100}/>
                 <br/>
-                <b>Classic</b>
+                Classic
               </div>
-            </a>
+            </Link>
           </div>
         
           <div class={styles.ButtonOuter}>
-            <a href="/classic">
+            <Link href="/">
               <div class={styles.Button}>
                 <Image src='/Lightning Bolt.png'
                 width={100}
                 height={100}/>
                 <br/>
-                <b>Versus</b>
+                Versus
               </div>
-            </a>
+            </Link>
           </div>
 
           <div class={styles.ButtonOuter}>
-            <a href="/classic">
+            <Link href="/">
               <div class={styles.Button}>  
                 <Image src='/Tightrope Walking.png'
                 width={100}
                 height={100}/>
                 <br/>
-                <b>Challenges</b>
+                Challenges
               </div>
-            </a>
+            </Link>
           </div>
 
           <div class={styles.ButtonOuter}>
-            <a href="/classic">
+            <Link href="/">
               <div class={styles.Button}>
                 <Image src='/Combo Chart.png'
                 width={100}
                 height={100}/>
                 <br/>
-                <b>Statistics</b>
+                Statistics
               </div>
-            </a>
+            </Link>
           </div>
       </div>
   )
