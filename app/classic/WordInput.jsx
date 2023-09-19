@@ -1,9 +1,9 @@
-import styles from '../../styles/classic/GameBox.module.css'
+import styles from '../../styles/classic/WordInput.module.css'
 
 /* Text input and submit button to validate a typed word */
 const WordInput = () => {
   return (
-    <div className={styles.mainContainer}>
+    <div>
       <div className={styles.inputContainer}>
         <form action="/page.js">
           <input type="text" id="wordInput" name="wordInput" className={styles.input}></input>

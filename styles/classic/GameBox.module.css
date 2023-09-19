@@ -1,36 +1,10 @@
 .mainContainer {
-    width: 800px;
-    height: 400px;
-    flex-shrink: 0;
-    background: linear-gradient(180deg, #722E9A 0%, #522882 100%);
-    border: 1px solid #47297B;
-    border-radius: 30px;
-    position:relative;
+  width: 800px;
+  height: 400px;
+  flex-shrink: 0;
+  background: linear-gradient(180deg, #722E9A 0%, #522882 100%);
+  border: 1px solid #47297B;
+  border-radius: 30px;
+  position:relative;
 
-  }
-
-
-.input {
-  width: 100%;
-  font-size: xx-large;
-  text-align: center;
-  color: #FACB2E;
-  background: none;
-  border:none;
-  text-transform: uppercase;
-  border-bottom: 3px solid white;
 }
-
-
-.confirm{
-    width: 200px;
-    background: linear-gradient(120deg, #FACB2E 0%, #F5BD1F 100%);
-    border-radius: 25px;
-    border: none;
-    padding: 10px;
-    font-size: large;
-    font-weight: 600;
-    font-family:'Playfair Display';
-    margin:5% 25%;
-}
-

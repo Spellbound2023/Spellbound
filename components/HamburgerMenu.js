@@ -61,7 +61,7 @@ const HamburgerMenu = () => {
       <div style={dropdownStyle} className="dropdown-menu">
         <ul style={listStyle}>
           <li>
-            <Link href="#" style={listItemStyle}>Login</Link>
+            <Link href="/home" style={listItemStyle}>Home</Link>
           </li>
           <li >
             <Link href="#" style={listItemStyle}>Stats</Link>

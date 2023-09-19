@@ -33,7 +33,8 @@ const GameBox = () => {
       definition={"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam sed nisi quis tortor lobortis aliquam. Sed ante purus, tempus ut."} 
       audioUrl={audioUrl}
       />
-      <WordInput />
+      <br/><br/><br/><br/>
+      <WordInput/>
     </div>
     
   )

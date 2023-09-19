@@ -22,6 +22,7 @@ const SpellBoundTitle = () => {
     fontWeight: 500, // Different fontWeight for "Bound"
   };
 
+
   return (
     <div style={containerStyle}>
       <div style={titleStyle}>

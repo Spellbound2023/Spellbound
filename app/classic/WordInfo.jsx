@@ -11,7 +11,7 @@ const playAudio = (e) => {
 
 const WordInfo = ({ definition, audioUrl }) => {
   return (
-    <div className={styles.mainContainer}>
+    <div>
       <div className={styles.defContainer}>
         <h6 className={styles.heading}>Definition</h6>
         <p className={styles.definition}>{definition}</p>
