@@ -1,7 +1,8 @@
 .mainContainer {
     display: flex;
     justify-content: center;
-    width: 100%
+    width: 100%;
+    position:relative;
 }
 
 .defContainer {
@@ -9,23 +10,32 @@
     font-family: 'Playfair Display';
     color: var(--pallet-color-1);
     width: max-content;
+    position: absolute;
+    top: 2.5rem;
+    left: 2.5rem;
 }
 
 .audioContainer {
-    display: flex;
     width: max-content;
-    margin-left: 50px;
+    position: absolute;
+    top: 3.75rem;
+    left: 43.76rem;
 }
 
 .heading {
-    font-size: 20px;
+    font-size: 28px;
+    color: #F5BD1F;
+    padding-bottom: 0.5rem;
+
 }
 
 .definition {
-    font-size: 13px;
+    font-size: 18px;
     font-weight: 200;
-}
+    max-width:450px;
+    word-wrap:break-word;
 
+}
 .soundIcon {
     width: 50px;
 }

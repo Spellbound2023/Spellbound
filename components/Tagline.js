@@ -11,7 +11,6 @@ const Tagline = () => {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center', 
-    fontFamily: "'Montserrat', sans-serif", 
   };
 
   return (

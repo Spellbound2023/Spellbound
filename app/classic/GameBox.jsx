@@ -27,10 +27,15 @@ const GameBox = () => {
   getRandomWord();
 
   return (
+    
     <div className={styles.mainContainer}>
-      <WordInfo definition={definition} audioUrl={audioUrl}/>
+      <WordInfo 
+      definition={"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam sed nisi quis tortor lobortis aliquam. Sed ante purus, tempus ut."} 
+      audioUrl={audioUrl}
+      />
     </div>
-  );
+    
+  )
 };
 
 export default GameBox;
