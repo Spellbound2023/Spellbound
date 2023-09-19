@@ -1,21 +1,14 @@
 .mainContainer {
-    width: 500px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    padding: 60px 20px;
+    width: 800px;
+    height: 400px;
+    flex-shrink: 0;
+    background: linear-gradient(180deg, #722E9A 0%, #522882 100%);
+    border: 1px solid #47297B;
     border-radius: 30px;
-    background: linear-gradient(180deg, #47297B 0%, #5D2689 100%); /*Fix */
-    /*-filter: blur(30px);*/
-    margin-top: 5%;
-}
+    position:relative;
 
-.inputContainer {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
+  }
+
 
 .input {
   width: 100%;

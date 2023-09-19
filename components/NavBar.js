@@ -13,9 +13,9 @@ const NavBar = () => {
         justifyContent: "space-between",
         alignItems: "center",
         width: "95%",
+        paddingTop: "1rem",
         backgroundColor: "transparent",
         color: "#333",
-        fontFamily: "Iowan Old Style, serif",
       }}
     >
       <div style={{ flex: 1, textAlign: "left" }}>

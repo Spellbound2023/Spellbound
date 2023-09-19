@@ -3,16 +3,17 @@ import GameBox from "./GameBox";
 import NavBar from "../../components/NavBar";
 import styles from "../../styles/classic/page.module.css";
 
-/* Page. Contains NavBar and GameBox. */
-const page = () => {
+const Page = () => {
   return (
-    <main>
-      <div className={styles.main}>
+    <main className={styles.container}>
+      <div className={styles.navContainer}>
         <NavBar />
+      </div>
+      <div className={styles.gameBoxContainer}>
         <GameBox />
       </div>
     </main>
   );
 };
 
-export default page;
+export default Page;

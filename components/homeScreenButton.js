@@ -18,8 +18,6 @@ function HomeScreenButton() {
     border: 'none',
     cursor: 'pointer',
     marginBottom: '20px',
-    fontFamily: "'Montserrat', sans-serif", 
-
   };
   
   const buttonRowStyle = {
