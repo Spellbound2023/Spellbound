@@ -4,7 +4,40 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    padding: 30px 20px;
+    padding: 60px 20px;
     border-radius: 30px;
-    backdrop-filter: blur(30px);
+    background: linear-gradient(180deg, #47297B 0%, #5D2689 100%); /*Fix */
+    /*-filter: blur(30px);*/
+    margin-top: 5%;
 }
+
+.inputContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.input {
+  width: 100%;
+  font-size: xx-large;
+  text-align: center;
+  color: #FACB2E;
+  background: none;
+  border:none;
+  text-transform: uppercase;
+  border-bottom: 3px solid white;
+}
+
+
+.confirm{
+    width: 200px;
+    background: linear-gradient(120deg, #FACB2E 0%, #F5BD1F 100%);
+    border-radius: 25px;
+    border: none;
+    padding: 10px;
+    font-size: large;
+    font-weight: 600;
+    font-family:'Playfair Display';
+    margin:5% 25%;
+}
+

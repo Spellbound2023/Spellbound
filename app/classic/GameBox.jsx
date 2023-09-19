@@ -29,6 +29,7 @@ const GameBox = () => {
   return (
     <div className={styles.mainContainer}>
       <WordInfo definition={definition} audioUrl={audioUrl}/>
+      <WordInput />
     </div>
   );
 };
