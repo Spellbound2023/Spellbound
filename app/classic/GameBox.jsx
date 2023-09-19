@@ -25,7 +25,7 @@ const GameBox = () => {
 
   const setupRound = () => {
     fetch("/api/randword", { cache: "no-store" })
-      .then((res) => res.json())
+      .then((response) => response.json())
       .then((wordData) => {
         setWord(wordData.word);
         setDefinition(wordData.definition);

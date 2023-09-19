@@ -41,6 +41,8 @@ export function constructMWAPIUrl(word, dictName, apiKey) {
 /* Gets all word data from API URL */
 export async function getWordFullDataMW(word, dictName) {
   const apiUrl = constructMWAPIUrl(word, dictName, API_KEYS[dictName]);
+
+  // reference: https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch
   const response = await fetch(apiUrl, { cache: "no-store" });
   const wordData = await response.json();
   return wordData;
@@ -60,7 +62,7 @@ export function getAudioUrl(wordData) {
     subdirectory = "bix";
   } else if (audioClipName.startsWith("gg")) {
     subdirectory = "gg";
-  } else if (audioClipName.match(/^\d/)) {
+  } else if (audioClipName != "" && !isNaN(parseInt(audioClipName.charAt(0)))) {
     subdirectory = "number";
   } else {
     subdirectory = audioClipName[0];
@@ -105,10 +107,12 @@ export async function getWordDefAndAudio(word) {
   let tempWord = word;
   let retries = 0;
 
+  console.log(`======= Word: ${word} =======`);
+
   while (!validWord) {
     retries++;
-    // console.log(`Try num : ${retries}`);
-    // console.log(tempWordData);
+    console.log(`Try num : ${retries}`);
+    console.log("Obtained data: ", tempWordData);
 
     if (checkValidWordData(tempWordData)) {
       // the word is a valid word
@@ -146,7 +150,7 @@ export async function getWordDefAndAudio(word) {
   definition = getWordDefinition(wordData);
   // TODO: check if the audio file exists. If not, have a fallback (WebSpeech API)
   audioUrl = getAudioUrl(wordData);
-  console.log(wordData);
+  console.log("\n Final wordData: ", wordData);
 
   return {
     word: word,
