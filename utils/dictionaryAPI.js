@@ -41,7 +41,7 @@ export function constructMWAPIUrl(word, dictName, apiKey) {
 /* Gets all word data from API URL */
 export async function getWordFullDataMW(word, dictName) {
   const apiUrl = constructMWAPIUrl(word, dictName, API_KEYS[dictName]);
-  const response = await fetch(apiUrl);
+  const response = await fetch(apiUrl, { cache: "no-store" });
   const wordData = await response.json();
   return wordData;
 }

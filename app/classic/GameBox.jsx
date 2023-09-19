@@ -24,10 +24,6 @@ const GameBox = () => {
   // if wrong -> if there are more retries then clear out input (need function for that) and increase retries
   // -> if not then print wrong and reset and rerender
 
-  // TODO:
-  // - Check if the word is in the definition, and deal with that case
-  // - When the audio is played the first time, it is clipped at the start (fix)
-
   const setupRound = () => {
     fetch("/api/randword", { cache: "no-store" })
       .then((res) => res.json())
