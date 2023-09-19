@@ -5,7 +5,6 @@ import WordInfo from "./WordInfo";
 import WordInput from "./WordInput";
 import styles from "../../styles/classic/GameBox.module.css";
 import { checkValidInput, upperCaseFirstLetter } from "@/utils/utils";
-import LinkButton from "../LinkButton";
 
 const ATTEMPTS_PER_WORD = 3;
 
