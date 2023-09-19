@@ -60,13 +60,13 @@ const GameBox = () => {
     <div>
       <div className={styles.attemptsSkipContainer}>
         <div className={styles.linkContainer}>
-          <p className={`${styles.link} ${styles.linkLeft}`}>
+          <a className={`${styles.link} ${styles.linkLeft}`}>
             <div>
               <p className={styles.linkText}>
                 Attemps remaining: {ATTEMPTS_PER_WORD - attempts}
               </p>
             </div>
-          </p>
+          </a>
         </div>
         <div className={styles.linkContainer}>
           <a
