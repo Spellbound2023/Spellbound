@@ -1,32 +1,43 @@
-.inputContainer{
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: absolute;
-    bottom: 0;
-    padding-bottom: 5%;
-  }
-  
-  .input {
-    font-size: xx-large;
-    text-align: center;
-    color: #FACB2E;
-    background: none;
-    border:none;
-    text-transform: uppercase;
-    border-bottom: 3px solid white;
-  }
-  
-  
-  .confirm{
-      width: 200px;
-      background: linear-gradient(120deg, #FACB2E 0%, #F5BD1F 100%);
-      border-radius: 25px;
-      border: none;
-      padding: 10px;
-      font-size: large;
-      font-weight: 600;
-      font-family:'Playfair Display';
-      margin:5% 25%;
-  }
+.mainContainer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  height: max-content;
+  margin: 1rem auto;
+}
+
+.inputContainer {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* padding-bottom: 1vh; */
+}
+
+.input {
+  font-size: xx-large;
+  text-align: center;
+  color: #FACB2E;
+  background: none;
+  border: none;
+  text-transform: uppercase;
+  border-bottom: 3px solid white;
+}
+
+
+.confirm {
+  width: 200px;
+  background: linear-gradient(120deg, #FACB2E 0%, #F5BD1F 100%);
+  border-radius: 25px;
+  border: none;
+  padding: 10px;
+  font-size: large;
+  font-weight: 600;
+  font-family: 'Playfair Display';
+  margin: 5% 25%;
+}
+
+.confirm:hover {
+  cursor: pointer;
+}

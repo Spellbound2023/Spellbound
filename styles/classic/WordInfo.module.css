@@ -1,25 +1,22 @@
 .mainContainer {
     display: flex;
-    justify-content: center;
+    align-items: center;
+    justify-content: space-between;
     width: 100%;
-    position:relative;
+    height: max-content;
+    margin: 2.5rem auto;
 }
 
 .defContainer {
-    /* display: flex; */
     font-family: 'Playfair Display';
     color: var(--pallet-color-1);
     width: max-content;
-    position: absolute;
-    top: 2.5rem;
-    left: 2.5rem;
+    margin-left: 2.5rem;
 }
 
 .audioContainer {
     width: max-content;
-    position: absolute;
-    top: 3.75rem;
-    left: 43.76rem;
+    margin-right: 2.5rem;
 }
 
 .heading {
@@ -38,4 +35,10 @@
 }
 .soundIcon {
     width: 50px;
+}
+
+.audioButton {
+    display: block;
+    height: max-content;
+    width: max-content;
 }

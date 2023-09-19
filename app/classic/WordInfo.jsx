@@ -11,7 +11,7 @@ const playAudio = (e) => {
 
 const WordInfo = ({ definition, audioUrl }) => {
   return (
-    <div>
+    <div className={styles.mainContainer}>
       <div className={styles.defContainer}>
         <h6 className={styles.heading}>Definition</h6>
         <p className={styles.definition}>{definition}</p>
@@ -21,7 +21,7 @@ const WordInfo = ({ definition, audioUrl }) => {
           id="pronounciation"
           src={audioUrl}
         ></audio>
-        <a onClick={playAudio}>
+        <a className={styles.audioButton} onClick={playAudio}>
           <object className={styles.soundIcon} data="/images/sound_icon.svg">
             {" "}
           </object>

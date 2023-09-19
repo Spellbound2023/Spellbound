@@ -90,7 +90,9 @@ export function checkValidWordData(wordData) {
     wordData.length > 0 &&
     typeof wordData[0] === "object" && // check for whether wordData[0] is an object
     !!wordData[0] && // check that wordData[0] is not null
-    "shortdef" in wordData[0]
+    "shortdef" in wordData[0] &&
+    "hwi" in wordData[0] &&
+    "prs" in wordData[0].hwi // check if audio file exists
   );
 }
 
@@ -105,8 +107,8 @@ export async function getWordDefAndAudio(word) {
 
   while (!validWord) {
     retries++;
-    console.log(`Try num : ${retries}`);
-    console.log(tempWordData);
+    // console.log(`Try num : ${retries}`);
+    // console.log(tempWordData);
 
     if (checkValidWordData(tempWordData)) {
       // the word is a valid word
@@ -114,6 +116,7 @@ export async function getWordDefAndAudio(word) {
     } else if (tempWordData instanceof Array && tempWordData.length > 0) {
       // the word is not a valid word but the dictionary has similar words
 
+      console.log("Try: ", retries, tempWordData);
       for (var i = 0; i < tempWordData.length; i++) {
         // go through all similar words and choose one that is valid
         if (tempWordData[i].includes(" ")) continue;
@@ -133,10 +136,17 @@ export async function getWordDefAndAudio(word) {
   }
 
   wordData = tempWordData;
-  word = tempWord;
+  // set the word to be the word form in the MW API response
+  // (because for different forms of a base word, it's the base word that is present in the audio)
+  // Example: anthemic
+  word = wordData[0].meta.id;
+  // meta.id sometimes contains ":1" or similar
+  if (word.includes(":")) word = word.slice(0, word.indexOf(":"));
+
   definition = getWordDefinition(wordData);
   // TODO: check if the audio file exists. If not, have a fallback (WebSpeech API)
   audioUrl = getAudioUrl(wordData);
+  console.log(wordData);
 
   return {
     word: word,

@@ -1,10 +1,57 @@
 .mainContainer {
+  display: flex;
+  flex-direction: column;
   width: 800px;
-  height: 400px;
   flex-shrink: 0;
   background: linear-gradient(180deg, #722E9A 0%, #522882 100%);
   border: 1px solid #47297B;
   border-radius: 30px;
-  position:relative;
+  position: relative;
+  margin-bottom: 10vh;
+}
 
+.attemptsSkipContainer {
+  display: flex;
+  width: 800px;
+  justify-content: space-between;
+  margin-bottom: 3vh;
+}
+
+.linkContainer {
+  display: flex;
+  justify-content: center;
+  width: max-content;
+}
+
+.link:hover {
+  cursor: pointer;
+}
+
+.link > div {
+  width: max-content;
+  /* background: linear-gradient(180deg, #47297B 0%, #5D2689 100%); */
+  background: #722E9A;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50px;
+}
+
+.linkLeft {
+  margin-left: 1vw;
+}
+
+.linkLeft:hover {
+  cursor: default;
+}
+
+.linkRight {
+  margin-right: 1vw;
+}
+
+.linkText{
+  font-family: 'Playfair Display';
+  font-size: 20px;
+  color: var(--pallet-color-1);
+  padding: 10px 40px;
 }
