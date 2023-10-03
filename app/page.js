@@ -14,10 +14,10 @@ const page = () => {
         </div>
         <div className={styles.loginSignupContainer}>
           <div className={styles.linkButtonContainer}>
-            <LinkButton path="/" text="Log In" />
+            <LinkButton path="/authentication/login" text="Log In" />
           </div>
           <div className={styles.linkButtonContainer}>
-            <LinkButton path="/" text="Sign Up" />
+            <LinkButton path="/authentication/signup" text="Sign Up" />
           </div>
         </div>
       </div>
