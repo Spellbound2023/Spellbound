@@ -94,3 +94,14 @@
     
   }
 
+  @media only screen and (max-width: 600px) {
+
+      .formContainer{
+        padding: 0% 30% 10% 30%;
+      }
+
+      .bottomBanner{
+        text-align: center;
+      }
+  }
+
