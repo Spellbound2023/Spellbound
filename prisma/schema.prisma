@@ -1,0 +1,61 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// TODO: when migrating from SQLite to PostgreSQL, convert all Int id fields to BigInt
+// BigInt is not working with autoincrementing for SQLite
+
+model UserAccount {
+  UserAccountID     Int                @id @default(autoincrement())
+  Username          String             @unique
+  PasswordHash      String
+  PasswordSalt      String
+  HashAlgorithm     HashAlgorithm      @relation(fields: [HashAlgorithmID], references: [HashAlgorithmID])
+  HashAlgorithmID   Int
+  Role              Role               @relation(fields: [RoleID], references: [RoleID])
+  RoleID            Int
+  Granter           UserAccount?        @relation(name: "RoleGranterGrantees", fields: [GranterID], references: [UserAccountID])
+  GranterID         Int?
+  Grantees          UserAccount[]      @relation(name: "RoleGranterGrantees")
+  GrantDateTime     DateTime?
+  GrantedPrivileges GrantedPrivilege[]
+}
+
+model HashAlgorithm {
+  HashAlgorithmID Int           @id @default(autoincrement())
+  Name            String        @unique
+  Description     String
+  UserAccounts    UserAccount[]
+}
+
+model Privilege {
+  PrivilegeID       Int                @id @default(autoincrement())
+  Name              String             @unique
+  Description       String
+  GrantedPrivileges GrantedPrivilege[]
+}
+
+model Role {
+  RoleID            Int                @id @default(autoincrement())
+  Name              String             @unique
+  Description       String
+  UserAccounts      UserAccount[]
+  GrantedPrivileges GrantedPrivilege[]
+}
+
+model GrantedPrivilege {
+  Role          Role        @relation(fields: [RoleID], references: [RoleID])
+  RoleID        Int
+  Privilege     Privilege   @relation(fields: [PrivilegeID], references: [PrivilegeID])
+  PrivilegeID   Int
+  Granter       UserAccount @relation(fields: [GranterID], references: [UserAccountID])
+  GranterID     Int
+  GrantDateTime DateTime
+
+  @@id([RoleID, PrivilegeID])
+}
