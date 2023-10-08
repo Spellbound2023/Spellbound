@@ -1,7 +1,9 @@
 import NextAuth from "next-auth";
-import { CredentialsProvider } from "next-auth/providers";
+import CredentialsProvider from "next-auth/providers/credentials";
+import { checkUser } from "@/utils/authUtils";
 
 const handler = NextAuth({
+  secret: process.env.NEXT_AUTH_SECRET,
   providers: [
     CredentialsProvider({
       credentials: {
@@ -9,21 +11,19 @@ const handler = NextAuth({
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials, req) {
-        // TODO: logic to retrieve user details from credentials
-        const user = {
-          username: credentials.username,
-          password: credentials.password,
-        };
+        const user = await checkUser(credentials);
         if (user) {
           return user;
         } else return null;
       },
     }),
   ],
+  pages: {
+    signIn: "/authentication/login",
+  },
   session: {
     strategy: "jwt",
     maxAge: 30 * 24 * 60 * 60,
-    // TODO: specify the "pages" option with urls for custom Sign in, Sign up pages
     debug: true,
   },
 });

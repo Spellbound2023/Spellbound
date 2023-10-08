@@ -31,7 +31,7 @@ const userAccounts = [
 
 const hashAlgorithms = [
   {
-    Name: "brcypt",
+    Name: "bcrypt",
     Description: "The hashing algorithm used by the bcrypt library",
   },
 ];

@@ -4,10 +4,10 @@ import { createUser } from "@/utils/authUtils";
 /* The word request thing */
 export const POST = async (request) => {
   const data = await request.json();
-  console.log(data);
+
   const userCreationResponse = await createUser({
     username: data.username,
-    password: data.username,
+    password: data.password,
   });
 
   if (userCreationResponse.success) {

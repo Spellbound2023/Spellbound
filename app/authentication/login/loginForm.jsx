@@ -1,14 +1,21 @@
 'use client'
 import React from 'react'
 import styles from '../../../styles/login.module.css'
-import Link from 'next/link'
+import { signIn } from "next-auth/react";
+
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  const username = document.getElementById("username").value;
+  const password = document.getElementById("password").value;
+  signIn("credentials", { username, password })
+};
 
 const Form = () => {
   return (
     <div className={styles.mainContainer}>
-        <form action="#" className={styles.loginForm}>
-            <input type="text" name="username" placeholder='Username' required/><br/>
-            <input type="password" name="password" placeholder='Password' required/><br/>
+        <form onSubmit={handleSubmit} className={styles.loginForm}>
+            <input id="username" type="text" name="username" placeholder='Username' required/><br/>
+            <input id = "password" type="password" name="password" placeholder='Password' required/><br/>
             <input type="submit" value="Login"/>
         </form>
     </div>   

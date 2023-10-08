@@ -1,13 +1,23 @@
-import React from 'react'
-import ContainerCard from './signupContainer'
+"use client";
 
-const login = () => {
+import React from "react";
+import { useSession } from "next-auth/react";
+import ContainerCard from "./signupContainer";
+import { redirect } from "next/navigation";
+
+const signup = () => {
+  const { data: session } = useSession();
+
+  if (session) {
+    redirect("/");
+  }
   return (
-    <div>Sign Up
-        <ContainerCard/>
+    <div>
+      <ContainerCard />
     </div>
+  );
+};
 
-  )
-}
+export default signup;
 
-export default login
+// References: https://next-auth.js.org/getting-started/example
