@@ -18,7 +18,7 @@ const MainMenu = () => {
       </div>
 
       <div className={styles.ButtonOuter}>
-        <Link href="/versus">
+        <Link href="/lobby">
           <div className={styles.Button}>
             <Image src="/images/Lightning Bolt.png" width={100} height={100} />
             <br />

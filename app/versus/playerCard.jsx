@@ -8,13 +8,11 @@ import { getRandomWord } from "@/utils/dictionaryAPI";
 
 
 const PlayerBox = () => {
-    const [definition, setDefinition] = useState("");
     const [audioUrl, setAudioUrl] = useState("");
 
-    getRandomWord();
 
   return (
-    <div className={styles.cardContainer}>
+    <div className={styles.PlayerCardContainer}>
         <WordInfo 
         definition={"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam sed nisi quis tortor lobortis aliquam. Sed ante purus, tempus ut."} 
         audioUrl={audioUrl}

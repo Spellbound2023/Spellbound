@@ -7,18 +7,40 @@
     padding: 10px;
 }
 
+.Top{
+    display:  flex;
+    align-items: center;
+    width: 100%;
+    color: #FFE150; 
+}
+
+.Timer{
+    padding-left:45%;
+}
+
 .statusBar{
     grid-column-start: 1;
     grid-column-end: 3;
     height: 4rem;
 }
 
-.cardContainer{
+.cardContainer:not(.PlayerCardContainer){
     height: 100%;
     flex-shrink: 0;
     background: linear-gradient(180deg, #722E9A 0%, #522882 100%);
     border: 1px solid #47297B;
     border-radius: 30px;
+}
+
+.PlayerCardContainer{
+    height: min-content;
+    background: linear-gradient(180deg, #722E9A 0%, #522882 100%);
+    border: 1px solid #47297B;
+    border-radius: 30px;
+}
+
+.PlayerCardContainer > *{
+    padding: none;
 }
 
 
@@ -52,9 +74,11 @@
 }
 
 .potionsBox{
-
+    display: grid;
+    justify-content: space-around;
+    grid-template-columns: auto auto auto;
     width: 30%;
-    height: 50%;
+    height: min-content;
     margin: 1%;
     background-color: #410A6D;
     opacity: 80%;
