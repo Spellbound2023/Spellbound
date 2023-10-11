@@ -1,36 +1,32 @@
-import React from "react";
-import styles from "../../styles/versus.module.css";
-import Image from "next/image";
-import OpponentBox from "./opponentCard";
-import PlayerBox from "./playerCard";
-import StatusBox from "./statusBar";
-import NavBar from "@/components/NavBar";
-import TopBar from "./topBar";
+import React from 'react'
+import styles from '../../styles/lobby.module.css'
+import JoinGame from './joinGame'
 
-const versusPage = () => {
+const page = () => {
+    // Returns active players in table format displaying username, status and 
   return (
     <>
-      
-      <TopBar/>
-      <div className={styles.versusContainer}>
-        <div className={styles.opponentBox}>
-          <OpponentBox />
-        </div>
-        <div className={styles.Character}>
-          <Image src="/images/opponentCharacter.png" width={200} height={200} />
-        </div>
-        <div className={styles.Character}>
-          <Image src="/images/PlayerCharacter.png" width={300} height={300} />
-        </div>
-        <div className={styles.playerBox}>
-          <PlayerBox />
-        </div>
-        <div className={styles.statusBar}>
-          <StatusBox />
-        </div>
-      </div>
-    </>
-  );
-};
+    <h1 className={styles.Header}>Lobby</h1>
+    <div className={styles.tableContainer}>
+        <table className={styles.lobbyList}>
+            <tr>
+                <th>Username</th>
+                <th>Status</th>
+            </tr>
+            <tr>
+                <td>Username placeholder</td>
+                <td><JoinGame/></td>
+            </tr>
+            <tr>
+                <td>Username placeholder</td>
+                <td><JoinGame/></td>
+            </tr>
 
-export default versusPage;
+              
+        </table>
+    </div>
+    </>
+  )
+}
+
+export default page
