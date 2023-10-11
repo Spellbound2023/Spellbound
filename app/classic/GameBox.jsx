@@ -5,6 +5,7 @@ import WordInfo from "./WordInfo";
 import WordInput from "./WordInput";
 import styles from "../../styles/classic/GameBox.module.css";
 import { checkValidInput, upperCaseFirstLetter } from "@/utils/utils";
+import GameboxCard from "@/components/GameboxCard";
 
 const ATTEMPTS_PER_WORD = 3;
 
@@ -81,7 +82,7 @@ const GameBox = () => {
         </div>
       </div>
 
-      <div className={styles.mainContainer}>
+      <GameboxCard>
         <WordInfo
           definition={upperCaseFirstLetter(definition[0])}
           audioUrl={audioUrl}
@@ -90,7 +91,7 @@ const GameBox = () => {
         <br />
         <br />
         <WordInput onSubmitHandler={checkUserInput} />
-      </div>
+      </GameboxCard>
     </div>
   );
 };

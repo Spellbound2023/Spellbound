@@ -2,9 +2,15 @@
 import React from "react";
 import SpellBoundTitle from "./SpellBoundTitle";
 import DifficultyText from "./DifficultyText";
-import HamburgerMenu from "./HamburgerMenu";
+import HamburgerButton from "./HamburgerButton";
 
 const NavBar = () => {
+  const menuItems = [
+    { href: '/home', label: 'Home' },
+    { href: '#', label: 'Stats' },
+    { href: '#', label: 'Challenges' },
+    { href: '#', label: '1v1 Mode' },
+  ];
   return (
     <nav
       style={{
@@ -19,7 +25,7 @@ const NavBar = () => {
       }}
     >
       <div style={{ flex: 1, textAlign: "left" }}>
-        <HamburgerMenu />
+        <HamburgerButton items={menuItems} />
       </div>
       <div style={{ flex: 2, textAlign: "center" }}>
         <SpellBoundTitle />
