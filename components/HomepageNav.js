@@ -4,7 +4,7 @@ import DropdownMenu from "./DropdownMenu";
 import Link from "next/link";
 
 const HomePageNav = () => {
-    const isLoggedIn = true; // placeholder for actually fetching this from authentication state
+    const isLoggedIn = false; // placeholder for actually fetching this from authentication state
 
     const loggedOutMenuItems = [
         { href: "#", label: "Help" },
