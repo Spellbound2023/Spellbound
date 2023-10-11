@@ -9,7 +9,7 @@
 .tableContainer{
     margin: auto;
     padding: 0% 2%;
-    backdrop-filter: blur(20px);
+    backdrop-filter: blur(25px);
     border-radius: 30px;
     align-self: center;
     width: 80%;

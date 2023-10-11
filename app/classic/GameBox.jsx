@@ -5,6 +5,7 @@ import WordInfo from "./WordInfo";
 import WordInput from "./WordInput";
 import styles from "../../styles/classic/GameBox.module.css";
 import { checkValidInput, upperCaseFirstLetter } from "@/utils/utils";
+import SuccessPopup from "./successPopup";
 
 const ATTEMPTS_PER_WORD = 3;
 
@@ -14,6 +15,7 @@ const GameBox = () => {
   const [definition, setDefinition] = useState([]);
   const [audioUrl, setAudioUrl] = useState("");
   const [attempts, setAttempts] = useState(0);
+  const [isCorrect, setIsCorrect] = useState(false);
 
   // the gamebox component controls the flow of the game
   // When it is rendered, it must fetch a random word from the API
@@ -36,13 +38,15 @@ const GameBox = () => {
 
   const checkUserInput = (input) => {
     if (checkValidInput(input, word)) {
+      setIsCorrect(true) //CORRECT POPUP
       alert("Correct!");
       setupRound();
     } else {
       if (attempts + 1 >= ATTEMPTS_PER_WORD) {
+        setIsCorrect(false) //INCORRECT POPUP
         alert(
           `Wrong. Again. \n Out of attempts! Correct spelling: \"${word}\"`
-        );
+        );        
         setupRound();
       } else {
         alert(
@@ -57,6 +61,8 @@ const GameBox = () => {
 
   return (
     <div>
+      <nav><SuccessPopup isCorrect={isCorrect}/></nav>
+      
       <div className={styles.attemptsSkipContainer}>
         <div className={styles.linkContainer}>
           <a className={`${styles.link} ${styles.linkLeft}`}>

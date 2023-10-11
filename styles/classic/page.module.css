@@ -20,3 +20,40 @@
   height: 100%;
   margin-top: 10vh;
 }
+
+.Popup{
+  width: 800px;
+  /*background: linear-gradient(180deg, #722E9A 0%, #522882 100%);*/
+  border-radius: 30px;
+  position: absolute;
+  top: 0;
+  margin: 1% auto;
+  animation: slideIn 0.25s ease-out;
+}
+
+.correct {
+  background-color: green;
+}
+
+.incorrect {
+  background-color: red;
+
+}
+
+.Popup.visible {
+  display: block;
+}
+
+.Popup > p{
+  color: white;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: xx-large;
+  padding: 1%;
+  text-align: center;
+}
+
+@keyframes slideIn {
+  from {transform: scale(0.25);}
+  to {transform: scale(1);}
+}
+

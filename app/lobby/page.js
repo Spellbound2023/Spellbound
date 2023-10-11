@@ -1,6 +1,7 @@
 import React from 'react'
 import styles from '../../styles/lobby.module.css'
 import JoinGame from './joinGame'
+import SuccessPopup from '../classic/successPopup'
 
 const page = () => {
     // Returns active players in table format displaying username, status and 
@@ -20,9 +21,7 @@ const page = () => {
             <tr>
                 <td>Username placeholder</td>
                 <td><JoinGame/></td>
-            </tr>
-
-              
+            </tr> 
         </table>
     </div>
     </>
