@@ -1,4 +1,5 @@
 import "../styles/globals.css";
+import NextAuthenticationProvider from "@/components/NextAuthenticationProvider";
 
 export const metadata = {
   title: "Spellbound",
@@ -8,7 +9,9 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <NextAuthenticationProvider>{children}</NextAuthenticationProvider>
+      </body>
     </html>
   );
 }

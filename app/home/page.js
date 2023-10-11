@@ -9,6 +9,7 @@ export default function Home() {
   return (
     <main>
       <div className={styles.Header}>
+        <h1>Select a gamemode</h1>
         <HomepageNav/>
       </div>
       <MainMenu />

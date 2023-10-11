@@ -8,12 +8,21 @@
     "start": "next start",
     "lint": "next lint",
     "watch": "watch 'npm run build' ./components"
-
   },
   "dependencies": {
-    "next": "^13.4.19",
+    "@prisma/client": "^5.3.1",
+    "next": "^13.5.4",
+    "next-auth": "^4.23.2",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "sqlite3": "^5.1.6",
     "watch": "^1.0.2"
+  },
+  "devDependencies": {
+    "bcrypt": "^5.1.1",
+    "prisma": "^5.3.1"
+  },
+  "prisma": {
+    "seed": "node prisma/seed.js"
   }
 }

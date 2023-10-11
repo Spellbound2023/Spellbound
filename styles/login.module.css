@@ -1,0 +1,107 @@
+.mainContainer{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+}
+
+
+.formContainer:not(.backButton a){
+    width: 50%;
+    height: max-content;
+    padding-bottom: 5%;
+    backdrop-filter: blur(20px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-radius: 30px;
+    
+  }
+
+  .logo{
+    padding: 10px;
+  }
+
+
+  .header{
+    display: flex;
+    flex-direction: column;
+    font-family: 'Playfair Display';
+    color: var(--pallet-color-1);
+    padding: 2%;
+    font-size: xx-large;
+    text-align: center;
+
+  }
+
+  .loginForm {
+   text-align: center;
+  }
+
+  .loginForm input{
+    padding: 15px 12px;
+    margin: 7% 0%;
+    background-color: #682A92;
+    border-radius: 15px;
+    border: none;
+    color: #FFE150;
+    transition-duration: 0.1s;
+    background: linear-gradient(90deg, #5D2689 0%, #47297B 100%);
+  }
+
+  .loginForm input[type=submit]
+  {
+    width: 70%;
+    background: linear-gradient( #5D2689 0%, #47297B 100%);
+    border-radius: 25px;
+    font-size: 20px;
+  }
+
+  .loginForm ::placeholder{
+    color: #FFE150;
+    opacity: 60%;
+  }
+
+  .loginForm input:focus:not(input[type=submit]){
+    box-shadow: 0 0 10px #F5BD1F;
+    box-sizing: border-box;
+    outline: none;
+  }
+
+
+  .bottomBanner{
+    width: 90%;
+    text-align:end;
+  }
+
+  .bottomBanner a{
+    color: #FFE150; 
+    text-decoration: none;
+  }
+
+  .backButton{
+    width:100%;
+    float: left;
+    padding: 2% 0% 0% 5%;
+    position: absolute;
+  }
+
+  .backButton a{
+    color: #FFE150; 
+    text-decoration: none;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size:larger;
+    
+  }
+
+  @media only screen and (max-width: 600px) {
+
+      .formContainer{
+        padding: 0% 30% 10% 30%;
+      }
+
+      .bottomBanner{
+        text-align: center;
+      }
+  }
+
