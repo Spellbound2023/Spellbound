@@ -1,8 +1,6 @@
-/*
- * Base API will fetch from Collegiate Dictionary
- */
+/* Note: Base API will fetch from Collegiate Dictionary */
 
-/* word count = 102774 */
+/* ============ Constants =============== */
 
 /* Source URL bases */
 const MW_API_BASE_URL = "https://dictionaryapi.com/api/v3/references/";
@@ -30,6 +28,27 @@ const API_KEYS = {
   medical: process.env.MW_KEY_MEDICAL,
 };
 
+/* ============ Imports =============== */
+
+const _ = require("lodash");
+import wordList from "./wordsList";
+
+/* ============ Functions =============== */
+
+/* Gets a random word from https://github.com/mcnaveen/Random-Words-API
+  This is a temporary solution for obtaining a random word */
+export async function getRandomWordFromAPI() {
+  const response = await fetch(RAND_WORD_API_URL, { cache: "no-store" });
+  const randWordData = await response.json();
+  return randWordData[0].word.toLowerCase();
+}
+
+/* Gets a random word from the word list file */
+export function getRandomWord() {
+  const randWord = _.sampleSize(wordList)[0];
+  return randWord;
+}
+
 /* Function to construct an API URL from a dictionary, word and API key. */
 export function constructMWAPIUrl(word, dictName, apiKey) {
   return new URL(
@@ -49,13 +68,13 @@ export async function getWordFullDataMW(word, dictName) {
 }
 
 /* Gets the first short definition from the word data */
-export function getWordDefinition(wordData) {
-  return wordData[0]["shortdef"];
+export function getWordDefinition(wordObject) {
+  return wordObject["shortdef"];
 }
 
 /* Gets word audio data from API URL */
-export function getAudioUrl(wordData) {
-  const audioClipName = wordData[0]["hwi"]["prs"][0]["sound"]["audio"];
+export function getAudioUrl(wordObject) {
+  const audioClipName = wordObject["hwi"]["prs"][0]["sound"]["audio"];
   const format = "mp3";
   let subdirectory = "";
   if (audioClipName.startsWith("bix")) {
@@ -73,28 +92,18 @@ export function getAudioUrl(wordData) {
   ).href;
 }
 
-/* Gets a random word from https://github.com/mcnaveen/Random-Words-API
-  This is a temporary solution for obtaining a random word */
-export async function getRandomWord() {
-  const response = await fetch(RAND_WORD_API_URL, { cache: "no-store" });
-  const randWordData = await response.json();
-  return randWordData[0].word.toLowerCase();
-}
-
-/* Checks whether the given JSON (typically returned by the Merriam Webster 
-  dictionary API) represents a valid word in the MW dictionary and contains 
-  all the necessary information (definition and TODO: audio data) */
+/* Checks whether the given JSON (typically returned by the Merriam Webster
+  dictionary API) represents a json response for a valid word in the MW dictionary
+  and contains all the necessary information (definition and TODO: audio data) */
 export function checkValidWordData(wordData) {
   // word data returned by the Merriam Webster dictionary is an array
   // containing JSON objects
   return (
     wordData instanceof Array &&
     wordData.length > 0 &&
-    typeof wordData[0] === "object" && // check for whether wordData[0] is an object
-    !!wordData[0] && // check that wordData[0] is not null
-    "shortdef" in wordData[0] &&
-    "hwi" in wordData[0] &&
-    "prs" in wordData[0].hwi // check if audio file exists
+    // check for whether wordData[0] is an object (because if the requested word
+    // is not in the dictionary, the API returns a list of similar words)
+    typeof wordData[0] === "object"
   );
 }
 
@@ -105,6 +114,7 @@ export async function getWordDefAndAudio(word) {
   let validWord = false;
   let tempWordData = wordData;
   let tempWord = word;
+  let tempWordObject = null;
   let retries = 0;
 
   console.log(`======= Word: ${word} =======`);
@@ -115,8 +125,11 @@ export async function getWordDefAndAudio(word) {
     console.log("Obtained data: ", tempWordData);
 
     if (checkValidWordData(tempWordData)) {
-      // the word is a valid word
-      validWord = true;
+      tempWordObject = getValidWord(tempWordData);
+      if (!!tempWordObject) {
+        // the word is a valid word
+        validWord = true;
+      } else tempWordData = [];
     } else if (tempWordData instanceof Array && tempWordData.length > 0) {
       // the word is not a valid word but the dictionary has similar words
 
@@ -125,32 +138,47 @@ export async function getWordDefAndAudio(word) {
         // go through all similar words and choose one that is valid
         if (tempWordData[i].includes(" ")) continue;
         tempWord = tempWordData[i];
-        tempWordData = await getWordFullDataMW(tempWord, "collegiate");
-        validWord = checkValidWordData(tempWordData);
+        let newData = await getWordFullDataMW(tempWord, "collegiate");
+        if (checkValidWordData(newData)) {
+          tempWordObject = getValidWord(newData);
+          if (!!tempWordObject) {
+            // the word is a valid word
+            tempWordData = newData;
+            validWord = true;
+          }
+        }
         if (validWord) break;
       }
       if (!validWord) tempWordData = [];
     } else {
       // the word is not a valid word and the dictionary does not have similar words
-      tempWord = await getRandomWord();
+      tempWord = getRandomWord();
       tempWordData = await getWordFullDataMW(tempWord, "collegiate");
-      validWord = checkValidWordData(tempWordData);
+      if (checkValidWordData(tempWordData)) {
+        tempWordObject = getValidWord(tempWordData);
+        if (!!tempWordObject) {
+          // the word is a valid word
+          validWord = true;
+        }
+      }
+
       if (!validWord) tempWordData = [];
     }
   }
 
-  wordData = tempWordData;
+  let wordObject = tempWordObject;
   // set the word to be the word form in the MW API response
   // (because for different forms of a base word, it's the base word that is present in the audio)
   // Example: anthemic
-  word = wordData[0].meta.id;
+  word = wordObject.meta.id;
   // meta.id sometimes contains ":1" or similar
   if (word.includes(":")) word = word.slice(0, word.indexOf(":"));
 
-  definition = getWordDefinition(wordData);
+  definition = getWordDefinition(wordObject);
   // TODO: check if the audio file exists. If not, have a fallback (WebSpeech API)
-  audioUrl = getAudioUrl(wordData);
-  console.log("\n Final wordData: ", wordData);
+  audioUrl = getAudioUrl(wordObject);
+  console.log("\n Final wordData: ", tempWordData);
+  console.log("\n Final wordObject: ", wordObject);
 
   return {
     word: word,
@@ -158,3 +186,73 @@ export async function getWordDefAndAudio(word) {
     audioUrl: audioUrl,
   };
 }
+
+/**
+ * Checks for a valid spelling bee word in the (valid) json data returned by the
+ * Merriam-Webster dictionary API.
+ *
+ * Invalid spelling bee words are:
+ *  - Foreign words
+ *  - Geographical words
+ *  - Biographical words
+ *  - Abbreviations
+ *  - Offensive words
+ *
+ * The check for this is done by checking the meta -> section entry of a word object.
+ * The section field value should be "alpha"
+ * See https://www.dictionaryapi.com/products/json#sec-2.meta
+ *
+ * @param {Array} wordData  A valid JSON array returned by the Merriam Webster dictionary API
+ *          That is, the array must first be checked for validity using checkValidWordData().
+ *
+ * @return {Object} Returns the data object for the first valid word in wordData that is found.
+ *                  If wordData is invalid, or has no valid word is found, returns null.
+ *
+ * @throws If the given wordData is invalid according to checkValidWordData().
+ */
+export function getValidWord(wordData) {
+  // we filter out abbreviations,
+  // fl: not abbreviation
+  if (!checkValidWordData(wordData))
+    throw new Error("The given wordData is invalid");
+
+  let isValid = true;
+  for (let i = 0; i < wordData.length; ++i) {
+    let word = wordData[i];
+
+    // check to see if the word object structure is valid
+    if (
+      !(
+        !!word && // check that word is not null
+        "meta" in word &&
+        "shortdef" in word &&
+        "hwi" in word &&
+        // check if audio file exists
+        "prs" in word.hwi &&
+        word.hwi.prs instanceof Array &&
+        word.hwi.prs.length > 0 &&
+        typeof word.hwi.prs[0] === "object" &&
+        "sound" in word.hwi.prs[0]
+      )
+    )
+      continue;
+
+    // filter out geographical, biographical, and foreign words
+    if (!("section" in word.meta)) continue;
+    if (word.meta.section !== "alpha") continue;
+
+    // filter out offensive words
+    if ("offensive" in word.meta && word.meta.offensive === true) continue;
+
+    // filter out abbreviations
+    if ("fl" in word && word.fl === "abbreviation") continue;
+
+    return word;
+  }
+
+  return null;
+}
+
+/* ============ Main code =============== */
+
+// const wordList = getWordList();
