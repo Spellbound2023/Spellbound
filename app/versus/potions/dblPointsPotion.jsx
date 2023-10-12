@@ -5,7 +5,7 @@ const DblPointsPotion = () => {
   return (
     <div>
       <button type="button" class="hintPotion">
-            <Image src='/images/spellboundLogo.png' width={50} height={50}/>
+            <Image src='/images/dblptsPotion.png' width={50} height={50}/>
         </button>
     </div>
   )

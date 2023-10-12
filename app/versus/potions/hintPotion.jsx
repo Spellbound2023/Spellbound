@@ -7,7 +7,7 @@ const HintPotion = () => {
   return (
     <div>
         <button type="button" class="Potion">
-            <Image src='/images/spellboundLogo.png' width={50} height={50}/>
+            <Image src='/images/hintPotion.png' width={50} height={50}/>
         </button>
 
     </div>

@@ -23,12 +23,12 @@
 
 .Popup{
   width: 800px;
-  /*background: linear-gradient(180deg, #722E9A 0%, #522882 100%);*/
   border-radius: 30px;
   position: absolute;
   top: 0;
   margin: 1% auto;
-  animation: slideIn 0.25s ease-out;
+  opacity: 0; /* Start with 0 opacity */
+  transition: opacity 0.3s ease-in-out; /* Transition for opacity with a 0.3s duration */
 }
 
 .correct {
@@ -39,11 +39,6 @@
   background-color: red;
 
 }
-
-.Popup.visible {
-  display: block;
-}
-
 .Popup > p{
   color: white;
   font-family: Arial, Helvetica, sans-serif;
@@ -52,8 +47,14 @@
   text-align: center;
 }
 
-@keyframes slideIn {
-  from {transform: scale(0.25);}
-  to {transform: scale(1);}
+.Popup.visible {
+  display: block;
+  opacity: 1; /* Show with 100% opacity */
 }
+
+.unmount {
+  opacity: 0;
+}
+
+
 

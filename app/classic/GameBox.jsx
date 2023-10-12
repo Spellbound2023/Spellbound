@@ -15,7 +15,7 @@ const GameBox = () => {
   const [definition, setDefinition] = useState([]);
   const [audioUrl, setAudioUrl] = useState("");
   const [attempts, setAttempts] = useState(0);
-  const [isCorrect, setIsCorrect] = useState(false);
+  const [isCorrect, setIsCorrect] = useState(null);
 
   // the gamebox component controls the flow of the game
   // When it is rendered, it must fetch a random word from the API
@@ -39,8 +39,9 @@ const GameBox = () => {
   const checkUserInput = (input) => {
     if (checkValidInput(input, word)) {
       setIsCorrect(true) //CORRECT POPUP
-      alert("Correct!");
+      //alert("Correct!");
       setupRound();
+      setTimeout(() => setIsCorrect(null), 1500);
     } else {
       if (attempts + 1 >= ATTEMPTS_PER_WORD) {
         setIsCorrect(false) //INCORRECT POPUP
@@ -48,11 +49,14 @@ const GameBox = () => {
           `Wrong. Again. \n Out of attempts! Correct spelling: \"${word}\"`
         );        
         setupRound();
+        setTimeout(() => setIsCorrect(null), 1500);
       } else {
-        alert(
-          `Wrong! Attempts remaining: ${ATTEMPTS_PER_WORD - (attempts + 1)}`
-        );
+        setIsCorrect(false) //INCORRECT POPUP
+        //alert(
+        //  `Wrong! Attempts remaining: ${ATTEMPTS_PER_WORD - (attempts + 1)}`
+        //);
         setAttempts(attempts + 1);
+        setTimeout(() => setIsCorrect(null), 1500);
       }
     }
   };
@@ -61,7 +65,7 @@ const GameBox = () => {
 
   return (
     <div>
-      <nav><SuccessPopup isCorrect={isCorrect}/></nav>
+      <nav><SuccessPopup key={isCorrect} isCorrect={isCorrect}/></nav>
       
       <div className={styles.attemptsSkipContainer}>
         <div className={styles.linkContainer}>
