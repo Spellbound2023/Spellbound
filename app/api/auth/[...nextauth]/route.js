@@ -1,6 +1,6 @@
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { checkUser } from "@/utils/authUtils";
+// import { checkUser } from "@/utils/authUtils";
 
 const handler = NextAuth({
   secret: process.env.NEXT_AUTH_SECRET,
@@ -11,7 +11,10 @@ const handler = NextAuth({
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials, req) {
-        const user = await checkUser(credentials);
+        // const user = await checkUser(credentials);
+        const user = {
+          username: "bla1",
+        };
         if (user) {
           return user;
         } else return null;
