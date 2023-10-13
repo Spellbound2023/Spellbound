@@ -28,6 +28,7 @@
 
 .lobbyList tr{
     border-bottom: 2px solid #ddd;
+    visibility: visible;
 }
 
 .lobbyList td{
