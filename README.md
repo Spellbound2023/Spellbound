@@ -12,6 +12,11 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 ### Setting up the database
 We currently use SQLite as the database, with Prisma as the ORM.
 
+Change the directory to back-end/ before running the commands below.
+```bash
+ cd back-end/
+```
+
 First, we need to create the database tables:
 
 ```bash
