@@ -2,14 +2,11 @@
 
 import React, { useState } from "react";
 import styles from '../../styles/versus.module.css'
-import WordInfo from "../classic/WordInfo";
-import WordInput from "../classic/WordInput";
-import { getRandomWord } from "@/utils/dictionaryAPI";
-
+import WordInfo from "../../classic/WordInfo";
+import WordInput from "../../classic/WordInput";
 
 const PlayerBox = () => {
     const [audioUrl, setAudioUrl] = useState("");
-
 
   return (
     <div className={styles.PlayerCardContainer}>

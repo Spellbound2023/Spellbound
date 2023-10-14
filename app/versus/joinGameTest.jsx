@@ -1,6 +1,6 @@
 import React from 'react'
 import styles from '../../styles/lobby.module.css'
-import JoinGame from './'
+import JoinGame from './joinGame'
 
 const JoinGameTest = () => {
   return (
