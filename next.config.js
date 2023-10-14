@@ -14,6 +14,10 @@ const nextConfig = {
         source: "/api/user/register",
         destination: "http://localhost:3001/api/user/register",
       },
+      // {
+      //   source: "/socket.io",
+      //   destination: "http://localhost:3001/api/socket/",
+      // },
     ];
   },
 };
