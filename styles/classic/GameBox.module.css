@@ -8,6 +8,7 @@
   border-radius: 30px;
   position: relative;
   margin-bottom: 10vh;
+  box-sizing: content-box;
 }
 
 .attemptsSkipContainer {
@@ -54,4 +55,20 @@
   font-size: 20px;
   color: var(--pallet-color-1);
   padding: 10px 40px;
+}
+
+
+.scoreContainer{
+  position: absolute;
+  left: 85%;
+  top:50%;
+  text-align: center;
+
+}
+
+.score{
+  position: absolute;
+  top: 70%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
