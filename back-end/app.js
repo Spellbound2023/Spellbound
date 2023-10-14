@@ -8,6 +8,31 @@ var logger = require("morgan");
 
 var apiRouter = require("./routes/api");
 
+/* ========= Passport ============= */
+
+var passport = require("passport");
+var JwtStrategy = require("passport-jwt").Strategy;
+var ExtractJwt = require("passport-jwt").ExtractJwt;
+var { checkUserExists } = require("./utils/authUtils");
+
+let passportJwtOptions = {
+  secretOrKey: process.env.JWT_SECRET,
+  jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+};
+
+passport.use(
+  new JwtStrategy(passportJwtOptions, function ({ username }, done) {
+    const user = checkUserExists(username);
+    if (user) {
+      return done(null, user);
+    } else {
+      return done(null, false);
+    }
+  })
+);
+
+/* ========= App ============= */
+
 var app = express();
 
 // view engine setup
@@ -39,3 +64,6 @@ app.use(function (err, req, res, next) {
 });
 
 module.exports = app;
+
+// References:
+// https://www.passportjs.org/packages/passport-jwt/

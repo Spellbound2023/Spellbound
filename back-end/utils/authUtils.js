@@ -1,5 +1,6 @@
 const bcrypt = require("bcrypt");
 const { PrismaClient } = require("@prisma/client");
+const jwt = require("jsonwebtoken");
 
 const prisma = new PrismaClient();
 
@@ -100,11 +101,37 @@ async function checkUser({ username, password }) {
   } else return null;
 }
 
+async function checkUserExists(username) {
+  // check if such a user already exists
+  const existingUser = await prisma.userAccount.findUnique({
+    where: {
+      Username: username,
+    },
+  });
+
+  if (existingUser) {
+    return {
+      id: existingUser.UserAccountID,
+      username: username,
+    };
+  }
+  return null;
+}
+
+function generateToken(username) {
+  return jwt.sign({ username: username }, process.env.JWT_SECRET, {
+    expiresIn: "1h",
+  });
+}
+
 /* ============ Exports =============== */
 
 exports.getPasswordHashSalt = getPasswordHashSalt;
 exports.createUser = createUser;
 exports.checkUser = checkUser;
+exports.checkUserExists = checkUserExists;
+exports.generateToken = generateToken;
 
 // References:
 // https://blog.logrocket.com/password-hashing-node-js-bcrypt
+// https://www.digitalocean.com/community/tutorials/nodejs-jwt-expressjs
