@@ -31,26 +31,27 @@ const API_KEYS = {
 /* ============ Imports =============== */
 
 const _ = require("lodash");
-import wordList from "./wordsList";
+// import wordList from "./wordsList";
+const { wordList } = require("./wordsList");
 
 /* ============ Functions =============== */
 
 /* Gets a random word from https://github.com/mcnaveen/Random-Words-API
   This is a temporary solution for obtaining a random word */
-export async function getRandomWordFromAPI() {
+async function getRandomWordFromAPI() {
   const response = await fetch(RAND_WORD_API_URL, { cache: "no-store" });
   const randWordData = await response.json();
   return randWordData[0].word.toLowerCase();
 }
 
 /* Gets a random word from the word list file */
-export function getRandomWord() {
+function getRandomWord() {
   const randWord = _.sampleSize(wordList)[0];
   return randWord;
 }
 
 /* Function to construct an API URL from a dictionary, word and API key. */
-export function constructMWAPIUrl(word, dictName, apiKey) {
+function constructMWAPIUrl(word, dictName, apiKey) {
   return new URL(
     `${DICT_CODES[dictName]}/json/${word}?key=${apiKey}`,
     MW_API_BASE_URL
@@ -58,7 +59,7 @@ export function constructMWAPIUrl(word, dictName, apiKey) {
 }
 
 /* Gets all word data from API URL */
-export async function getWordFullDataMW(word, dictName) {
+async function getWordFullDataMW(word, dictName) {
   const apiUrl = constructMWAPIUrl(word, dictName, API_KEYS[dictName]);
 
   // reference: https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch
@@ -68,12 +69,12 @@ export async function getWordFullDataMW(word, dictName) {
 }
 
 /* Gets the first short definition from the word data */
-export function getWordDefinition(wordObject) {
+function getWordDefinition(wordObject) {
   return wordObject["shortdef"];
 }
 
 /* Gets word audio data from API URL */
-export function getAudioUrl(wordObject) {
+function getAudioUrl(wordObject) {
   const audioClipName = wordObject["hwi"]["prs"][0]["sound"]["audio"];
   const format = "mp3";
   let subdirectory = "";
@@ -95,7 +96,7 @@ export function getAudioUrl(wordObject) {
 /* Checks whether the given JSON (typically returned by the Merriam Webster
   dictionary API) represents a json response for a valid word in the MW dictionary
   and contains all the necessary information (definition and TODO: audio data) */
-export function checkValidWordData(wordData) {
+function checkValidWordData(wordData) {
   // word data returned by the Merriam Webster dictionary is an array
   // containing JSON objects
   return (
@@ -107,7 +108,7 @@ export function checkValidWordData(wordData) {
   );
 }
 
-export async function getWordDefAndAudio(word) {
+async function getWordDefAndAudio(word) {
   let wordData = await getWordFullDataMW(word, "collegiate");
   let definition = "";
   let audioUrl = "";
@@ -210,7 +211,7 @@ export async function getWordDefAndAudio(word) {
  *
  * @throws If the given wordData is invalid according to checkValidWordData().
  */
-export function getValidWord(wordData) {
+function getValidWord(wordData) {
   // we filter out abbreviations,
   // fl: not abbreviation
   if (!checkValidWordData(wordData))
@@ -253,6 +254,14 @@ export function getValidWord(wordData) {
   return null;
 }
 
-/* ============ Main code =============== */
+/* ============ Exports =============== */
 
-// const wordList = getWordList();
+exports.getRandomWordFromAPI = getRandomWordFromAPI;
+exports.getRandomWord = getRandomWord;
+exports.constructMWAPIUrl = constructMWAPIUrl;
+exports.getWordFullDataMW = getWordFullDataMW;
+exports.getWordDefinition = getWordDefinition;
+exports.getAudioUrl = getAudioUrl;
+exports.checkValidWordData = checkValidWordData;
+exports.getWordDefAndAudio = getWordDefAndAudio;
+exports.getValidWord = getValidWord;
