@@ -6,9 +6,9 @@ import HamburgerMenu from "./HamburgerMenu";
 import { signOut, useSession } from "next-auth/react";
 
 const NavBar = () => {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
 
-  if (session) {
+  if (status === "authenticated") {
     return (
       <nav
         style={{

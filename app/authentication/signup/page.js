@@ -6,9 +6,11 @@ import ContainerCard from "./signupContainer";
 import { redirect } from "next/navigation";
 
 const signup = () => {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
 
-  if (session) {
+  if (status === "loading") return null;
+
+  if (status === "authenticated") {
     redirect("/");
   }
   return (

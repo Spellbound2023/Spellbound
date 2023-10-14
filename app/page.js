@@ -6,9 +6,11 @@ import LinkButton from "./LinkButton";
 import { useSession } from "next-auth/react";
 
 const page = () => {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
 
-  if (session) {
+  if (status === "loading") return null;
+
+  if (status === "authenticated") {
     return (
       <div className={styles.flexContainer}>
         <div className={styles.contentContainer}>
