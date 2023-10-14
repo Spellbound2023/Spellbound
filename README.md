@@ -42,8 +42,14 @@ Prisma Studio will be available on http://localhost:5555
 ### Deployment
 To run the development server:
 
+1. From the root of the repository (to start the Next JS development server):
 ```bash
 npm run dev
+```
+
+2. From the /back-end folder (to start the ExpressJS backend):
+```bash
+npm start
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
