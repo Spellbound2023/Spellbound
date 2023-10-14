@@ -19,7 +19,8 @@
     "morgan": "~1.9.1",
     "passport": "^0.6.0",
     "passport-jwt": "^4.0.1",
-    "prisma": "^5.4.2"
+    "prisma": "^5.4.2",
+    "redis": "^4.6.10"
   },
   "prisma": {
     "seed": "node prisma/seed.js"

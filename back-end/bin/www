@@ -8,6 +8,13 @@ var app = require("../app");
 var debug = require("debug")("back-end:server");
 var http = require("http");
 const { Server } = require("socket.io");
+const {
+  newUser,
+  setUserReady,
+  setUserNotReady,
+  getReadyUsers,
+  removeUser,
+} = require("../utils/game/lobbyUtils");
 
 /**
  * Get port from environment and store in Express.
@@ -21,16 +28,54 @@ app.set("port", port);
  */
 
 var server = http.createServer(app);
-const io = new Server(server, {
-  path: "/api/socket/",
-  cors: {
-    origin: "http://example.com",
-    methods: ["GET", "POST"],
-  },
-});
+
+/* ================= Socket.io & Game Logic ================ */
+
+const io = new Server(server);
 
 io.on("connection", (socket) => {
-  console.log("a user connected");
+  // Check if the username has been passed in the query parameters
+  // If not, then we cannot continue
+  // TODO: implement authentication
+  // https://stackoverflow.com/questions/36788831/authenticating-socket-io-connections-using-jwt
+  console.log(socket.handshake.query);
+  if (socket.handshake.query && socket.handshake.query.username)
+    socket.username = socket.handshake.query.username;
+  else {
+    console.log("disconnecting");
+    socket.disconnect();
+  }
+
+  // add the user to the lobby room
+  socket.join("lobby");
+
+  console.log("The user ", socket.username, " has connected");
+
+  // add the new user to the lobby user pool
+  newUser(socket.username);
+  if (socket.handshake.query.ready === true) setUserReady(socket.username);
+
+  // send existing ready users
+  io.to("lobby").emit("readyUsersChange", Object.keys(getReadyUsers()));
+
+  socket.on("readyStateChange", (ready) => {
+    console.log(socket.username, "is ready: " + ready);
+
+    // add/remove user from pool of users
+    if (ready) {
+      setUserReady(socket.username);
+    } else {
+      setUserNotReady(socket.username);
+    }
+
+    // broadcast ready user pool to all connected users
+    io.to("lobby").emit("readyUsersChange", Object.keys(getReadyUsers()));
+  });
+
+  socket.on("disconnect", () => {
+    removeUser(socket.username);
+    console.log("user disconnected");
+  });
 });
 
 /**
