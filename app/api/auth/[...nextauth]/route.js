@@ -26,29 +26,21 @@ const handler = NextAuth({
     maxAge: 30 * 24 * 60 * 60,
     debug: true,
   },
-  // callbacks: {
-  //   async jwt({ token, user }) {
-  //     // the user object is what returned from the Credentials login, it has `accessToken` from the server `/login` endpoint
-  //     // assign the accessToken to the `token` object, so it will be available on the `session` callback
-  //     // console.log("==== JWT cb Token: ", token);
-  //     // console.log("==== JWT cb User: ", user);
-  //     if (user) {
-  //       token.accessToken = user.accessToken;
-  //     }
-  //     return token;
-  //   },
+  callbacks: {
+    async jwt({ token, user }) {
+      if (user) {
+        token.username = user.username;
+      }
+      return token;
+    },
 
-  //   async session({ session, token }) {
-  //     // the token object is what returned from the `jwt` callback, it has the `accessToken` that we assigned before
-  //     // Assign the accessToken to the `session` object, so it will be available on our app through `useSession` hooks
-  //     // console.log("==== session cb Token: ", token);
-  //     // console.log("==== session cb Session: ", session);
-  //     if (token) {
-  //       session.accessToken = token.accessToken;
-  //     }
-  //     return session;
-  //   },
-  // },
+    async session({ session, token }) {
+      if (token) {
+        session.user.username = token.username;
+      }
+      return session;
+    },
+  },
 });
 
 export { handler as GET, handler as POST };

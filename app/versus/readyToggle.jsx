@@ -1,20 +1,25 @@
-'use client'
+"use client";
 
-import React from 'react'
+import React from "react";
 
-function handleReadyCheck(e) {
-  let checkStatus = document.getElementById("ready-checkbox").checked;
-  console.log("Ready: ", checkStatus);
-}
+const ReadyToggle = ({ onClick : onClickHandler }) => {
+  function handleReadyCheck(e) {
+    let checkStatus = document.getElementById("ready-checkbox").checked;
+    console.log("Ready: ", checkStatus);
+    onClickHandler(checkStatus);
+  }
 
-const ReadyToggle = () => {
   return (
     <div>
       <form>
-        <input id="ready-checkbox" onClick={handleReadyCheck} type="checkbox"/>
+        <input
+          id="ready-checkbox"
+          onClick={handleReadyCheck}
+          type="checkbox"
+        />
       </form>
     </div>
-  )
-}
+  );
+};
 
-export default ReadyToggle
+export default ReadyToggle;

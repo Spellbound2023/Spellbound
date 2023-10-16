@@ -20,7 +20,7 @@ const handleSubmit = async (e) => {
     body: JSON.stringify(data),
   });
 
-  if (response.status != 200) {
+  if (response.status != 201) {
     alert("Registration failed");
   }
 };

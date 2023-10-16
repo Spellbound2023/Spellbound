@@ -1,31 +1,101 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "../../styles/lobby.module.css";
 import JoinGame from "./joinGame";
 import JoinGameTest from "./joinGameTest";
 import ReadyToggle from "./readyToggle";
 import io from "socket.io-client";
+import { redirect } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 let socket;
 
 const page = () => {
-  useEffect(() => {
-    // await fetch("/api/socket/");
-    socket = io("localhost:3001/api/socket/");
+  const [readyUsers, setReadyUsers] = useState([]);
+  const [ready, setReady] = useState(false);
+  const [requestees, setRequestees] = useState([]);
+  const [requesters, setRequesters] = useState([]);
+  const { data: session, status } = useSession();
 
-    socket.on("connect", () => {
-      console.log("connected");
-    });
-  }, []);
+  const readyStateChange = (ready) => {
+    setReady(ready);
+    socket.emit("readyStateChange", ready);
+  };
+
+  const sendRequest = (requestee) => {
+    console.log("Sending request to: ", requestee);
+    socket.emit("requesting", requestee);
+  };
+
+  const respondToRequest = (isAccepted, requester) => {
+    console.log("Responding to: ", requester, " isAccepted: ", isAccepted);
+    socket.emit("isAccepted", isAccepted, requester);
+  };
+
+  const cancelRequest = (requestee) => {
+    console.log("Cancelling request sent to: ", requestee);
+    socket.emit("cancelRequest", requestee);
+  };
+
+  useEffect(() => {
+    console.log(session);
+    if (status === "authenticated") {
+      // Create a socket connection
+      console.log("Connecting web socket");
+      socket = io.connect("", {
+        query: { username: session.user.username, ready: ready },
+      });
+
+      // Listen for incoming messages
+      socket.on("readyUsersChange", (readyUsers) => {
+        console.log("Ready users: ", readyUsers);
+        setReadyUsers(readyUsers);
+      });
+
+      // Listen for incoming messages
+      socket.on("requesterRequesteesChange", (requestees, requesters) => {
+        console.log("Requestees: ", requestees);
+        console.log("Requesters: ", requesters);
+        setRequestees(requestees);
+        setRequesters(requesters);
+      });
+
+      // // Listen for incoming messages
+      // socket.on("requested", (requestee) => {
+      //   console.log("Got a request from: ", requestee);
+      // });
+    }
+  }, [status]);
+
+  if (status === "loading") return null;
+
+  if (status === "unauthenticated") redirect("/");
+
+  console.log(readyUsers);
+
+  // create components for the ready users
+  let readyUserComponents = readyUsers.map((username) => {
+    return (
+      <JoinGame
+        username={username}
+        key={username}
+        isRequester={requesters.indexOf(username) !== -1}
+        isRequestee={requestees.indexOf(username) !== -1}
+        respondToRequest={respondToRequest}
+        cancelRequest={cancelRequest}
+        sendRequest={sendRequest}
+      />
+    );
+  });
 
   // Returns active players in table format displaying username, status and
   return (
     <>
       <h1 className={styles.Header}>Lobby</h1>
       <div className={styles.tableContainer}>
-        <ReadyToggle />
-        <div id="users-container"></div>
+        <ReadyToggle onClick={readyStateChange} />
+        <div id="users-container">{readyUserComponents}</div>
       </div>
     </>
   );

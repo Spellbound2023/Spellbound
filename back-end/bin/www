@@ -10,11 +10,20 @@ var http = require("http");
 const { Server } = require("socket.io");
 const {
   newUser,
-  setUserReady,
-  setUserNotReady,
   getReadyUsers,
   removeUser,
+  setUserState,
+  getUserSocket,
+  getUserState,
+  getRequestees,
+  removeRequestee,
+  getRequesters,
+  addRequestee,
+  addRequester,
+  removeRequester,
 } = require("../utils/game/lobbyUtils");
+const { userStates } = require("../utils/game/userStates");
+const { error } = require("console");
 
 /**
  * Get port from environment and store in Express.
@@ -52,29 +61,151 @@ io.on("connection", (socket) => {
   console.log("The user ", socket.username, " has connected");
 
   // add the new user to the lobby user pool
-  newUser(socket.username);
-  if (socket.handshake.query.ready === true) setUserReady(socket.username);
+  newUser(socket);
+  if (socket.handshake.query.ready === true)
+    setUserState(socket.username, userStates.READY);
 
   // send existing ready users
-  io.to("lobby").emit("readyUsersChange", Object.keys(getReadyUsers()));
+  io.to("lobby").emit("readyUsersChange", getReadyUsers());
+  socket.emit(
+    "requesterRequesteesChange",
+    [...getRequestees(socket.username)],
+    [...getRequesters(socket.username)]
+  );
 
   socket.on("readyStateChange", (ready) => {
     console.log(socket.username, "is ready: " + ready);
 
     // add/remove user from pool of users
     if (ready) {
-      setUserReady(socket.username);
+      if (!setUserState(socket.username, userStates.READY)) return;
+
+      // broadcast ready user pool to all connected users
+      io.to("lobby").emit("readyUsersChange", getReadyUsers());
+      socket.emit(
+        "requesterRequesteesChange",
+        [...getRequestees(socket.username)],
+        [...getRequesters(socket.username)]
+      );
     } else {
-      setUserNotReady(socket.username);
+      if (!setUserState(socket.username, userStates.NOT_READY)) return;
+      // TODO: Cancel all their requests and all requests sent to them
+
+      // broadcast ready user pool to all connected users
+      io.to("lobby").emit("readyUsersChange", getReadyUsers());
     }
+  });
+
+  // requesting
+  socket.on("requesting", (requesteeUsername) => {
+    console.log(
+      socket.username,
+      " is sending a request to: ",
+      requesteeUsername
+    );
+
+    // if (!setUserState(socket.username, userStates.REQUESTING)) return;
+    // if (!setUserState(requesteeUsername, userStates.REQUESTED)) return;
+    if (!addRequestee(socket.username, requesteeUsername)) return;
+    if (!addRequester(requesteeUsername, socket.username)) return;
+
+    console.log("Added requesters and requestees!");
+
+    let requesteeSocket = getUserSocket(requesteeUsername);
+    if (!requesteeSocket)
+      throw new error("Requestee socket could not be found");
+
+    // // inform the requestee that they have a new request
+    // requesteeSocket.emit("requested", socket.username);
 
     // broadcast ready user pool to all connected users
-    io.to("lobby").emit("readyUsersChange", Object.keys(getReadyUsers()));
+    io.to("lobby").emit("readyUsersChange", getReadyUsers());
+    socket.emit(
+      "requesterRequesteesChange",
+      [...getRequestees(socket.username)],
+      [...getRequesters(socket.username)]
+    );
+    requesteeSocket.emit(
+      "requesterRequesteesChange",
+      [...getRequestees(requesteeUsername)],
+      [...getRequesters(requesteeUsername)]
+    );
+  });
+
+  // accepted
+  socket.on("isAccepted", (isAccepted, requesterUsername) => {
+    console.log(
+      socket.username,
+      " has accepted the request sent by: ",
+      requesterUsername
+    );
+
+    if (!getRequestees(requesterUsername).has(socket.username)) return;
+
+    let requesterSocket = getUserSocket(requesterUsername);
+    if (!requesterSocket)
+      throw new error("Requester socket could not be found");
+
+    if (!isAccepted) {
+      removeRequestee(requesterUsername, socket.username);
+      removeRequester(socket.username, requesterUsername);
+
+      // broadcast ready user pool to all connected users
+      io.to("lobby").emit("readyUsersChange", getReadyUsers());
+      socket.emit(
+        "requesterRequesteesChange",
+        [...getRequestees(socket.username)],
+        [...getRequesters(socket.username)]
+      );
+      requesterSocket.emit(
+        "requesterRequesteesChange",
+        [...getRequestees(requesterUsername)],
+        [...getRequesters(requesterUsername)]
+      );
+    } else {
+      if (!setUserState(socket.username, userStates.ACCEPTED)) return;
+
+      // TODO: initiate new game
+
+      // broadcast ready user pool to all connected users
+      io.to("lobby").emit("readyUsersChange", getReadyUsers());
+    }
+  });
+
+  socket.on("cancelRequest", (requesteeUsername) => {
+    console.log(
+      socket.username,
+      " is cancelling the request sent to: ",
+      requesteeUsername
+    );
+
+    removeRequestee(socket.username, requesteeUsername);
+    removeRequester(requesteeUsername, socket.username);
+
+    let requesteeSocket = getUserSocket(requesteeUsername);
+    if (!requesteeSocket)
+      throw new error("Requestee socket could not be found");
+
+    // broadcast ready user pool to all connected users
+    io.to("lobby").emit("readyUsersChange", getReadyUsers());
+    socket.emit(
+      "requesterRequesteesChange",
+      [...getRequestees(socket.username)],
+      [...getRequesters(socket.username)]
+    );
+    requesteeSocket.emit(
+      "requesterRequesteesChange",
+      [...getRequestees(requesteeUsername)],
+      [...getRequesters(requesteeUsername)]
+    );
   });
 
   socket.on("disconnect", () => {
     removeUser(socket.username);
     console.log("user disconnected");
+
+    // broadcast ready user pool to all connected users
+    io.to("lobby").emit("readyUsersChange", getReadyUsers());
   });
 });
 
