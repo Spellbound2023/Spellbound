@@ -1,10 +1,10 @@
-import WaveAnimation from '@/components/WaveAnimation';
-import React from 'react'
-import styles from '../../styles/opponentBox.module.css';
-import versusStyles from '../../styles/versus.module.css'
+import PotionsRow from "@/components/PotionsRow";
+import WaveAnimation from "@/components/WaveAnimation";
+import React from "react"
+import styles from "../../styles/opponentBox.module.css";
 import OpponentStatusBox from "./opponentStatusBar";
-import OpponentUsername from './opponentUsername';
-import OpponentWordInput from './opponentWordInput';
+import OpponentUsername from "./opponentUsername";
+import OpponentWordInput from "./opponentWordInput";
 
 
 const OpponentBox = () => {
@@ -12,20 +12,20 @@ const OpponentBox = () => {
     <div className={styles.opponentBoxContainer}> 
 
         <div className={styles.username}>
-                <OpponentUsername />
+          <OpponentUsername />
         </div>
 
         <div className={styles.statusBarContainer}>
-            <OpponentStatusBox />
-            <div className={styles.potionsBoxContainer}>
-              <div className={versusStyles.potionsBox}></div>
-            </div>
+          <OpponentStatusBox />
+          <div className={styles.potionsBox }>
+            <PotionsRow/>
+          </div>
         </div>
 
         <div className={styles.wordInputContainer}>
-            <div className={styles.waveAnimation}>
-                <WaveAnimation />
-            </div>
+          <div className={styles.waveAnimation}>
+            <WaveAnimation />
+          </div>
             <OpponentWordInput />
         </div>
 

@@ -39,7 +39,7 @@
     float: left;
     background-color: #434343;
     width: 45%;
-    height: 50%;
+    height: 60%;
     margin: 1%;  
     border-radius: 50px;
 }
@@ -53,11 +53,13 @@
 
 .potionsBox{
     width: 30%;
-    height: 50%;
+    height: 60%;
     margin: 1%;
     background-color: #410A6D;
     opacity: 80%;
     float: right;
     border-radius: 10px;
-    
+
 }
+
+

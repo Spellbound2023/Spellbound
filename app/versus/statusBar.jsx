@@ -1,5 +1,6 @@
-import React from 'react'
-import styles from '../../styles/versus.module.css'
+import PotionsRow from "@/components/PotionsRow"
+import React from "react"
+import styles from "../../styles/versus.module.css"
 
 const StatusBox = () => {
   return (
@@ -12,7 +13,7 @@ const StatusBox = () => {
         </div>
 
         <div className={styles.potionsBox}>
-
+          <PotionsRow/>
         </div>
     </div>
   )
