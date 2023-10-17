@@ -5,7 +5,8 @@ import WordInfo from "./WordInfo";
 import WordInput from "./WordInput";
 import styles from "../../styles/classic/GameBox.module.css";
 import { checkValidInput, upperCaseFirstLetter } from "@/utils/utils";
-import GameboxCard from "@/components/GameboxCard";
+import SuccessPopup from "./successPopup";
+import ScoreCounter from "./scoreCount";
 
 const ATTEMPTS_PER_WORD = 3;
 
@@ -15,6 +16,9 @@ const GameBox = () => {
   const [definition, setDefinition] = useState([]);
   const [audioUrl, setAudioUrl] = useState("");
   const [attempts, setAttempts] = useState(0);
+  const [isCorrect, setIsCorrect] = useState(null);
+  const [score, setScore] = useState(0);
+
 
   // the gamebox component controls the flow of the game
   // When it is rendered, it must fetch a random word from the API
@@ -37,19 +41,34 @@ const GameBox = () => {
 
   const checkUserInput = (input) => {
     if (checkValidInput(input, word)) {
-      alert("Correct!");
+      let pointsToAdd = 0;
+
+    if (attempts === 0) {
+      pointsToAdd = 3; // Correct on the first try
+    } else if (attempts === 1) {
+      pointsToAdd = 2; // Correct on the second try
+    } else if (attempts === 2) {
+      pointsToAdd = 1; // Correct on the third try
+    }
+
+      setIsCorrect(true) //CORRECT POPUP
+      setScore(score + pointsToAdd); // Update the score
+
       setupRound();
+      setTimeout(() => setIsCorrect(null), 1500);
     } else {
       if (attempts + 1 >= ATTEMPTS_PER_WORD) {
+        setScore((prevScore) => prevScore - 1);
+        setIsCorrect(false) //INCORRECT POPUP
         alert(
           `Wrong. Again. \n Out of attempts! Correct spelling: \"${word}\"`
-        );
+        );        
         setupRound();
+        setTimeout(() => setIsCorrect(null), 1500);
       } else {
-        alert(
-          `Wrong! Attempts remaining: ${ATTEMPTS_PER_WORD - (attempts + 1)}`
-        );
+        setIsCorrect(false) //INCORRECT POPUP
         setAttempts(attempts + 1);
+        setTimeout(() => setIsCorrect(null), 1500);
       }
     }
   };
@@ -58,6 +77,8 @@ const GameBox = () => {
 
   return (
     <div>
+      <nav><SuccessPopup key={isCorrect} isCorrect={isCorrect}/></nav>
+      
       <div className={styles.attemptsSkipContainer}>
         <div className={styles.linkContainer}>
           <a className={`${styles.link} ${styles.linkLeft}`}>
@@ -82,7 +103,6 @@ const GameBox = () => {
         </div>
       </div>
 
-      <GameboxCard>
         <WordInfo
           definition={upperCaseFirstLetter(definition[0])}
           audioUrl={audioUrl}
@@ -90,9 +110,10 @@ const GameBox = () => {
         <br />
         <br />
         <br />
+        
         <WordInput onSubmitHandler={checkUserInput} />
-      </GameboxCard>
-    </div>
+        <ScoreCounter score={score}/>
+      </div>
   );
 };
 

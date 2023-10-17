@@ -11,7 +11,6 @@ const PotionsRow = () => {
         },
         button: {
             flex: 1,
-            maxWidth: 'calc(33.33% - 10px)',
             height: 'auto',
             padding: 0,
             border: 'none',
@@ -20,6 +19,7 @@ const PotionsRow = () => {
         },
         image: {
             maxWidth: '100%',
+            maxHeight: '100%',
             height: 'auto',
         },
     };

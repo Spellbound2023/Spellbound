@@ -11,7 +11,7 @@ const ContainerCard = () => {
     <div className={styles.mainContainer}>
         <Image src="/images/spellboundlogo.png" className={styles.logo} width={125} height={130} />
         <div className={styles.formContainer}>
-            <Close/>
+            <Close path="/"/>
             <div className={styles.header}>
                 Login
                 <Image src='/images/underline.png' width={200} height={10}/>

@@ -1,11 +1,8 @@
-/* opponentBox.module.css */
-
 .opponentBoxContainer {
-    
     display: flex;
     flex-direction: column;
     align-items: center;
-    height: 100%;
+    height: 16vw;
     width: 100%;
     padding: 10px;
     position: relative;
@@ -15,31 +12,53 @@
     border-radius: 30px;
 }
 
+.userAndStatusContainer {
+    display: flex;
+    align-items: center; /* Centers the items vertically */
+    justify-content: space-between; /* Distributes space evenly between the children */
+    width: 100%;
+}
+
 .username {
+    margin: 1%;
     align-self: flex-start;
 }
 
-.statusBarContainer {
+.opponentStatusContainer {
+    width: 100%;
+    height: 100%;
+    margin-top: 2rem;
+    margin-left: 2rem;
+}
+
+.rowContainer {
+    margin: auto;
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.leftContainer {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    width: 100%;
-    height: 40%;
-    margin-top: 1rem;
-    
+    align-items: flex-start;
 }
 
-.potionsBox{
-    width: 40%;
-    height: 75%;
+.rightContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.potionsBox {
+    width: 35%;
+    height: 100%;
     margin: 1%;
-    background-color: #410A6D;
-    opacity: 80%;
+    background-color: rgba(65, 10, 109, 0.25); /* 50% opacity only for the background */
+    opacity: 100%;
     border-radius: 10px;
-    margin-top: 10px;  
-    align-self: flex-start;
+    margin-top: 10px;
 }
-
 
 .wordInputContainer {
     align-self: center;
