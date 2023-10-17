@@ -1,4 +1,5 @@
-import React from "react";
+'use client'
+import React, { useState } from 'react';
 import styles from "../../styles/versus.module.css";
 import Image from "next/image";
 import OpponentBox from "./opponentCard";
@@ -6,11 +7,24 @@ import PlayerBox from "./playerCard";
 import StatusBox from "./statusBar";
 import NavBar from "@/components/NavBar";
 import TopBar from "./topBar";
+import GameEndDisplay from "./gameEnd";
 
 const versusPage = () => {
+  const [gameEnded, setGameEnded] = useState(false);
+  const [isWin, setIsWin] = useState(null); // Set to true if you win, false if you lose
+  const [PlayerScore, setPlayerScore] = useState(81); // Replace with the actual score
+  const [opponentScore, setOpponentScore] = useState(15); // Replace with the actual score
+
+  const handlePlayAgain = () => {
+    // Implement your logic to start a new game
+    setPlayerScore(0);
+    setOpponentScore(0);
+    setGameEnded(false);
+  };
+
+
   return (
     <>
-      
       <TopBar/>
       <div className={styles.versusContainer}>
         <div className={styles.opponentBox}>
@@ -28,6 +42,17 @@ const versusPage = () => {
         <div className={styles.statusBar}>
           <StatusBox />
         </div>
+        <button onClick={() => setGameEnded(true)}>End Game</button>
+
+      {gameEnded && (
+        <GameEndDisplay
+          isWin={isWin}
+          PlayerScore={PlayerScore}
+          opponentScore={opponentScore}
+          onPlayAgain={handlePlayAgain}
+        />
+      )}
+
       </div>
     </>
   );
