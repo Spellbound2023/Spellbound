@@ -25,6 +25,16 @@
   border-bottom: 3px solid white;
 }
 
+.noinput {
+  font-size: large;
+  text-align: center;
+  color: #FACB2E;
+  background: none;
+  border: none;
+  text-transform: uppercase;
+  border-bottom: 3px solid gold;
+}
+
 
 .confirm {
   width: 200px;

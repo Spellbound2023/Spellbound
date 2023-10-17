@@ -8,8 +8,8 @@ import HomePageNav from "../components/HomepageNav";
 
 
 const page = () => {
-  
   const { data: session } = useSession();
+  
   if (session) {
     return (
       <div className={styles.flexContainer}>

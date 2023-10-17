@@ -1,10 +1,34 @@
+import WaveAnimation from '@/components/WaveAnimation';
 import React from 'react'
-import styles from '../../styles/versus.module.css'
+import styles from '../../styles/opponentBox.module.css';
+import versusStyles from '../../styles/versus.module.css'
+import OpponentStatusBox from "./opponentStatusBar";
+import OpponentUsername from './opponentUsername';
+import OpponentWordInput from './opponentWordInput';
+
 
 const OpponentBox = () => {
   return (
-    <div className={styles.cardContainer}>
-        opponent
+    <div className={styles.opponentBoxContainer}> 
+
+        <div className={styles.username}>
+                <OpponentUsername />
+        </div>
+
+        <div className={styles.statusBarContainer}>
+            <OpponentStatusBox />
+            <div className={styles.potionsBoxContainer}>
+              <div className={versusStyles.potionsBox}></div>
+            </div>
+        </div>
+
+        <div className={styles.wordInputContainer}>
+            <div className={styles.waveAnimation}>
+                <WaveAnimation />
+            </div>
+            <OpponentWordInput />
+        </div>
+
     </div>
   )
 }
