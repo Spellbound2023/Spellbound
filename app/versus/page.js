@@ -9,6 +9,7 @@ import io from "socket.io-client";
 import { redirect } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import InstructionsPopup from "../lobby/instructions";
 
 let socket;
 
@@ -97,8 +98,12 @@ const page = () => {
     <>
       <h1 className={styles.Header}>Lobby</h1>
       <div className={styles.tableContainer}>
-        <ReadyToggle onClick={readyStateChange} />
+        
         <div id="users-container">{readyUserComponents}</div>
+      </div>
+      <div className={styles.BottomButtons}>
+      <InstructionsPopup/>
+      <ReadyToggle onClick={readyStateChange} />
       </div>
     </>
   );

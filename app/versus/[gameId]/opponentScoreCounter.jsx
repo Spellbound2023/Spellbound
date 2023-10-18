@@ -1,5 +1,5 @@
 import React from 'react'
-import styles from '../../styles/classic/GameBox.module.css'
+import styles from '../../../styles/classic/GameBox.module.css'
 import Image from 'next/image';
 
 function OpponentScoreCounter({ score }) {

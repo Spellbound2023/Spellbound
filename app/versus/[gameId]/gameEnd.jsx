@@ -1,5 +1,5 @@
 import React from 'react';
-import styles from '../../styles/versus.module.css'
+import styles from '../../../styles/versus.module.css'
 
 const GameResultPopup = ({ PlayerScore, opponentScore, onPlayAgain }) => {
   const isWin = PlayerScore > opponentScore;
@@ -16,7 +16,7 @@ const GameResultPopup = ({ PlayerScore, opponentScore, onPlayAgain }) => {
         </div>
         <div className={styles.buttonContainer}>
           <button onClick={onPlayAgain} className={styles.ReplayButton}>Play Again</button>
-          <form action='/lobby' ><input type='submit' value="Return Home" className={styles.HomeButton}/></form>
+          <form action='/versus' ><input type='submit' value="Return Home" className={styles.HomeButton}/></form>
         </div>
       </div>
     </div>

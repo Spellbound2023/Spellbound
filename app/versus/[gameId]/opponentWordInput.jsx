@@ -1,4 +1,4 @@
-import styles from "../../styles/classic/WordInput.module.css";
+import styles from "../../../styles/classic/WordInput.module.css";
 
 const OpponentWordInput = () => {
   return (
