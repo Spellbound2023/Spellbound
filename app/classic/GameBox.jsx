@@ -102,18 +102,19 @@ const GameBox = () => {
           </a>
         </div>
       </div>
-
-        <WordInfo
-          definition={upperCaseFirstLetter(definition[0])}
-          audioUrl={audioUrl}
-        />
-        <br />
-        <br />
-        <br />
-        
-        <WordInput onSubmitHandler={checkUserInput} />
-        <ScoreCounter score={score}/>
-      </div>
+       <div className={styles.mainContainer} >
+          <WordInfo
+            definition={upperCaseFirstLetter(definition[0])}
+            audioUrl={audioUrl}
+          />
+          <br />
+          <br />
+          <br />
+          
+          <WordInput onSubmitHandler={checkUserInput} />
+          <ScoreCounter score={score}/>
+        </div>
+    </div>
   );
 };
 
