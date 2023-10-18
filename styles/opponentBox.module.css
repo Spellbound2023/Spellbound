@@ -1,0 +1,70 @@
+.opponentBoxContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 16vw;
+    width: 100%;
+    padding: 10px;
+    position: relative;
+    flex-shrink: 0;
+    background: linear-gradient(180deg, #722E9A 0%, #522882 100%);
+    border: 1px solid #47297B;
+    border-radius: 30px;
+}
+
+.userAndStatusContainer {
+    display: flex;
+    align-items: center; /* Centers the items vertically */
+    justify-content: space-between; /* Distributes space evenly between the children */
+    width: 100%;
+}
+
+.username {
+    margin: 1%;
+    align-self: flex-start;
+}
+
+.opponentStatusContainer {
+    width: 100%;
+    height: 100%;
+    margin-top: 2rem;
+    margin-left: 2rem;
+}
+
+.rowContainer {
+    margin: auto;
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.leftContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.rightContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.potionsBox {
+    width: 35%;
+    height: 100%;
+    margin: 1%;
+    background-color: rgba(65, 10, 109, 0.25); /* 50% opacity only for the background */
+    opacity: 100%;
+    border-radius: 10px;
+    margin-top: 10px;
+}
+
+.wordInputContainer {
+    align-self: center;
+    margin-top: auto; 
+}
+
+.waveAnimation {
+    margin-bottom: -25px;
+}
