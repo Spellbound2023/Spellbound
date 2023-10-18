@@ -6,5 +6,11 @@ exports.userStates = Object.freeze({
   ACCEPTED: Symbol("accepted"),
 });
 
+exports.gameStates = Object.freeze({
+  NOT_STARTED: Symbol("not_started"),
+  ACTIVE: Symbol("active"),
+  ENDED: Symbol("ended"),
+});
+
 // Reference:
 // https://www.geeksforgeeks.org/enums-in-javascript/

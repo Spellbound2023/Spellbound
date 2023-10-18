@@ -1,5 +1,5 @@
 import React from "react";
-import styles from "../../styles/versus.module.css";
+import styles from "../../../styles/versus.module.css";
 import Image from "next/image";
 import OpponentBox from "./opponentCard";
 import PlayerBox from "./playerCard";
@@ -10,8 +10,7 @@ import TopBar from "./topBar";
 const versusPage = () => {
   return (
     <>
-      
-      <TopBar/>
+      <TopBar />
       <div className={styles.versusContainer}>
         <div className={styles.opponentBox}>
           <OpponentBox />

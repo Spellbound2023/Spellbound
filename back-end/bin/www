@@ -21,9 +21,14 @@ const {
   addRequestee,
   addRequester,
   removeRequester,
+  createGame,
+  getGameUrl,
+  setUserGameId,
+  getAllUsers,
 } = require("../utils/game/lobbyUtils");
-const { userStates } = require("../utils/game/userStates");
+const { userStates } = require("../utils/game/enums");
 const { error } = require("console");
+const { v4: uuidv4 } = require("uuid");
 
 /**
  * Get port from environment and store in Express.
@@ -60,6 +65,13 @@ io.on("connection", (socket) => {
 
   console.log("The user ", socket.username, " has connected");
 
+  let existingSocket = getUserSocket(socket.username);
+  if (existingSocket) {
+    // The user already has an active connection
+    console.log("The user ", socket.username, " has already been connected");
+    existingSocket.disconnect();
+  }
+
   // add the new user to the lobby user pool
   newUser(socket);
   if (socket.handshake.query.ready === true)
@@ -88,11 +100,28 @@ io.on("connection", (socket) => {
         [...getRequesters(socket.username)]
       );
     } else {
+      // Also cancels all their requests and all requests sent to them
       if (!setUserState(socket.username, userStates.NOT_READY)) return;
-      // TODO: Cancel all their requests and all requests sent to them
 
       // broadcast ready user pool to all connected users
       io.to("lobby").emit("readyUsersChange", getReadyUsers());
+
+      // resend the requesters and requestees to all users
+      let allUsers = getAllUsers();
+      for (var i = 0; i < allUsers.length; ++i) {
+        let uname = allUsers[i];
+        let userSocket = getUserSocket(uname);
+        if (!userSocket)
+          throw new Error(
+            "Requestee socket of " + uname + " could not be found"
+          );
+
+        userSocket.emit(
+          "requesterRequesteesChange",
+          [...getRequestees(uname)],
+          [...getRequesters(uname)]
+        );
+      }
     }
   });
 
@@ -113,7 +142,7 @@ io.on("connection", (socket) => {
 
     let requesteeSocket = getUserSocket(requesteeUsername);
     if (!requesteeSocket)
-      throw new error("Requestee socket could not be found");
+      throw new Error("Requestee socket could not be found");
 
     // // inform the requestee that they have a new request
     // requesteeSocket.emit("requested", socket.username);
@@ -140,11 +169,12 @@ io.on("connection", (socket) => {
       requesterUsername
     );
 
+    // if the requester has already cancelled their request
     if (!getRequestees(requesterUsername).has(socket.username)) return;
 
     let requesterSocket = getUserSocket(requesterUsername);
     if (!requesterSocket)
-      throw new error("Requester socket could not be found");
+      throw new Error("Requester socket could not be found");
 
     if (!isAccepted) {
       removeRequestee(requesterUsername, socket.username);
@@ -163,12 +193,26 @@ io.on("connection", (socket) => {
         [...getRequesters(requesterUsername)]
       );
     } else {
-      if (!setUserState(socket.username, userStates.ACCEPTED)) return;
-
       // TODO: initiate new game
+      let gameId = uuidv4();
+      if (createGame(gameId, socket.username, requesterUsername)) {
+        setUserState(socket.username, userStates.ACCEPTED);
+        setUserState(requesterUsername, userStates.ACCEPTED);
+        setUserGameId(socket.username, gameId);
+        setUserGameId(requesterUsername, gameId);
 
-      // broadcast ready user pool to all connected users
-      io.to("lobby").emit("readyUsersChange", getReadyUsers());
+        // redirect both users to the new game URL
+        let gameUrl = getGameUrl(gameId);
+        console.log("sending to game: ", gameUrl);
+        socket.emit("redirect", gameUrl);
+        requesterSocket.emit("redirect", gameUrl);
+
+        socket.disconnect();
+        requesterSocket.disconnect();
+
+        // broadcast ready user pool to all connected users
+        io.to("lobby").emit("readyUsersChange", getReadyUsers());
+      } else return;
     }
   });
 
@@ -184,7 +228,7 @@ io.on("connection", (socket) => {
 
     let requesteeSocket = getUserSocket(requesteeUsername);
     if (!requesteeSocket)
-      throw new error("Requestee socket could not be found");
+      throw new Error("Requestee socket could not be found");
 
     // broadcast ready user pool to all connected users
     io.to("lobby").emit("readyUsersChange", getReadyUsers());

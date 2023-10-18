@@ -1,69 +1,62 @@
-const { userStates } = require("./userStates");
+const { userStates, gameStates } = require("./enums");
 
 let allConnectedUsers = {};
-// let readyUsers = {};
+let games = {};
 
 function newUser(socket) {
   let username = socket.username;
   if (username in allConnectedUsers) return;
-  // if (username in readyUsers)
-  //   throw new Error(
-  //     "Erroneous game state: ",
-  //     username,
-  //     " is marked as ready but is not in lobby user pool"
-  //   );
 
   allConnectedUsers[username] = {};
   allConnectedUsers[username].state = userStates.NOT_READY;
   allConnectedUsers[username].socket = socket;
   allConnectedUsers[username].requestees = new Set();
   allConnectedUsers[username].requesters = new Set();
+  allConnectedUsers[username].gameId = null;
 }
 
 function removeUser(username) {
   if (!(username in allConnectedUsers)) return;
 
-  // remove this user from the requester lists of all their requestees
-  for (const requesteeUsername in getRequestees(username)) {
+  // reset all this user's requests and delete this user
+  // as a requester from all other users
+  cancelAllRequests(username);
+
+  delete allConnectedUsers[username];
+}
+
+function cancelAllRequests(username) {
+  let requestees = Array.from(getRequestees(username));
+  console.log("Requestees of ", username, ": ", requestees);
+  for (var i = 0; i < requestees.length; i++) {
+    let requesteeUsername = requestees[i];
+    console.log(
+      "Removing ",
+      username,
+      " from the requesters of ",
+      requesteeUsername
+    );
     removeRequester(requesteeUsername, username);
   }
 
-  delete allConnectedUsers[username];
+  let requesters = Array.from(getRequesters(username));
+  console.log("Requesters of ", username, ": ", requesters);
+  for (var i = 0; i < requesters.length; i++) {
+    let requesterUsername = requesters[i];
+    console.log(
+      "Removing ",
+      username,
+      " from the requestees of ",
+      requesterUsername
+    );
+    removeRequestee(requesterUsername, username);
+  }
 }
 
 function getUserSocket(username) {
   if (username in allConnectedUsers) return allConnectedUsers[username].socket;
   return null;
 }
-
-// function setUserReady(username) {
-//   if (!(username in allConnectedUsers))
-//     console.error(
-//       "Erroneous game state: attempting to mark user ",
-//       username,
-//       " as ready but is not present in lobby user pool"
-//     );
-//   // if (username in readyUsers) return;
-
-//   // update the state of the user to ready
-//   allConnectedUsers[username].state = userStates.READY;
-
-//   // readyUsers[username] = {};
-// }
-
-// function setUserNotReady(username) {
-//   if (!(username in allConnectedUsers))
-//     throw new Error(
-//       "Erroneous game state: attempting to mark user ",
-//       username,
-//       " as ready but is not present in lobby user pool"
-//     );
-//   // if (!(username in readyUsers)) return;
-
-//   // update the state of the user to ready
-//   allConnectedUsers[username].state = userStates.NOT_READY;
-//   delete readyUsers[username];
-// }
 
 // Returns true if the state transition succeeded, else false
 function setUserState(username, state) {
@@ -81,18 +74,23 @@ function setUserState(username, state) {
   let curUserState = getUserState(username);
 
   if (state === userStates.READY) {
-    // if (username in readyUsers) return false;
     if (curUserState !== userStates.NOT_READY) return false;
 
     // update the state of the user to ready
     allConnectedUsers[username].state = userStates.READY;
     return true;
   } else if (state === userStates.NOT_READY) {
-    // if (!(username in readyUsers)) return false;
     if (curUserState !== userStates.READY) return false;
 
     // update the state of the user to ready
     allConnectedUsers[username].state = userStates.NOT_READY;
+
+    // reset all this user's requests and delete this user
+    // as a requester from all other users
+    cancelAllRequests(username);
+    allConnectedUsers[username].requestees = new Set();
+    allConnectedUsers[username].requesters = new Set();
+
     return true;
   } else if (state === userStates.ACCEPTED) {
     if (curUserState === userStates.NOT_READY) return false;
@@ -103,31 +101,31 @@ function setUserState(username, state) {
 
   // If none of the valid states were given
   return false;
+}
 
-  /*
-  It makes sense to have a user be able to request and receive requests
-  at the same time. In this case, we only need the ready, not ready,
-  and accepted states
-  */
+function setUserGameId(username, gameId) {
+  if (!(username in allConnectedUsers)) {
+    console.error(
+      "Erroneous game state: user ",
+      username,
+      " is not present in lobby user pool"
+    );
+    return false;
+  }
 
-  // else if (state === userStates.REQUESTING) {
-  //   if (!(curUserState === userStates.READY || curUserState === userStates.REQ)) {
-  //     // remove user from ready user pool
-  //     // delete readyUsers[username];
+  if (allConnectedUsers[username].gameId !== null) {
+    console.error(
+      "Erroneous game state: attempting to set user ",
+      username,
+      "'s gameId as ",
+      gameId,
+      " but the user already has a gameId assigned"
+    );
+    return false;
+  }
 
-  //   allConnectedUsers[username].state = userStates.REQUESTING;
-  //   return true;
-  // } else if (state === userStates.REQUESTED) {
-  //   if (allConnectedUsers[username].state === userStates.READY) {
-  //     // remove user from ready user pool
-  //     delete readyUsers[username];
-  //   } else {
-  //     return false;
-  //   }
-
-  //   allConnectedUsers[username].state = userStates.REQUESTED;
-  //   return true;
-  // }
+  allConnectedUsers[username].gameId = gameId;
+  return true;
 }
 
 function getUserState(username) {
@@ -148,13 +146,16 @@ function getRequesters(username) {
 }
 
 function getReadyUsers() {
-  // return allConnectedUsers.filter((user) => user.state === userStates.READY);
   let readyUsers = [];
   for (const username in allConnectedUsers) {
     if (allConnectedUsers[username].state === userStates.READY)
       readyUsers.push(username);
   }
   return readyUsers;
+}
+
+function getAllUsers() {
+  return Object.keys(allConnectedUsers);
 }
 
 function addRequestee(requesterUsername, requesteeUsername) {
@@ -181,11 +182,29 @@ function removeRequester(requesteeUsername, requesterUsername) {
   return true;
 }
 
+function createGame(gameId, player1, player2) {
+  if (gameId in games) return false;
+  games[gameId] = {};
+
+  games[gameId].players = {};
+  games[gameId].players[player1] = {};
+  games[gameId].players[player2] = {};
+
+  games[gameId].wordList = [];
+  games[gameId].curWordIndex = null;
+  games[gameId].gameStatus = gameStates.NOT_STARTED;
+
+  return true;
+}
+
+function getGameUrl(gameId) {
+  return new URL(`/versus/${gameId}`, process.env.BASE_URL);
+}
+
 exports.newUser = newUser;
 exports.removeUser = removeUser;
-// exports.setUserReady = setUserReady;
-// exports.setUserNotReady = setUserNotReady;
 exports.getReadyUsers = getReadyUsers;
+exports.getAllUsers = getAllUsers;
 exports.setUserState = setUserState;
 exports.getUserSocket = getUserSocket;
 exports.getUserState = getUserState;
@@ -195,3 +214,6 @@ exports.addRequestee = addRequestee;
 exports.addRequester = addRequester;
 exports.removeRequestee = removeRequestee;
 exports.removeRequester = removeRequester;
+exports.createGame = createGame;
+exports.getGameUrl = getGameUrl;
+exports.setUserGameId = setUserGameId;

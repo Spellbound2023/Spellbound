@@ -8,6 +8,7 @@ import ReadyToggle from "./readyToggle";
 import io from "socket.io-client";
 import { redirect } from "next/navigation";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 let socket;
 
@@ -17,6 +18,7 @@ const page = () => {
   const [requestees, setRequestees] = useState([]);
   const [requesters, setRequesters] = useState([]);
   const { data: session, status } = useSession();
+  const { push } = useRouter();
 
   const readyStateChange = (ready) => {
     setReady(ready);
@@ -61,10 +63,9 @@ const page = () => {
         setRequesters(requesters);
       });
 
-      // // Listen for incoming messages
-      // socket.on("requested", (requestee) => {
-      //   console.log("Got a request from: ", requestee);
-      // });
+      socket.on("redirect", (gameUrl) => {
+        push(gameUrl, undefined, { shallow: false });
+      });
     }
   }, [status]);
 
@@ -72,22 +73,24 @@ const page = () => {
 
   if (status === "unauthenticated") redirect("/");
 
-  console.log(readyUsers);
-
   // create components for the ready users
-  let readyUserComponents = readyUsers.map((username) => {
-    return (
-      <JoinGame
-        username={username}
-        key={username}
-        isRequester={requesters.indexOf(username) !== -1}
-        isRequestee={requestees.indexOf(username) !== -1}
-        respondToRequest={respondToRequest}
-        cancelRequest={cancelRequest}
-        sendRequest={sendRequest}
-      />
-    );
-  });
+  let readyUserComponents = readyUsers
+    .filter((username) => {
+      return username === session.user.username ? false : true;
+    })
+    .map((username) => {
+      return (
+        <JoinGame
+          username={username}
+          key={username}
+          isRequester={requesters.indexOf(username) !== -1}
+          isRequestee={requestees.indexOf(username) !== -1}
+          respondToRequest={respondToRequest}
+          cancelRequest={cancelRequest}
+          sendRequest={sendRequest}
+        />
+      );
+    });
 
   // Returns active players in table format displaying username, status and
   return (

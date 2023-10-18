@@ -1,5 +1,5 @@
 import React from 'react'
-import styles from '../../styles/versus.module.css'
+import styles from '../../../styles/versus.module.css'
 
 const OpponentBox = () => {
   return (
