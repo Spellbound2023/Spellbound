@@ -8,6 +8,7 @@ import StatusBox from "./statusBar";
 import NavBar from "@/components/NavBar";
 import TopBar from "./topBar";
 import GameEndDisplay from "./gameEnd";
+import GameBox from '@/app/classic/GameBox';
 
 const versusPage = () => {
   const [gameEnded, setGameEnded] = useState(false);
@@ -39,7 +40,7 @@ const versusPage = () => {
           <Image src="/images/PlayerCharacter.png" width={300} height={300} />
         </div>
         <div className={styles.playerBox}>
-          <PlayerBox />
+          <PlayerBox/>
         </div>
         <div className={styles.statusBar}>
           <StatusBox />

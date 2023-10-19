@@ -27,32 +27,28 @@ const JoinGame = ({
 
   if (isRequester) {
     return (
-      <div>
+      <div className={styles.userInfoBox}>
         <p>{username}</p>
-        <button onClick={accept}>Accept</button>
-        <button onClick={reject}>Reject</button>
+        <button onClick={accept} className={styles.accept}>Accept</button>
+        <button onClick={reject} className={styles.reject}>Reject</button>
       </div>
     );
   }
 
   if (isRequestee) {
     return (
-      <div>
+      <div className={styles.userInfoBox}>
         <p>{username}</p>
-        <button onClick={cancel}>Cancel</button>
+        <button onClick={cancel} className={styles.joinButton}>Cancel</button>
       </div>
     );
   }
 
   return (
     <div>
-      {/* <form action="../versus" className={styles.joinButton}>
-            <label>{username}</label>
-            <input type="submit" value="Join"/>
-        </form> */}
-      <div>
+      <div className={styles.userInfoBox}>
         <p>{username}</p>
-        <button onClick={request}>Request</button>
+        <button onClick={request} className={styles.joinButton}>Request</button>
       </div>
     </div>
   );

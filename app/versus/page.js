@@ -9,7 +9,7 @@ import io from "socket.io-client";
 import { redirect } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import InstructionsPopup from "../lobby/instructions";
+import InstructionsPopup from "./instructions";
 
 let socket;
 
@@ -98,37 +98,30 @@ const page = () => {
     <>
       <h1 className={styles.Header}>Lobby</h1>
       <div className={styles.tableContainer}>
-        
-        <div id="users-container">{readyUserComponents}</div>
+        <table className={styles.lobbyList}>
+          <thead>
+            <tr>
+              <th>Players</th>
+              <th><ReadyToggle onClick={readyStateChange} /></th>
+            </tr>
+          </thead>
+          <tbody>
+            {readyUserComponents.map((userComponent, index) => (
+              <tr key={index}>
+                <td>
+                  <div id="users-container">{userComponent}</div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
-      <div className={styles.BottomButtons}>
+
       <InstructionsPopup/>
-      <ReadyToggle onClick={readyStateChange} />
-      </div>
+      
+      
     </>
   );
 };
 
 export default page;
-
-{
-  /* <table className={styles.lobbyList}>
-<tr>
-  <th>Username</th>
-  <th>Status</th>
-</tr>
-<tr>
-  <td>Username placeholder</td>
-  <td>
-    <JoinGame />
-  </td>
-</tr>
-<tr>
-  <td>Username placeholder</td>
-  <td>
-    <JoinGame />
-  </td>
-</tr>
-{/* <JoinGameTest /> */
-}
-// </table> */}

@@ -1,5 +1,5 @@
 "use client";
-
+import styles from '../../styles/lobby.module.css'
 import React from "react";
 
 const ReadyToggle = ({ onClick : onClickHandler }) => {
@@ -11,13 +11,14 @@ const ReadyToggle = ({ onClick : onClickHandler }) => {
 
   return (
     <div>
-      <form>
+      <label className={styles.switch}>
         <input
           id="ready-checkbox"
           onClick={handleReadyCheck}
           type="checkbox"
         />
-      </form>
+        <span className={styles.slider}></span>
+      </label>
     </div>
   );
 };
