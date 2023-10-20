@@ -13,12 +13,14 @@ import GameBox from '@/app/classic/GameBox';
 const versusPage = () => {
   const [gameEnded, setGameEnded] = useState(false);
   const [isWin, setIsWin] = useState(null); // Set to true if you win, false if you lose
-  const [PlayerScore, setPlayerScore] = useState(81); // Replace with the actual score
   const [opponentScore, setOpponentScore] = useState(15); // Replace with the actual score
+  const [word, setWord] = useState("");
+  const [isCorrect, setIsCorrect] = useState(null);
+  const [score, setScore] = useState(0);
 
   const handlePlayAgain = () => {
     // Implement your logic to start a new game
-    setPlayerScore(0);
+    setScore(0);
     setOpponentScore(0);
     setGameEnded(false);
   };
@@ -40,17 +42,17 @@ const versusPage = () => {
           <Image src="/images/PlayerCharacter.png" width={300} height={300} />
         </div>
         <div className={styles.playerBox}>
-          <PlayerBox/>
+          <PlayerBox score={score} setScore={setScore}/>
         </div>
         <div className={styles.statusBar}>
-          <StatusBox />
+          <StatusBox score={score}/>
         </div>
         <button onClick={() => setGameEnded(true)}>End Game</button>
 
       {gameEnded && (
         <GameEndDisplay
           isWin={isWin}
-          PlayerScore={PlayerScore}
+          PlayerScore={score}
           opponentScore={opponentScore}
           onPlayAgain={handlePlayAgain}
         />
