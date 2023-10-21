@@ -21,14 +21,45 @@ const {
   addRequestee,
   addRequester,
   removeRequester,
-  createGame,
-  getGameUrl,
   setUserGameId,
   getAllUsers,
 } = require("../utils/game/lobbyUtils");
-const { userStates } = require("../utils/game/enums");
+const {
+  getGameUrl,
+  createGame,
+  setUserReady,
+  gameStartable,
+  getOpponentSocket,
+  startGame,
+  checkGameValidity,
+  setUserConnected,
+  getNextWord,
+  modifyPoints,
+  updatePlayerStreak,
+  getPlayerStreak,
+  getPlayerPoints,
+  addPlayerPotion,
+  getPlayerPotions,
+  activatePotion,
+  playerHasPotion,
+  deactivatePotion,
+  endGame,
+  setUserDisconnected,
+  getOpponentUsername,
+  checkGameActive,
+  playerGetsPotion,
+  getSocketCallbackMutex,
+  checkGameExists,
+} = require("../utils/game/gameUtils");
+const {
+  userStates,
+  pointsModifiers,
+  potionActiveTimes,
+  potions,
+} = require("../utils/game/enums");
 const { error } = require("console");
 const { v4: uuidv4 } = require("uuid");
+const { attempt } = require("lodash");
 
 /**
  * Get port from environment and store in Express.
@@ -46,13 +77,18 @@ var server = http.createServer(app);
 /* ================= Socket.io & Game Logic ================ */
 
 const io = new Server(server);
+// Create a separate namespace for the lobby
+const lobby = io.of("/lobby");
+// Create a separate namespace for the versus mode
+const versus = io.of("/versus");
 
-io.on("connection", (socket) => {
+/* --- The events and logic for the lobby --- */
+lobby.on("connection", (socket) => {
   // Check if the username has been passed in the query parameters
   // If not, then we cannot continue
   // TODO: implement authentication
   // https://stackoverflow.com/questions/36788831/authenticating-socket-io-connections-using-jwt
-  console.log(socket.handshake.query);
+  console.log("Query given to lobby namespace: ", socket.handshake.query);
   if (socket.handshake.query && socket.handshake.query.username)
     socket.username = socket.handshake.query.username;
   else {
@@ -63,7 +99,7 @@ io.on("connection", (socket) => {
   // add the user to the lobby room
   socket.join("lobby");
 
-  console.log("The user ", socket.username, " has connected");
+  console.log("The user ", socket.username, " has connected to the lobby");
 
   let existingSocket = getUserSocket(socket.username);
   if (existingSocket) {
@@ -78,7 +114,7 @@ io.on("connection", (socket) => {
     setUserState(socket.username, userStates.READY);
 
   // send existing ready users
-  io.to("lobby").emit("readyUsersChange", getReadyUsers());
+  lobby.to("lobby").emit("readyUsersChange", getReadyUsers());
   socket.emit(
     "requesterRequesteesChange",
     [...getRequestees(socket.username)],
@@ -93,7 +129,7 @@ io.on("connection", (socket) => {
       if (!setUserState(socket.username, userStates.READY)) return;
 
       // broadcast ready user pool to all connected users
-      io.to("lobby").emit("readyUsersChange", getReadyUsers());
+      lobby.to("lobby").emit("readyUsersChange", getReadyUsers());
       socket.emit(
         "requesterRequesteesChange",
         [...getRequestees(socket.username)],
@@ -104,7 +140,7 @@ io.on("connection", (socket) => {
       if (!setUserState(socket.username, userStates.NOT_READY)) return;
 
       // broadcast ready user pool to all connected users
-      io.to("lobby").emit("readyUsersChange", getReadyUsers());
+      lobby.to("lobby").emit("readyUsersChange", getReadyUsers());
 
       // resend the requesters and requestees to all users
       let allUsers = getAllUsers();
@@ -148,7 +184,7 @@ io.on("connection", (socket) => {
     // requesteeSocket.emit("requested", socket.username);
 
     // broadcast ready user pool to all connected users
-    io.to("lobby").emit("readyUsersChange", getReadyUsers());
+    lobby.to("lobby").emit("readyUsersChange", getReadyUsers());
     socket.emit(
       "requesterRequesteesChange",
       [...getRequestees(socket.username)],
@@ -162,7 +198,7 @@ io.on("connection", (socket) => {
   });
 
   // accepted
-  socket.on("isAccepted", (isAccepted, requesterUsername) => {
+  socket.on("isAccepted", async (isAccepted, requesterUsername) => {
     console.log(
       socket.username,
       " has accepted the request sent by: ",
@@ -181,7 +217,7 @@ io.on("connection", (socket) => {
       removeRequester(socket.username, requesterUsername);
 
       // broadcast ready user pool to all connected users
-      io.to("lobby").emit("readyUsersChange", getReadyUsers());
+      lobby.to("lobby").emit("readyUsersChange", getReadyUsers());
       socket.emit(
         "requesterRequesteesChange",
         [...getRequestees(socket.username)],
@@ -193,7 +229,6 @@ io.on("connection", (socket) => {
         [...getRequesters(requesterUsername)]
       );
     } else {
-      // TODO: initiate new game
       let gameId = uuidv4();
       if (createGame(gameId, socket.username, requesterUsername)) {
         setUserState(socket.username, userStates.ACCEPTED);
@@ -211,7 +246,7 @@ io.on("connection", (socket) => {
         requesterSocket.disconnect();
 
         // broadcast ready user pool to all connected users
-        io.to("lobby").emit("readyUsersChange", getReadyUsers());
+        lobby.to("lobby").emit("readyUsersChange", getReadyUsers());
       } else return;
     }
   });
@@ -231,7 +266,7 @@ io.on("connection", (socket) => {
       throw new Error("Requestee socket could not be found");
 
     // broadcast ready user pool to all connected users
-    io.to("lobby").emit("readyUsersChange", getReadyUsers());
+    lobby.to("lobby").emit("readyUsersChange", getReadyUsers());
     socket.emit(
       "requesterRequesteesChange",
       [...getRequestees(socket.username)],
@@ -249,7 +284,356 @@ io.on("connection", (socket) => {
     console.log("user disconnected");
 
     // broadcast ready user pool to all connected users
-    io.to("lobby").emit("readyUsersChange", getReadyUsers());
+    lobby.to("lobby").emit("readyUsersChange", getReadyUsers());
+  });
+});
+
+/* --- The events and logic for the lobby --- */
+versus.on("connection", (socket) => {
+  // If the username and gameId are not given, we cannot proceed
+  console.log("Query given to versus namespace: ", socket.handshake.query);
+  if (
+    socket.handshake.query &&
+    socket.handshake.query.username &&
+    socket.handshake.query.gameId
+  ) {
+    socket.username = socket.handshake.query.username;
+    socket.gameId = socket.handshake.query.gameId;
+  } else {
+    console.log("disconnecting");
+    socket.disconnect();
+    return;
+  }
+
+  console.log(
+    "The user ",
+    socket.username,
+    " has connected to the versus mode game ",
+    socket.gameId
+  );
+
+  // Check whether the given game exists, and the attempt by
+  // this user to connect is valid
+  if (!checkGameValidity(socket.gameId, socket.username)) {
+    console.log(
+      "The attempt of user ",
+      socket.username,
+      " to connect to game ",
+      socket.gameId,
+      " was unsuccessful. Disconnecting..."
+    );
+    // redirect the user to the lobby
+    socket.emit("redirect", "/versus");
+    socket.disconnect();
+    return;
+  }
+
+  const mutex = getSocketCallbackMutex(socket.gameId);
+  mutex.runExclusive(() => {
+    // process.stdout.write(" //// Mutex acquired \\\\\\\\ \n");
+
+    setUserConnected(socket.gameId, socket);
+
+    // set the opponents username on the socket
+    socket.emit(
+      "opponentUsername",
+      getOpponentUsername(socket.gameId, socket.username)
+    );
+
+    // TODO: When a user diconnects, instead of ending the game, set a timer for a few seconds and
+    // wait for that user to connect again. If they do not connect within the given time, end the game
+    // If the game is active as the user reconnects, stop the timeout timer and connect the user back into the game
+  });
+
+  // userReady event
+  socket.on("userReady", async () => {
+    const mutex = getSocketCallbackMutex(socket.gameId);
+    await mutex.runExclusive(async () => {
+      // process.stdout.write(" //// Mutex acquired \\\\\\\\ \n");
+      console.log("The user ", socket.username, " is ready");
+
+      let gameId = socket.gameId;
+      setUserReady(gameId, socket);
+
+      // get the opponent's socket
+      let opponentSocket = getOpponentSocket(gameId, socket.username);
+      if (opponentSocket) opponentSocket.emit("opponentReady");
+      else return;
+
+      if (gameStartable(gameId)) {
+        let timerStartTimestamp = startGame(gameId);
+
+        // send gameStarted event to both players
+        socket.emit("gameStarted", timerStartTimestamp);
+        opponentSocket.emit("gameStarted", timerStartTimestamp);
+
+        // These words should be the same since both players are just starting
+        let playerNextWordData = {
+          wordData: await getNextWord(gameId, socket.username),
+          points: getPlayerPoints(gameId, socket.username),
+          streak: getPlayerStreak(gameId, socket.username),
+        };
+        let opponentNextWordData = {
+          wordData: await getNextWord(gameId, opponentSocket.username),
+          points: getPlayerPoints(gameId, opponentSocket.username),
+          streak: getPlayerStreak(gameId, opponentSocket.username),
+        };
+
+        socket.emit("nextWord", playerNextWordData);
+        opponentSocket.emit("nextWord", opponentNextWordData);
+      }
+      // process.stdout.write(" \\\\\\\\ Mutex released //// \n");
+    });
+  });
+
+  // typing event
+  socket.on("typing", () => {
+    const mutex = getSocketCallbackMutex(socket.gameId);
+    mutex.runExclusive(() => {
+      // process.stdout.write(" //// Mutex acquired \\\\\\\\ \n");
+      if (!checkGameActive(socket.gameId)) return;
+
+      let gameId = socket.gameId;
+      // get the opponent's socket
+      let opponentSocket = getOpponentSocket(gameId, socket.username);
+      opponentSocket.emit("opponentTyping");
+      // process.stdout.write(" \\\\\\\\ Mutex released //// \n");
+    });
+  });
+
+  // correctAttempt event
+  socket.on("correctAttempt", async (attemptNum) => {
+    const mutex = getSocketCallbackMutex(socket.gameId);
+    await mutex.runExclusive(async () => {
+      // process.stdout.write(" //// Mutex acquired \\\\\\\\ \n");
+      if (!checkGameActive(socket.gameId)) return;
+
+      console.log(
+        `The user ${socket.username} has spelled correctly at attempt ${attemptNum}`
+      );
+
+      let gameId = socket.gameId;
+
+      // set points based on the attempt number
+      let event;
+      switch (attemptNum) {
+        case 1:
+          event = pointsModifiers.SUCCESS_FIRST_ATTEMPT;
+          break;
+        case 2:
+          event = pointsModifiers.SUCCESS_SECOND_ATTEMPT;
+          break;
+        case 3:
+          event = pointsModifiers.SUCCESS_THIRD_ATTEMPT;
+          break;
+        default:
+          console.error(
+            "Number of attempts ",
+            attemptNum,
+            " is not valid. Must be between 1 and 3"
+          );
+      }
+
+      // modify the points and check if game has ended
+      if (modifyPoints(gameId, socket.username, event)) {
+        // The user has won the game by filling up the points bar first
+        socket.emit("userWon");
+        let opponentSocket = getOpponentSocket(gameId, socket.username);
+        opponentSocket.emit("opponentWon");
+
+        // end the game on the backend
+        endGame(gameId);
+      }
+
+      // update the streak
+      updatePlayerStreak(gameId, socket.username, true);
+
+      // get next word
+      let playerNextWordData = {
+        wordData: await getNextWord(gameId, socket.username),
+        points: getPlayerPoints(gameId, socket.username),
+        streak: getPlayerStreak(gameId, socket.username),
+      };
+      socket.emit("nextWord", playerNextWordData);
+
+      // check if the streak is a mutliple of three
+      // if true, award the player a potion
+      if (playerGetsPotion(gameId, socket.username)) {
+        // award the player a potion
+        addPlayerPotion(gameId, socket.username);
+        socket.emit("potionsChange", getPlayerPotions(gameId, socket.username));
+      }
+
+      // send current player state to opponent
+      let opponentSocket = getOpponentSocket(gameId, socket.username);
+      opponentSocket.emit(
+        "opponentPointsChange",
+        getPlayerPoints(gameId, socket.username)
+      );
+      opponentSocket.emit(
+        "opponentPotionsChange",
+        getPlayerPotions(gameId, socket.username)
+      );
+      // process.stdout.write(" \\\\\\\\ Mutex released //// \n");
+    });
+  });
+
+  // incorrectAttempt event
+  // The user was not able to correctly spell the word
+  socket.on("incorrectAttempt", async () => {
+    const mutex = getSocketCallbackMutex(socket.gameId);
+    await mutex.runExclusive(async () => {
+      // process.stdout.write(" //// Mutex acquired \\\\\\\\ \n");
+      if (!checkGameActive(socket.gameId)) return;
+
+      console.log(
+        `The user ${socket.username} was not able to spell correctly`
+      );
+
+      let gameId = socket.gameId;
+
+      // set points based on the attempt number
+      let event = pointsModifiers.UNSUCCESSFUL;
+      modifyPoints(gameId, socket.username, event);
+
+      // update the streak
+      updatePlayerStreak(gameId, socket.username, false);
+
+      // get next word
+      let playerNextWordData = {
+        wordData: await getNextWord(gameId, socket.username),
+        points: getPlayerPoints(gameId, socket.username),
+        streak: getPlayerStreak(gameId, socket.username),
+      };
+      socket.emit("nextWord", playerNextWordData);
+
+      // send current player state to opponent
+      let opponentSocket = getOpponentSocket(gameId, socket.username);
+      opponentSocket.emit(
+        "opponentPointsChange",
+        getPlayerPoints(gameId, socket.username)
+      );
+      // The potions cannot change after an incorrect attempt
+      // process.stdout.write(" \\\\\\\\ Mutex released //// \n");
+    });
+  });
+
+  // skipWord event
+  socket.on("skipWord", async () => {
+    const mutex = getSocketCallbackMutex(socket.gameId);
+    await mutex.runExclusive(async () => {
+      // process.stdout.write(" //// Mutex acquired \\\\\\\\ \n");
+      if (!checkGameActive(socket.gameId)) return;
+
+      console.log(`The user ${socket.username} is skipping a word`);
+
+      let gameId = socket.gameId;
+
+      // set points based on the attempt number
+      let event = pointsModifiers.SKIP;
+      modifyPoints(gameId, socket.username, event);
+
+      // update the streak
+      updatePlayerStreak(gameId, socket.username, false);
+
+      // get next word
+      let playerNextWordData = {
+        wordData: await getNextWord(gameId, socket.username),
+        points: getPlayerPoints(gameId, socket.username),
+        streak: getPlayerStreak(gameId, socket.username),
+      };
+      socket.emit("nextWord", playerNextWordData);
+
+      // send current player state to opponent
+      let opponentSocket = getOpponentSocket(gameId, socket.username);
+      opponentSocket.emit(
+        "opponentPointsChange",
+        getPlayerPoints(gameId, socket.username)
+      );
+      // The potions cannot change after skipping a word
+      // process.stdout.write(" \\\\\\\\ Mutex released //// \n");
+    });
+  });
+
+  // potionUse event
+  // Emitted by a player from the frontend when they wish to use
+  // a potion that they have
+  socket.on("potionUse", (potion) => {
+    const mutex = getSocketCallbackMutex(socket.gameId);
+    mutex.runExclusive(() => {
+      // process.stdout.write(" //// Mutex acquired \\\\\\\\ \n");
+      if (!checkGameActive(socket.gameId)) return;
+
+      console.log(
+        ` !!!! The user ${socket.username} is attempting to use potion ${potion} !!!! `
+      );
+
+      let gameId = socket.gameId;
+
+      // check if the player has the potion
+      if (!playerHasPotion(gameId, socket.username, potion)) return;
+
+      // set the potion as active
+      activatePotion(gameId, socket.username, potion);
+
+      // inform users that the potion is in effect
+      // These events are indications to the frontend that a potion is in use
+      // and to modify the UI (and possibly handle potion effects such as freeze or hint)
+      socket.emit("potionUseStart", potion);
+      let opponentSocket = getOpponentSocket(gameId, socket.username);
+      opponentSocket.emit("opponentPotionUseStart", potion);
+
+      // start a timer for the potion
+      setTimeout(() => {
+        if (!checkGameActive(gameId)) return;
+
+        // deactivate the potion
+        deactivatePotion(gameId, socket.username, potion);
+
+        // inform users that the potion has been deactivated
+        socket.emit("potionUseEnd", potion);
+        let opponentSocket = getOpponentSocket(gameId, socket.username);
+        opponentSocket.emit("opponentPotionUseEnd", potion);
+      }, potionActiveTimes[potions[potion]]);
+      // process.stdout.write(" \\\\\\\\ Mutex released //// \n");
+    });
+  });
+
+  // userQuits event
+  socket.on("userQuits", () => {
+    const mutex = getSocketCallbackMutex(socket.gameId);
+    mutex.runExclusive(() => {
+      // process.stdout.write(" //// Mutex acquired \\\\\\\\ \n");
+      // inform opponent that the current player has quit
+      let opponentSocket = getOpponentSocket(socket.gameId, socket.username);
+      opponentSocket.emit("opponentQuit");
+
+      // end the game gracefully
+      endGame(socket.gameId);
+
+      // close the connection with the current player
+      socket.disconnect();
+      // process.stdout.write(" \\\\\\\\ Mutex released //// \n");
+    });
+  });
+
+  // disconnect event
+  socket.on("disconnect", () => {
+    const mutex = getSocketCallbackMutex(socket.gameId);
+    mutex.runExclusive(() => {
+      // process.stdout.write(" //// Mutex acquired \\\\\\\\ \n");
+      if (!checkGameExists(socket.gameId)) return;
+
+      // inform opponent that the current player has disconnected
+      let opponentSocket = getOpponentSocket(socket.gameId, socket.username);
+      opponentSocket.emit("opponentDisconnected");
+
+      setUserDisconnected(socket.gameId, socket.username);
+
+      // end the game gracefully
+      endGame(socket.gameId);
+      // process.stdout.write(" \\\\\\\\ Mutex released //// \n");
+    });
   });
 });
 

@@ -1,5 +1,5 @@
-'use client'
-import React, { useState } from 'react';
+"use client";
+import React, { useState } from "react";
 import styles from "../../../styles/versus.module.css";
 import Image from "next/image";
 import OpponentBox from "./opponentCard";
@@ -8,7 +8,7 @@ import StatusBox from "./statusBar";
 import NavBar from "@/components/NavBar";
 import TopBar from "./topBar";
 import GameEndDisplay from "./gameEnd";
-import GameBox from '@/app/classic/GameBox';
+import GameBox from "@/app/classic/GameBox";
 
 const versusPage = () => {
   const [gameEnded, setGameEnded] = useState(false);
@@ -24,7 +24,6 @@ const versusPage = () => {
     setOpponentScore(0);
     setGameEnded(false);
   };
-
 
   return (
     <>
@@ -62,7 +61,5 @@ const versusPage = () => {
     </>
   );
 };
-
-
 
 export default versusPage;

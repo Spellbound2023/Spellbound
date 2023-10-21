@@ -118,12 +118,12 @@ async function getWordDefAndAudio(word) {
   let tempWordObject = null;
   let retries = 0;
 
-  console.log(`======= Word: ${word} =======`);
+  // console.log(`======= Word: ${word} =======`);
 
   while (!validWord) {
     retries++;
-    console.log(`Try num : ${retries}`);
-    console.log("Obtained data: ", tempWordData);
+    // console.log(`Try num : ${retries}`);
+    // console.log("Obtained data: ", tempWordData);
 
     if (checkValidWordData(tempWordData)) {
       tempWordObject = getValidWord(tempWordData);
@@ -134,7 +134,7 @@ async function getWordDefAndAudio(word) {
     } else if (tempWordData instanceof Array && tempWordData.length > 0) {
       // the word is not a valid word but the dictionary has similar words
 
-      console.log("Try: ", retries, tempWordData);
+      // console.log("Try: ", retries, tempWordData);
       for (var i = 0; i < tempWordData.length; i++) {
         // go through all similar words and choose one that is valid
         if (tempWordData[i].includes(" ")) continue;
@@ -178,8 +178,9 @@ async function getWordDefAndAudio(word) {
   definition = getWordDefinition(wordObject);
   // TODO: check if the audio file exists. If not, have a fallback (WebSpeech API)
   audioUrl = getAudioUrl(wordObject);
-  console.log("\n Final wordData: ", tempWordData);
-  console.log("\n Final wordObject: ", wordObject);
+  // console.log("\n Final wordData: ", tempWordData);
+  // console.log("\n Final wordObject: ", wordObject);
+  // console.log("\n Final word: ", word);
 
   return {
     word: word,
@@ -254,6 +255,16 @@ function getValidWord(wordData) {
   return null;
 }
 
+async function getWords(numWords) {
+  let randWordList = [];
+  for (let i = 0; i < numWords; ++i) {
+    const word = getRandomWord();
+    const wordData = await getWordDefAndAudio(word);
+    randWordList.push(wordData);
+  }
+  return randWordList;
+}
+
 /* ============ Exports =============== */
 
 exports.getRandomWordFromAPI = getRandomWordFromAPI;
@@ -265,3 +276,4 @@ exports.getAudioUrl = getAudioUrl;
 exports.checkValidWordData = checkValidWordData;
 exports.getWordDefAndAudio = getWordDefAndAudio;
 exports.getValidWord = getValidWord;
+exports.getWords = getWords;
