@@ -164,6 +164,17 @@ function startGame(gameId) {
 
       // end the game on the backend
       endGame(gameId);
+    } else {
+      // handle draw case
+      let winnerSocket = getPlayerSocket(gameId, winner);
+      let loserSocket = getOpponentSocket(gameId, winner);
+      winnerSocket.emit("timerEnded");
+      loserSocket.emit("timerEnded");
+      winnerSocket.emit("gameDraw");
+      loserSocket.emit("gameDraw");
+
+      // end the game on the backend
+      endGame(gameId);
     }
   }, DEFAULT_GAME_TIME_MS);
 
