@@ -22,11 +22,12 @@
 }
 
 .Popup{
-  width: 800px;
+  width: 50%;
   border-radius: 30px;
   position: absolute;
   top: 0;
-  margin: 1% auto;
+  z-index: 9999;
+  margin-left: 15%;
   opacity: 0; /* Start with 0 opacity */
   transition: opacity 0.3s ease-in-out; /* Transition for opacity with a 0.3s duration */
 }

@@ -6,18 +6,15 @@ import WordInput from "../../classic/WordInput";
 import styles from "../../../styles/versusGameBox.module.css"
 import { checkValidInput, upperCaseFirstLetter } from "@/utils/utils";
 import SuccessPopup from "../../classic/successPopup";
-import ScoreCounter from "../../classic/scoreCount";
-import PlayerScoreCounter from "./playerScoreCounter";
 
 const ATTEMPTS_PER_WORD = 3;
 
 /* Container for WordInfo and WordInput */
-const GameBox = ({ score, setScore }) => {
+const GameBox = ({ score, setScore, setIsCorrect }) => {
   const [word, setWord] = useState("");
   const [definition, setDefinition] = useState([]);
   const [audioUrl, setAudioUrl] = useState("");
   const [attempts, setAttempts] = useState(0);
-  const [isCorrect, setIsCorrect] = useState(null);
   
 
 
@@ -78,7 +75,6 @@ const GameBox = ({ score, setScore }) => {
 
   return (
     <div>
-      <nav><SuccessPopup key={isCorrect} isCorrect={isCorrect}/></nav>
       
       
        <div className={styles.mainContainer} >

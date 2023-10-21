@@ -3,8 +3,6 @@ import React, {useState, useEffect} from 'react'
 import styles from '../../styles/classic/page.module.css'
 
 function SuccessPopup({ isCorrect }) {
-    //STILL TO DO:
-    //add correct answer onto incorrect popup when attempts remaining is 0.
 
     const[isVisible, setIsVisible] = useState(false);
     const [willUnmount, setWillUnmount] = useState(false);
