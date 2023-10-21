@@ -24,24 +24,63 @@ const versusPage = () => {
   const [ready, setReady] = useState(false);
 
   const [isModalVisible, setModalVisible] = useState(true);
-  const [isBothPlayersReady, setBothPlayersReady] = useState(false);
   const [gameStarted, setGameStarted] = useState(false);
   const [timer, setTimer] = useState(null);
   const [score, setScore] = useState(0);
   const [potions, setPotions] = useState(0);
   const [totalWords] = useState(10); // Assume 10 words in a game for the progress calculation
 
-  useEffect(() => {
+  const [doublePointsActive, setDoublePointsActive] = useState(false);
+  const [freezeActive, setFreezeActive] = useState(false);
+  const [hintActive, setHintActive] = useState(false);
+
+
+  /* 
+
+    UI CHANGES:
+    READY SCREEN POPUP
+    GAME STARTED
+    TIMER STARTED
+    WORD CORRECT
+    WORD INCORRECT
+    POTION USED
+    POTION GAINED
+    POINTS GAINED
+    POINTS LOST
+    GAME END
+
+    */
+
+  useEffect(() => { //in useeffect because it happens initially on load ?
    
-    // Sample listener for both players ready
     socket.on('bothPlayersReady', () => {
-      setBothPlayersReady(true);
       setModalVisible(false);
       startGame();
     });
 
     
   }, []);
+
+  const startGame = () => {
+    setGameStarted(true);
+    startTimer();
+    socket.emit('gameStarted');
+  };
+
+  const startTimer = () => {
+    const gameDuration = 300; // placeholder, assume a game lasts for 5 mins 
+    setTimer(gameDuration);
+    const timerInterval = setInterval(() => {
+      setTimer((prevTime) => {
+        if (prevTime <= 1) {
+          clearInterval(timerInterval);
+          endGame();
+          return 0;
+        }
+        return prevTime - 1;
+      });
+    }, 1000);
+  };
 
   const handlePlayAgain = () => {
     // Implement your logic to start a new game
@@ -59,27 +98,7 @@ const versusPage = () => {
 
   };
 
-  const startGame = () => {
-    setGameStarted(true);
-    startTimer();
-    socket.emit('gameStarted');
-  };
-
-  const startTimer = () => {
-    const gameDuration = 300; // placeholder assume a game lasts for 5 mins 
-    setTimer(gameDuration);
-    const timerInterval = setInterval(() => {
-      setTimer((prevTime) => {
-        if (prevTime <= 1) {
-          clearInterval(timerInterval);
-          endGame();
-          return 0;
-        }
-        return prevTime - 1;
-      });
-    }, 1000);
-  };
-
+  
   const checkUserInput = (input) => { // Same as classic mode, valid?
     if (checkValidInput(input, word)) {
       let pointsToAdd = 0;
@@ -114,6 +133,8 @@ const versusPage = () => {
     }
   };
 
+  // POTIONS
+
   const handlePotionReceived = () => {
     setPotions(potions + 1);
     socket.emit('potionReceived');
@@ -125,6 +146,34 @@ const versusPage = () => {
       socket.emit('potionUsed');
     }
   };
+
+  const useDoublePointsPotion = () => {
+    setDoublePointsActive(true);
+    socket.emit("useDoublePointsPotion"); 
+
+    setTimeout(() => {
+        setDoublePointsActive(false); 
+    }, 10000);
+  }
+
+
+  const useFreezePotion = () => {
+    setFreezeActive(true)
+    socket.emit("useFreezePotion"); 
+
+    setTimeout(() => {
+      setFreezeActive(false)
+    }, 5000);
+  }
+
+
+  const useHintPotion = () => {
+    setHintActive(true)
+    socket.emit("useHintPotion")
+  }
+
+
+ 
 
   const endGame = () => {
     if (PlayerScore > opponentScore) {
