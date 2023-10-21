@@ -9,6 +9,9 @@ import NavBar from "@/components/NavBar";
 import TopBar from "./topBar";
 import GameEndDisplay from "./gameEnd";
 import GameBox from '@/app/classic/GameBox';
+import io from "socket.io-client";
+
+let socket;
 
 const versusPage = () => {
   const [gameEnded, setGameEnded] = useState(false);
@@ -16,12 +19,124 @@ const versusPage = () => {
   const [PlayerScore, setPlayerScore] = useState(81); // Replace with the actual score
   const [opponentScore, setOpponentScore] = useState(15); // Replace with the actual score
 
+  const [attempts, setAttempts] = useState(0);
+  const [isCorrect, setIsCorrect] = useState(null);
+  const [ready, setReady] = useState(false);
+
+  const [isModalVisible, setModalVisible] = useState(true);
+  const [isBothPlayersReady, setBothPlayersReady] = useState(false);
+  const [gameStarted, setGameStarted] = useState(false);
+  const [timer, setTimer] = useState(null);
+  const [score, setScore] = useState(0);
+  const [potions, setPotions] = useState(0);
+  const [totalWords] = useState(10); // Assume 10 words in a game for the progress calculation
+
+  useEffect(() => {
+   
+    // Sample listener for both players ready
+    socket.on('bothPlayersReady', () => {
+      setBothPlayersReady(true);
+      setModalVisible(false);
+      startGame();
+    });
+
+    
+  }, []);
+
   const handlePlayAgain = () => {
     // Implement your logic to start a new game
     setPlayerScore(0);
     setOpponentScore(0);
     setGameEnded(false);
+    startGame()
+    socket.emit('playAgain');
+
   };
+
+  const readyStateChange = (readyStatus) => {
+    setReady(readyStatus);
+    socket.emit('playerReady');
+
+  };
+
+  const startGame = () => {
+    setGameStarted(true);
+    startTimer();
+    socket.emit('gameStarted');
+  };
+
+  const startTimer = () => {
+    const gameDuration = 300; // placeholder assume a game lasts for 5 mins 
+    setTimer(gameDuration);
+    const timerInterval = setInterval(() => {
+      setTimer((prevTime) => {
+        if (prevTime <= 1) {
+          clearInterval(timerInterval);
+          endGame();
+          return 0;
+        }
+        return prevTime - 1;
+      });
+    }, 1000);
+  };
+
+  const checkUserInput = (input) => { // Same as classic mode, valid?
+    if (checkValidInput(input, word)) {
+      let pointsToAdd = 0;
+
+    if (attempts === 0) {
+      pointsToAdd = 3; // Correct on the first try
+    } else if (attempts === 1) {
+      pointsToAdd = 2; // Correct on the second try
+    } else if (attempts === 2) {
+      pointsToAdd = 1; // Correct on the third try
+    }
+
+      setIsCorrect(true) //CORRECT POPUP
+      setScore(score + pointsToAdd); // Update the score
+
+      setupRound();
+      setTimeout(() => setIsCorrect(null), 1500);
+    } else {
+      if (attempts + 1 >= ATTEMPTS_PER_WORD) {
+        setScore((prevScore) => prevScore - 1);
+        setIsCorrect(false) //INCORRECT POPUP
+        alert(
+          `Wrong. Again. \n Out of attempts! Correct spelling: \"${word}\"`
+        );        
+        setupRound();
+        setTimeout(() => setIsCorrect(null), 1500);
+      } else {
+        setIsCorrect(false) //INCORRECT POPUP
+        setAttempts(attempts + 1);
+        setTimeout(() => setIsCorrect(null), 1500);
+      }
+    }
+  };
+
+  const handlePotionReceived = () => {
+    setPotions(potions + 1);
+    socket.emit('potionReceived');
+  };
+
+  const handlePotionUsed = () => {
+    if (potions > 0) {
+      setPotions(potions - 1);
+      socket.emit('potionUsed');
+    }
+  };
+
+  const endGame = () => {
+    if (PlayerScore > OpponentBox) {
+      setIsWin(true)
+    } else {
+      setIsWin(false)
+    }
+    setGameEnded(true);
+    socket.emit('gameEnd', score);
+  };
+
+
 
 
   return (

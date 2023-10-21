@@ -21,7 +21,6 @@ const NavBar = ({ showDifficultyText = true }) => {
         display: "flex",
         justifyContent: "space-between",
         alignItems: "center",
-        width: "95%",
         paddingTop: "1rem",
         backgroundColor: "transparent",
         color: "#333",
