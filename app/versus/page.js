@@ -46,7 +46,8 @@ const page = () => {
     if (status === "authenticated") {
       // Create a socket connection
       console.log("Connecting web socket");
-      socket = io.connect("", {
+      socket = io.connect("/lobby", {
+        forceNew: true,
         query: { username: session.user.username, ready: ready },
       });
 
@@ -102,7 +103,9 @@ const page = () => {
           <thead>
             <tr>
               <th>Players</th>
-              <th><ReadyToggle onClick={readyStateChange} /></th>
+              <th>
+                <ReadyToggle onClick={readyStateChange} />
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -117,9 +120,7 @@ const page = () => {
         </table>
       </div>
 
-      <InstructionsPopup/>
-      
-      
+      <InstructionsPopup />
     </>
   );
 };
