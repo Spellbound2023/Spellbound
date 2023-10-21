@@ -1,5 +1,5 @@
-'use client'
-import React, { useState } from 'react';
+"use client";
+import React, {  useEffect, useState } from "react";
 import styles from "../../../styles/versus.module.css";
 import Image from "next/image";
 import OpponentBox from "./opponentCard";
@@ -8,12 +8,19 @@ import StatusBox from "./statusBar";
 import NavBar from "@/components/NavBar";
 import TopBar from "./topBar";
 import GameEndDisplay from "./gameEnd";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import GameBox from '@/app/classic/GameBox';
 import io from "socket.io-client";
+import { redirect } from "next/navigation";
+
 
 let socket;
 
 const versusPage = () => {
+  const { data: session, status } = useSession();
+  const { push } = useRouter();
+  
   const [gameEnded, setGameEnded] = useState(false);
   const [isWin, setIsWin] = useState(null); // Set to true if you win, false if you lose
   const [PlayerScore, setPlayerScore] = useState(81); // Replace with the actual score
@@ -51,7 +58,114 @@ const versusPage = () => {
 
     */
 
-  useEffect(() => { //in useeffect because it happens initially on load ?
+    useEffect(() => {
+      console.log(session);
+      if (status === "authenticated") {
+        console.log("Router query: ", params.gameId);
+  
+        // Create a socket connection
+        console.log("Connecting web socket");
+        socket = io.connect("/versus", {
+          forceNew: true,
+          query: { username: session.user.username, gameId: params.gameId },
+        });
+        setOpponentUsername(socket.opponent);
+  
+        // Listen for incoming messages
+        socket.on("opponentReady", () => {
+          console.log("The opponent is ready!");
+        });
+  
+        // Listen for incoming messages
+        socket.on("gameStarted", (timerStartTimestamp) => {
+          console.log("The game has started at: ", timerStartTimestamp);
+  
+          socket.emit("typing");
+          socket.emit("correctAttempt", 1);
+          socket.emit("correctAttempt", 2);
+          socket.emit("correctAttempt", 3);
+          socket.emit("incorrectAttempt");
+          socket.emit("skipWord");
+        });
+  
+        // Listen for incoming messages
+        socket.on("nextWord", (nextWord) => {
+          console.log("nextWord: ", nextWord);
+        });
+  
+        socket.on("opponentTyping", () => {
+          console.log("The opponent is typing!");
+        });
+  
+        socket.on("redirect", (url) => {
+          console.log("Redirecting to :", url);
+          push(url, undefined, { shallow: false });
+        });
+  
+        socket.on("userWon", () => {
+          console.log("You have won the game!");
+        });
+  
+        socket.on("opponentWon", () => {
+          console.log("Your opponent ", opponentUsername, " has won the game!");
+        });
+  
+        socket.on("potionsChange", (potions) => {
+          console.log("Your potions: ", potions);
+          setPotions(potions);
+        });
+  
+        socket.on("opponentPointsChange", (points) => {
+          // console.log("Your opponent has ", points, " points");
+        });
+  
+        socket.on("opponentPotionsChange", (potions) => {
+          console.log("Your opponent has the following potions: ", potions);
+          setOpponentPotions(potions);
+        });
+  
+        socket.on("potionUseStart", (potion) => {
+          console.log("The potion ", potion, " is now in effect");
+        });
+  
+        socket.on("opponentPotionUseStart", (potion) => {
+          console.log("Your opponents potion ", potion, " is now in effect");
+        });
+  
+        socket.on("potionUseEnd", (potion) => {
+          console.log("The potion ", potion, " has worn off");
+        });
+  
+        socket.on("opponentPotionUseEnd", (potion) => {
+          console.log("Your opponents potion ", potion, " has worn off");
+        });
+  
+        socket.on("opponentQuit", () => {
+          console.log("Your opponent has quit");
+        });
+  
+        socket.on("opponentDisconnected", () => {
+          console.log("Your opponent has disconnected");
+        });
+  
+        socket.on("timerEnded", () => {
+          console.log("The game timer has ended");
+        });
+  
+        socket.on("gameEnded", () => {
+          console.log("The game has ended");
+        });
+  
+        // console.log("The game has ended");
+        socket.emit("userReady");
+  
+        // setTimeout(() => {
+        //   socket.emit("userQuits");
+        // }, 25000);
+      }
+    }, [status]);
+
+  /* useEffect(() => { //in useeffect because it happens initially on load ?
    
     socket.on('bothPlayersReady', () => {
       setModalVisible(false);
@@ -59,13 +173,29 @@ const versusPage = () => {
     });
 
     
-  }, []);
+  }, []); */
+
+  useEffect(() => {
+    if (socket) {
+      socket.emit("potionUse", potions[0]);
+      socket.emit("correctAttempt", 1);
+      socket.emit("correctAttempt", 2);
+      socket.emit("correctAttempt", 3);
+    }
+  }, [potions]);
+
+  if (status === "loading") return null;
+
+  if (status === "unauthenticated") redirect("/");
+
 
   const startGame = () => {
     setGameStarted(true);
     startTimer();
     socket.emit('gameStarted');
   };
+  startGame();
+
 
   const startTimer = () => {
     const gameDuration = 300; // placeholder, assume a game lasts for 5 mins 
@@ -204,27 +334,24 @@ const versusPage = () => {
           <Image src="/images/PlayerCharacter.png" width={300} height={300} />
         </div>
         <div className={styles.playerBox}>
-          <PlayerBox/>
+          <PlayerBox />
         </div>
         <div className={styles.statusBar}>
           <StatusBox />
         </div>
         <button onClick={() => setGameEnded(true)}>End Game</button>
 
-      {gameEnded && (
-        <GameEndDisplay
-          isWin={isWin}
-          PlayerScore={PlayerScore}
-          opponentScore={opponentScore}
-          onPlayAgain={handlePlayAgain}
-        />
-      )}
-
+        {gameEnded && (
+          <GameEndDisplay
+            isWin={isWin}
+            PlayerScore={PlayerScore}
+            opponentScore={opponentScore}
+            onPlayAgain={handlePlayAgain}
+          />
+        )}
       </div>
     </>
   );
 };
-
-
 
 export default versusPage;

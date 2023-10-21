@@ -1,7 +1,6 @@
-const { userStates, gameStates } = require("./enums");
+const { userStates } = require("./enums");
 
 let allConnectedUsers = {};
-let games = {};
 
 function newUser(socket) {
   let username = socket.username;
@@ -182,25 +181,6 @@ function removeRequester(requesteeUsername, requesterUsername) {
   return true;
 }
 
-function createGame(gameId, player1, player2) {
-  if (gameId in games) return false;
-  games[gameId] = {};
-
-  games[gameId].players = {};
-  games[gameId].players[player1] = {};
-  games[gameId].players[player2] = {};
-
-  games[gameId].wordList = [];
-  games[gameId].curWordIndex = null;
-  games[gameId].gameStatus = gameStates.NOT_STARTED;
-
-  return true;
-}
-
-function getGameUrl(gameId) {
-  return new URL(`/versus/${gameId}`, process.env.BASE_URL);
-}
-
 exports.newUser = newUser;
 exports.removeUser = removeUser;
 exports.getReadyUsers = getReadyUsers;
@@ -214,6 +194,4 @@ exports.addRequestee = addRequestee;
 exports.addRequester = addRequester;
 exports.removeRequestee = removeRequestee;
 exports.removeRequester = removeRequester;
-exports.createGame = createGame;
-exports.getGameUrl = getGameUrl;
 exports.setUserGameId = setUserGameId;
