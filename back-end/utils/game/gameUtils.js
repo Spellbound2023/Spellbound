@@ -228,15 +228,20 @@ function getOpponentUsername(gameId, username) {
   }
 }
 
+// checks for the game existing are done at multiple points
+// since this function can lead to race conditions and also
+// unnecessarily hold up the event loop
 async function addWords(gameId, numWords) {
   // console.log(`Adding ${numWords} words to the wordList`);
   if (!checkGameExists(gameId)) return;
 
   for (let i = 0; i < numWords; ++i) {
+    if (!checkGameExists(gameId)) return;
+    let newWord = await getWords(1);
     const addWordMutex = getAddWordMutex(gameId);
     await addWordMutex.runExclusive(async () => {
       if (!checkGameExists(gameId)) return;
-      games[gameId].wordList = games[gameId].wordList.concat(await getWords(1));
+      games[gameId].wordList = games[gameId].wordList.concat(newWord);
       // console.log("Added a word!");
     });
   }
@@ -296,30 +301,6 @@ function modifyPoints(gameId, username, event) {
     console.error("The points modifier event ", event, " is not valid");
     return null;
   }
-
-  // if (event === pointsModifiers.SUCCESS_FIRST_ATTEMPT) {
-  //   games[gameId].players[username].points += potionPointsModifier(
-  //     gameId,
-  //     username,
-  //     pointsModifierPoints[event]
-  //   );
-  // } else if (event === pointsModifiers.SUCCESS_SECOND_ATTEMPT) {
-  //   games[gameId].players[username].points += potionPointsModifier(
-  //     gameId,
-  //     username,
-  //     pointsModifierPoints[event]
-  //   );
-  // } else if (event === pointsModifiers.SUCCESS_THIRD_ATTEMPT) {
-  //   games[gameId].players[username].points += potionPointsModifier(
-  //     gameId,
-  //     username,
-  //     pointsModifierPoints[event]
-  //   );
-  // } else if (event === pointsModifiers.UNSUCCESSFUL) {
-  // games[gameId].players[username].points += pointsModifierPoints[event];
-  // } else if (event === pointsModifiers.SKIP) {
-  // games[gameId].players[username].points += pointsModifierPoints[event];
-  // }
 
   // get the points associated with the event and apply any potion effects
   games[gameId].players[username].points += potionPointsModifier(

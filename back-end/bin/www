@@ -608,6 +608,9 @@ versus.on("connection", (socket) => {
       let opponentSocket = getOpponentSocket(socket.gameId, socket.username);
       opponentSocket.emit("opponentQuit");
 
+      // end the game gracefully
+      endGame(socket.gameId);
+
       // close the connection with the current player
       socket.disconnect();
       // process.stdout.write(" \\\\\\\\ Mutex released //// \n");
