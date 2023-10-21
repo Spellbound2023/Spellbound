@@ -37,7 +37,12 @@ const versusPage = ({ params }) => {
         forceNew: true,
         query: { username: session.user.username, gameId: params.gameId },
       });
-      setOpponentUsername(versusSocket.opponent);
+
+      // 'Get the opponent's username
+      versusSocket.on("opponentUsername", (opponentUsername) => {
+        console.log("The opponents username is: ", opponentUsername);
+        setOpponentUsername(opponentUsername);
+      });
 
       // Listen for incoming messages
       versusSocket.on("opponentReady", () => {
@@ -127,9 +132,9 @@ const versusPage = ({ params }) => {
       // console.log("The game has ended");
       versusSocket.emit("userReady");
 
-      // setTimeout(() => {
-      //   versusSocket.emit("userQuits");
-      // }, 25000);
+      setTimeout(() => {
+        if (session.user.username === "bla1") versusSocket.emit("userQuits");
+      }, 2000);
     }
   }, [status]);
 

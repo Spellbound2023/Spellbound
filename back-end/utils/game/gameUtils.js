@@ -86,6 +86,10 @@ function checkGameActive(gameId) {
   return gameId in games && games[gameId].gameStatus === gameStates.ACTIVE;
 }
 
+function checkGameExists(gameId) {
+  return gameId in games;
+}
+
 function setUserConnected(gameId, socket) {
   if (!(socket.username in games[gameId].players)) {
     console.error("setting user ", socket.username, " as connected failed.");
@@ -169,6 +173,7 @@ function startGame(gameId) {
 function endGame(gameId) {
   if (games[gameId].gameStatus !== gameStates.ENDED) {
     games[gameId].gameStatus = gameStates.ENDED;
+    console.log(" ======== Ending the game ============== ");
     for (let player in games[gameId].players) {
       let socket = getPlayerSocket(gameId, player);
       socket.emit("gameEnded");
@@ -225,14 +230,18 @@ function getOpponentUsername(gameId, username) {
 
 async function addWords(gameId, numWords) {
   // console.log(`Adding ${numWords} words to the wordList`);
+  if (!checkGameExists(gameId)) return;
+
   for (let i = 0; i < numWords; ++i) {
     const addWordMutex = getAddWordMutex(gameId);
     await addWordMutex.runExclusive(async () => {
+      if (!checkGameExists(gameId)) return;
       games[gameId].wordList = games[gameId].wordList.concat(await getWords(1));
       // console.log("Added a word!");
     });
   }
 
+  if (!checkGameExists(gameId)) return;
   console.log(" --- new wordList ---");
   console.log(games[gameId].wordList.map((wordData) => wordData.word));
   console.log(" -----------------------");
@@ -250,6 +259,7 @@ async function getNextWord(gameId, username) {
     // the asynchronous add functions have not completed yet.
     // Sleep for some time to let these functions load some
     // words in
+
     // console.log(
     //   "The wordlist has only ",
     //   games[gameId].wordList.length,
@@ -420,6 +430,7 @@ exports.getSocketCallbackMutex = getSocketCallbackMutex;
 exports.getGameUrl = getGameUrl;
 exports.checkGameValidity = checkGameValidity;
 exports.checkGameActive = checkGameActive;
+exports.checkGameExists = checkGameExists;
 exports.setUserConnected = setUserConnected;
 exports.setUserDisconnected = setUserDisconnected;
 exports.setUserReady = setUserReady;
