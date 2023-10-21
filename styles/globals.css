@@ -31,8 +31,8 @@ body {
     background-image: url('/images/main-background.png');
     background-size: cover;
     color: rgb(var(--foreground-rgb));
-    margin-left: 10%;
-    margin-right: 10%;
+    margin-left: 2%;
+    margin-right: 2%;
 }
 
 object {

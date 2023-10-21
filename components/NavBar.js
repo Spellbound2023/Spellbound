@@ -24,6 +24,8 @@ const NavBar = ({ showDifficultyText = true }) => {
         paddingTop: "1rem",
         backgroundColor: "transparent",
         color: "#333",
+        width: "100%", // Add this line
+
       }}
     >
       <div style={{ flex: 1, textAlign: "left" }}>

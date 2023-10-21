@@ -127,7 +127,7 @@ const versusPage = () => {
   };
 
   const endGame = () => {
-    if (PlayerScore > OpponentBox) {
+    if (PlayerScore > opponentScore) {
       setIsWin(true)
     } else {
       setIsWin(false)
