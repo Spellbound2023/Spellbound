@@ -187,5 +187,20 @@
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
     color: lightgrey;
     font-family: Arial, Helvetica, sans-serif;
+    text-align: center;
   }
+
+  .readyButton{
+    background: green;
+    color: white;
+    padding:1rem;
+    border-radius: 10px;
+    font-size: 20px;
+    outline: none;
+    border: none;
+    margin: 20% auto 5% auto;
+
+  }
+
+  .readyButton:disabled{opacity: 50%;}
  

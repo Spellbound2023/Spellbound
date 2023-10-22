@@ -8,7 +8,7 @@ const HintPotion = () => {
   
   return (
     <div>
-        <button type="button" style={{ background: "transparent", padding: "0", border: 'none', }}>
+        <button type="button" style={{ background: "transparent", padding: "0", border: 'none', cursor: 'pointer' }}>
             <img src='/images/hintPotion.png' width={50} height={50}/>
         </button>
 
