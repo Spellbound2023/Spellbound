@@ -1,24 +1,46 @@
 import React, { useState } from "react";
+import io from "socket.io-client";
+import styles from "../../../styles/versus.module.css"
 
-const GameStart = ({ playerReady, opponentReady }) => {
-  const [showPopup, setShowPopup] = useState(true);
+let versusSocket;
 
-  const handleReadyClick = () => {
-    // Toggle the player's ready status
-    playerReady ? opponentReady(true) : playerReady(true);
 
-    // If both players are ready, create the game and close the popup
-    if (playerReady && opponentReady) {
-      setShowPopup(false);
+const GameStart = ({ gameId }) => {
+  const [isActive, setIsActive] = useState(true);
+  const [ready, setReady] = useState(false);
+  const [opponentReady, setOpponentReady] = useState(true);
+
+  const handleReady = () => {
+    //versusSocket.emit("playerReady"); ---------------HELP
+
+    // Set the "ready" state to true
+    setReady(true);
+    
+
+    // Check if both player and opponent are ready
+    if (ready && opponentReady) {
+      // Emit a socket event to start the game
+      //versusSocket.emit("startGame"); ---------HELP
+      
+      setIsActive(false)
     }
   };
 
   return (
-    <div className={`popup ${showPopup ? "visible" : "hidden"}`}>
-      <div className="popup-content">
-        <h2>Are you ready to start the game?</h2>
-        <button onClick={handleReadyClick}>Ready</button>
-      </div>
+    <div>
+    
+      {isActive ? (
+        <div className={styles.gameStartContainer}>
+        <div className={styles.startContent}>
+          <h2>Ready to Start the Game?</h2>
+          <button onClick={handleReady} disabled={ready} className={styles.readyButton}>
+            {ready ? "Waiting for Opponent" : "Ready"}
+          </button>
+          <button onClick={handleReady}>close</button>
+        </div>
+        </div>
+      ) : null}
+    
     </div>
   );
 };

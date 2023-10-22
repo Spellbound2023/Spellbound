@@ -12,6 +12,7 @@ import { useRouter } from "next/navigation";
 import io from "socket.io-client";
 import { redirect } from "next/navigation";
 import SuccessPopup from "../../classic/successPopup";
+import GameStart from "./gameStart";
 
 let versusSocket;
 
@@ -29,7 +30,7 @@ const versusPage = ({ params }) => {
   const { push } = useRouter();
 
   //Completion score, change if you want
-  const completionThreshold = 5;
+  const completionThreshold = 30;
   
 
   useEffect(() => {
@@ -131,7 +132,7 @@ const versusPage = ({ params }) => {
         console.log("The game timer has ended");
       });
 
-      if (score >= completionThreshold){
+      if (score >= 5){
         versusSocket.on("gameEnded", () => {
           console.log("The game has ended");
           setGameEnded(true)
@@ -171,6 +172,7 @@ const versusPage = ({ params }) => {
 
   return (
     <>
+    <GameStart gameId={params.gameId} />
       <SuccessPopup key={isCorrect} isCorrect={isCorrect}/>
       <div className={styles.navContainer}>
         <NavBar showDifficultyText={false} />
