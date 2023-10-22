@@ -7,7 +7,7 @@ import OpponentStatusBox from "./opponentStatusBar";
 import OpponentUsername from "./opponentUsername";
 import OpponentWordInput from "./opponentWordInput";
 
-const OpponentBox = ({ opponentScore }) => {
+const OpponentBox = ({ opponentScore, completionThreshold }) => {
   return (
     <div className={styles.opponentBoxContainer}> 
 
@@ -17,7 +17,7 @@ const OpponentBox = ({ opponentScore }) => {
             </div>
 
             <div className={styles.opponentStatusContainer}>
-              <OpponentStatusBox />
+              <OpponentStatusBox score={opponentScore} completionThreshold={completionThreshold}/>
             </div>
         </div>
 

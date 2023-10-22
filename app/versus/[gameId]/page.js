@@ -19,7 +19,7 @@ const versusPage = ({ params }) => {
   const [gameEnded, setGameEnded] = useState(false);
   const [isWin, setIsWin] = useState(null); // Set to true if you win, false if you lose
   const [score, setScore] = useState(0); // Replace with the actual score
-  const [opponentScore, setOpponentScore] = useState(15); // Replace with the actual score
+  const [opponentScore, setOpponentScore] = useState(0); // Replace with the actual score
   const [opponentUsername, setOpponentUsername] = useState("");
   const [potions, setPotions] = useState([]);
   const [opponentPotions, setOpponentPotions] = useState([]);
@@ -27,6 +27,9 @@ const versusPage = ({ params }) => {
   const [isCorrect, setIsCorrect] = useState(null);
   const { data: session, status } = useSession();
   const { push } = useRouter();
+
+  //Completion score, change if you want
+  const completionThreshold = 5;
   
 
   useEffect(() => {
@@ -128,9 +131,14 @@ const versusPage = ({ params }) => {
         console.log("The game timer has ended");
       });
 
-      versusSocket.on("gameEnded", () => {
-        console.log("The game has ended");
-      });
+      if (score >= completionThreshold){
+        versusSocket.on("gameEnded", () => {
+          console.log("The game has ended");
+          setGameEnded(true)
+          
+        });
+      }
+    
 
       // console.log("The game has ended");
       versusSocket.emit("userReady");
@@ -169,7 +177,7 @@ const versusPage = ({ params }) => {
       </div>
       <div className={styles.versusContainer}>
         <div className={styles.opponentBox}>
-          <OpponentBox opponentScore={opponentScore}/>
+          <OpponentBox opponentScore={opponentScore} completionThreshold={completionThreshold}/>
         </div>
         <div className={styles.Character}>
           <Image src="/images/opponentCharacter.png" width={200} height={200} />
@@ -181,7 +189,7 @@ const versusPage = ({ params }) => {
           <PlayerBox score={score} setScore={setScore} setIsCorrect={setIsCorrect}/>
         </div>
         <div className={styles.statusBar}>
-          <StatusBox score={score} />
+          <StatusBox score={score} completionThreshold={completionThreshold}/>
         </div>
         <button onClick={() => setGameEnded(true)}>End Game</button>
 

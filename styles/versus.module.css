@@ -61,16 +61,29 @@
     float: left;
     background-color: #434343;
     width: 45%;
-    height: 60%;
+    height: 40%;
     margin: 1%;  
     border-radius: 50px;
+    position: relative;
 }
 
 .progress{
     background: linear-gradient(90deg, #FFE863 0%, #F5BD1F 100%);
-    width: 60%;
     height: 100%;
     border-radius: 50px;
+}
+
+.scorePercentage{
+  position: absolute;
+  top: 0.3rem;
+  left: 1rem;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.opponentScorePercentage{
+  position: absolute;
+  left: 1rem;
+  font-family: Arial, Helvetica, sans-serif;
 }
 
 .score{position: absolute; left: 50%;}

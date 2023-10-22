@@ -5,15 +5,13 @@ import HintPotion from './potions/hintPotion'
 import FreezePotion from './potions/freezePotion'
 import DblPointsPotion from './potions/dblPointsPotion'
 import PlayerScoreCounter from './playerScoreCounter'
+import CompletionBar from './completionBar'
 
-const StatusBox = ({ score }) => {
+const StatusBox = ({ score, completionThreshold }) => {
   return (
     <div className={styles.cardContainer}>
-        <div className={styles.progressBar}>
-          <div className={styles.progress}>
 
-          </div>
-        </div>
+      <CompletionBar score={score} completionThreshold={completionThreshold}/>
         
         <div className={styles.score}>
         <PlayerScoreCounter score={score}/>
