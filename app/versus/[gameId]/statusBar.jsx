@@ -5,6 +5,8 @@ import HintPotion from './potions/hintPotion'
 import FreezePotion from './potions/freezePotion'
 import DblPointsPotion from './potions/dblPointsPotion'
 import PlayerScoreCounter from './playerScoreCounter'
+import Timer from './timer'
+
 
 const StatusBox = ({ nextWord }) => {
 
@@ -13,14 +15,16 @@ const StatusBox = ({ nextWord }) => {
   return (
     <div className={styles.cardContainer}>
         <div className={styles.progressBar}>
-        <div className={styles.progress} style={{ width: `${progressPercentage}%` }}>
+          <div className={styles.progress} style={{ width: `${progressPercentage}%` }}>
 
-          </div>
-        </div>
-        
+          </div>        
+        </div>        
         <div className={styles.score}>
         <PlayerScoreCounter nextWord={nextWord}/>
         </div>
+
+        <div className={styles.Timer}><Timer/></div>
+        
 
         <div className={styles.potionsBox}>
           <HintPotion/>
