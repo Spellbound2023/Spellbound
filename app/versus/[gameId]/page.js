@@ -136,6 +136,8 @@ const versusPage = ({ params }) => {
         console.log("The game has ended");
       });
 
+      
+
       // console.log("The game has ended");
       versusSocket.emit("userReady");
 
@@ -165,6 +167,13 @@ const versusPage = ({ params }) => {
     setGameEnded(false);
   };
 
+  const emitSocketEvent = (eventName, data) => { //for passing socket.emits to components
+    if (versusSocket) {
+      versusSocket.emit(eventName, data);
+    }
+  };
+  
+
   return (
     <>
       <SuccessPopup key={isCorrect} isCorrect={isCorrect}/>
@@ -182,7 +191,13 @@ const versusPage = ({ params }) => {
           <Image src="/images/PlayerCharacter.png" width={300} height={300} />
         </div>
         <div className={styles.playerBox}>
-          <PlayerBox score={score} setScore={setScore} setIsCorrect={setIsCorrect} nextWord={nextWord}/>
+        <PlayerBox 
+            score={score} 
+            setScore={setScore} 
+            setIsCorrect={setIsCorrect} 
+            nextWord={nextWord}
+            emitSocketEvent={emitSocketEvent} 
+            />
         </div>
         <div className={styles.statusBar}>
           <StatusBox score={score} />

@@ -6,24 +6,19 @@ import WordInput from "../../classic/WordInput";
 import styles from "../../../styles/versusGameBox.module.css"
 import { checkValidInput, upperCaseFirstLetter } from "@/utils/utils";
 import SuccessPopup from "../../classic/successPopup";
-<<<<<<< HEAD
 import ScoreCounter from "../../classic/scoreCount";
 import PlayerScoreCounter from "./playerScoreCounter";
-import next from "next";
-import io from "socket.io-client";
 
-=======
->>>>>>> c61389d6b0f7962a109ac03ae808ab190830fdf9
+const ATTEMPTS_PER_WORD = 3; //for backend logic turn this from
 
-const ATTEMPTS_PER_WORD = 3;
-let socket;
 
 /* Container for WordInfo and WordInput */
-const GameBox = ({ score, setScore, setIsCorrect, nextWord }) => {
+const GameBox = ({ score, setScore, setIsCorrect, nextWord, emitSocketEvent }) => {
   const [word, setWord] = useState("");
   const [definition, setDefinition] = useState([]);
   const [audioUrl, setAudioUrl] = useState("");
   const [attempts, setAttempts] = useState(0);
+
   
 
 
@@ -38,7 +33,7 @@ const GameBox = ({ score, setScore, setIsCorrect, nextWord }) => {
   const setupRound = () => {
     if (nextWord && nextWord.wordData) {
       setWord(nextWord.wordData.word);
-      console.log("PENIS " + nextWord.wordData.word)
+      console.log("WORD: " + nextWord.wordData.word)
       setDefinition(nextWord.wordData.definition);
       setAudioUrl(nextWord.wordData.audioUrl);
       setAttempts(0);
@@ -48,30 +43,24 @@ const GameBox = ({ score, setScore, setIsCorrect, nextWord }) => {
 
   const checkUserInput = (input) => {
     if (checkValidInput(input, word)) {
+    var pointsToAdd = 0;
 
-    if (attempts === 0) {
-      pointsToAdd = 3; // Correct on the first try
-    } else if (attempts === 1) {
-      pointsToAdd = 2; // Correct on the second try
-    } else if (attempts === 2) {
-      pointsToAdd = 1; // Correct on the third try
-    }
-
-      setIsCorrect(true) //CORRECT POPUP
       try {
-        socket.emit("correctAttempt", attempts) //emit correct attempt and amnt of attempts to backend
+        setIsCorrect(true) //CORRECT POPUP
+        emitSocketEvent("correctAttempt", (attempts + 1)) //emit correct attempt and amnt of attempts to backend
+        console.log(attempts)
       } catch (error) {
-        <p>eat my ass</p>
+        console.log("couldnt emit")
       }
 /*       setTimeout(() => setIsCorrect(null), 1500);*/    
       } else {
       if (attempts + 1 >= ATTEMPTS_PER_WORD) {
         
-        setIsCorrect(false) //INCORRECT POPUP
         try{
-          socket.emit("incorrectAttempt")
+          setIsCorrect(false) //INCORRECT POPUP
+          emitSocketEvent("incorrectAttempt")
         } catch (error){
-          <p>eat more ass</p>
+          console.log("couldnt emit")
         }
         alert(
           `Wrong. Again. \n Out of attempts! Correct spelling: \"${word}\"`
@@ -80,13 +69,17 @@ const GameBox = ({ score, setScore, setIsCorrect, nextWord }) => {
         setIsCorrect(false) //INCORRECT POPUP
         setAttempts(attempts + 1);
         try{
-          socket.emit("incorrectAttempt")
+          emitSocketEvent.emit("incorrectAttempt")
         } catch (error){
-          <p>eat more ass</p>
         }
       }
     }
   };
+
+  const skipWord = () => {
+    emitSocketEvent("skipWord")
+
+  }
 
   useEffect(() => {
     setupRound();
@@ -121,7 +114,7 @@ const GameBox = ({ score, setScore, setIsCorrect, nextWord }) => {
           <a
             className={`${styles.link} ${styles.linkRight}`}
             onClick={() => {
-              setupRound();
+              skipWord();
             }}
           >
             <div>
