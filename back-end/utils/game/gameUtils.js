@@ -14,7 +14,7 @@ const { Mutex } = require("async-mutex");
 const WORDLIST_INITIAL_SIZE = 10;
 const WORDLIST_INCREMENT_SIZE = 3;
 const SLEEP_TIME_MS = 1000;
-const DEFAULT_POINTS_TARGET = 5;
+const DEFAULT_POINTS_TARGET = 30;
 const DEFAULT_GAME_TIME_MS = 5 * 60 * 1000; // 5 minutes
 // determines how often the players get awarded potions
 const POTION_AWARD_MILESTONE = 3;
