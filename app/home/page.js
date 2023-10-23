@@ -7,10 +7,10 @@ import OpponentGamebox from "../../components/OpponentGamebox";
 /* Homepage. */
 export default function Home() {
   return (
-    <main>
+    <main style={{ height: "100vh" }}>
       <div className={styles.Header}>
         <h1>Select a gamemode</h1>
-        <HomepageNav/>
+        <HomepageNav />
       </div>
       <MainMenu />
     </main>

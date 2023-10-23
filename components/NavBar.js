@@ -8,10 +8,11 @@ import { signOut, useSession } from "next-auth/react";
 const NavBar = ({ showDifficultyText = true }) => {
   const { data: session } = useSession();
   const menuItems = [
-    { href: '/home', label: 'Home' },
-    { href: '#', label: 'Stats' },
-    { href: '#', label: 'Challenges' },
-    { href: '#', label: '1v1 Mode' },
+    { href: "/", label: "Main" },
+    { href: "/home", label: "Home" },
+    // { href: "#", label: "Stats" },
+    // { href: "#", label: "Challenges" },
+    { href: "/versus", label: "Versus" },
   ];
 
   return (
@@ -25,7 +26,6 @@ const NavBar = ({ showDifficultyText = true }) => {
         backgroundColor: "transparent",
         color: "#333",
         width: "100%", // Add this line
-
       }}
     >
       <div style={{ flex: 1, textAlign: "left" }}>
@@ -39,7 +39,7 @@ const NavBar = ({ showDifficultyText = true }) => {
           <DifficultyText />
         </div>
       ) : (
-        <div style={{ flex: 1 }}></div>  // Empty placeholder div
+        <div style={{ flex: 1 }}></div> // Empty placeholder div
       )}
       {session && (
         <a onClick={signOut} style={{ color: "white", padding: 20 }}>
