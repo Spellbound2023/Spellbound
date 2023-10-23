@@ -277,7 +277,6 @@ const versusPage = ({ params }) => {
             score={score}
           />
         </div>
-        <button onClick={() => setGameEnded(true)}>End Game</button>
 
         {gameEnded && (
           <GameEndDisplay
