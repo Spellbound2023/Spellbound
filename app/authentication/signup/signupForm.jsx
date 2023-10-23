@@ -19,6 +19,11 @@ const handleSubmit = async (e) => {
     },
     body: JSON.stringify(data),
   });
+  
+  if (response.status == 201) {
+    alert("Registration success!");
+    //redirect("/");
+  }
 
   if (response.status != 201) {
     alert("Registration failed");
