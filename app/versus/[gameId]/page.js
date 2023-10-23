@@ -26,12 +26,12 @@ const versusPage = ({ params }) => {
   const [opponentPotions, setOpponentPotions] = useState([]);
   const [word, setWord] = useState("");
   const [isCorrect, setIsCorrect] = useState(null);
+  const [gameEndMessage, setGameEndMessage] = useState("");
   const { data: session, status } = useSession();
   const { push } = useRouter();
 
   //Completion score, change if you want
   const completionThreshold = 30;
-
 
   const [nextWord, setNextWord] = useState({
     wordData: { definition: [], audioUrl: "" },
@@ -41,9 +41,6 @@ const versusPage = ({ params }) => {
   const [opponentsPoints, setOpponentsPoints] = useState(0);
   const [opponentStreak, setOpponentStreak] = useState(0);
   const [opponentIsTyping, setOpponentIsTyping] = useState(false);
-
-
-
 
   useEffect(() => {
     console.log(session);
@@ -61,7 +58,7 @@ const versusPage = ({ params }) => {
       versusSocket.on("opponentUsername", (opponentUsername) => {
         console.log("The opponents username is: ", opponentUsername);
         setOpponentUsername(opponentUsername);
-        console.log(opponentUsername)
+        console.log(opponentUsername);
       });
 
       // Listen for incoming messages
@@ -84,10 +81,10 @@ const versusPage = ({ params }) => {
       // Listen for incoming messages
       versusSocket.on("nextWord", (nextWord) => {
         console.log("nextWord: ", nextWord);
-        setNextWord(nextWord)
+        setNextWord(nextWord);
       });
 
-     /*  versusSocket.on("opponentNextWord", (opponentNextWord) => {
+      /*  versusSocket.on("opponentNextWord", (opponentNextWord) => {
         console.log("opponentNextWord: ", opponentNextWord);
         setOpponentNextWord(opponentNextWord)
       }); */
@@ -105,13 +102,15 @@ const versusPage = ({ params }) => {
         push(url, undefined, { shallow: false });
       });
 
-      versusSocket.on("userWon", () => {
-        console.log("You have won the game!");
-      });
+      // versusSocket.on("userWon", () => {
+      //   console.log("You have won the game!");
+      //   setIsWin(true);
+      // });
 
-      versusSocket.on("opponentWon", () => {
-        console.log("Your opponent ", opponentUsername, " has won the game!");
-      });
+      // versusSocket.on("opponentWon", () => {
+      //   console.log("Your opponent ", opponentUsername, " has won the game!");
+      //   setIsWin(false);
+      // });
 
       versusSocket.on("potionsChange", (potions) => {
         console.log("Your potions: ", potions);
@@ -124,7 +123,7 @@ const versusPage = ({ params }) => {
         setOpponentsPoints(points);
         setOpponentStreak(streak);
       });
-      
+
       versusSocket.on("opponentPotionsChange", (potions) => {
         console.log("Your opponent has the following potions: ", potions);
         setOpponentPotions(potions);
@@ -146,23 +145,62 @@ const versusPage = ({ params }) => {
         console.log("Your opponents potion ", potion, " has worn off");
       });
 
-      versusSocket.on("opponentQuit", () => {
-        console.log("Your opponent has quit");
-      });
+      // versusSocket.on("opponentQuit", () => {
+      //   console.log("Your opponent has quit");
+      // });
 
-      versusSocket.on("opponentDisconnected", () => {
-        console.log("Your opponent has disconnected");
-      });
+      // versusSocket.on("opponentDisconnected", () => {
+      //   console.log("Your opponent has disconnected");
+      // });
 
-      versusSocket.on("timerEnded", () => {
-        console.log("The game timer has ended");
-      });
+      // versusSocket.on("timerEnded", () => {
+      //   console.log("The game timer has ended");
+      // });
 
-      versusSocket.on("gameEnded", () => {
+      versusSocket.on("gameEnded", (gameEndInfo) => {
         console.log("The game has ended");
-      });
+        console.log(gameEndInfo);
 
-      
+        if (gameEndInfo.winner === session.user.username) {
+          setIsWin(true);
+        } else if (gameEndInfo.winner === null) {
+          // the game is a draw
+          setIsWin(null);
+        } else {
+          setIsWin(false);
+        }
+
+        setScore(gameEndInfo.points);
+        setOpponentScore(gameEndInfo.opponentPoints);
+
+        let message = "";
+        // The possible values of endReason are defined in /back-end/utils/game/enum.js
+        switch (gameEndInfo.endReason) {
+          case "TIMER_ENDED":
+            message = "The timer has ended";
+            break;
+          case "TARGET_REACHED":
+            message = "The points target has been reached";
+            break;
+          case "USER_QUIT":
+            if (gameEndInfo.endingPlayer === session.user.username) {
+              message = "You have quit the game";
+            } else {
+              message = "Your opponent has quit the game";
+            }
+            break;
+          case "USER_DISCONNECTED":
+            if (gameEndInfo.endingPlayer === session.user.username) {
+              message = "You have disconnected from the game";
+            } else {
+              message = "Your opponent has disconnected from the game";
+            }
+            break;
+        }
+        setGameEndMessage(message);
+
+        setGameEnded(true);
+      });
 
       // console.log("The game has ended");
       versusSocket.emit("userReady");
@@ -188,34 +226,34 @@ const versusPage = ({ params }) => {
 
   const handlePlayAgain = () => {
     // Implement your logic to start a new game
-    setPlayerScore(0);
-    setOpponentScore(0);
-    setGameEnded(false);
+    // setPlayerScore(0);
+    // setOpponentScore(0);
+    // setGameEnded(false);
   };
 
-  const emitSocketEvent = (eventName, data) => { //for passing socket.emits to components
+  const emitSocketEvent = (eventName, data) => {
+    //for passing socket.emits to components
     if (versusSocket) {
       versusSocket.emit(eventName, data);
     }
   };
-  
 
   return (
     <>
-      <SuccessPopup key={isCorrect} isCorrect={isCorrect}/>
+      <SuccessPopup key={isCorrect} isCorrect={isCorrect} />
       <div className={styles.navContainer}>
         <NavBar showDifficultyText={false} />
       </div>
       <div className={styles.versusContainer}>
         <div className={styles.opponentBox}>
-        <OpponentBox 
-        opponentScore={opponentScore} 
-        completionThreshold={completionThreshold} 
-        isTyping={opponentIsTyping} 
-        username={opponentUsername} 
-        points = {opponentsPoints}
-        streak = {opponentStreak}
-        />
+          <OpponentBox
+            opponentScore={opponentScore}
+            completionThreshold={completionThreshold}
+            isTyping={opponentIsTyping}
+            username={opponentUsername}
+            points={opponentsPoints}
+            streak={opponentStreak}
+          />
         </div>
         <div className={styles.Character}>
           <Image src="/images/opponentCharacter.png" width={250} height={250} />
@@ -224,28 +262,32 @@ const versusPage = ({ params }) => {
           <Image src="/images/PlayerCharacter.png" width={300} height={300} />
         </div>
         <div className={styles.playerBox}>
-        <PlayerBox 
-            score={score} 
-            setScore={setScore} 
-            setIsCorrect={setIsCorrect} 
+          <PlayerBox
+            score={score}
+            setScore={setScore}
+            setIsCorrect={setIsCorrect}
             nextWord={nextWord}
-            emitSocketEvent={emitSocketEvent} 
-            />
+            emitSocketEvent={emitSocketEvent}
+          />
         </div>
         <div className={styles.statusBar}>
-          <StatusBox nextWord={nextWord} completionThreshold={completionThreshold} score={score}/>
+          <StatusBox
+            nextWord={nextWord}
+            completionThreshold={completionThreshold}
+            score={score}
+          />
         </div>
         <button onClick={() => setGameEnded(true)}>End Game</button>
 
-      {gameEnded && (
-        <GameEndDisplay
-          isWin={isWin}
-          PlayerScore={score}
-          opponentScore={opponentScore}
-          onPlayAgain={handlePlayAgain}
-        />
-      )}
-
+        {gameEnded && (
+          <GameEndDisplay
+            isWin={isWin}
+            PlayerScore={score}
+            opponentScore={opponentScore}
+            gameEndMessage={gameEndMessage}
+            onPlayAgain={handlePlayAgain}
+          />
+        )}
       </div>
     </>
   );
