@@ -211,3 +211,29 @@
 
   .readyButton:disabled{opacity: 50%;}
  
+  .growAndShrink {
+    animation: growAndShrink 0.5s; /* You can adjust the duration as needed */
+  }
+
+  @keyframes growAndShrink {
+    0%, 100% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.5);
+    }
+  }
+  
+  .OpponentgrowAndShrink {
+    animation: OpponentgrowAndShrink 0.5s; /* You can adjust the duration as needed */
+  }
+
+  @keyframes OpponentgrowAndShrink {
+    0%, 100% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(3);
+    }
+  }
+  

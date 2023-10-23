@@ -1,6 +1,22 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import versusStyles from '../styles/versus.module.css';
 
 const PotionsRow = () => {
+
+    const [animate, setAnimate] = useState(false);
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setAnimate(!animate);
+        }, 3000);  // 3 seconds
+
+        return () => {
+            clearInterval(interval);
+        };
+    }, [animate]);
+
+    const potionClass = animate ? versusStyles.OpponentgrowAndShrink : '';
+
     const styles = {
         container: {
             display: 'flex',
@@ -27,13 +43,13 @@ const PotionsRow = () => {
     return (
         <div style={styles.container}>
             <button style={styles.button}>
-                <img src="/images/dblptsPotion.png" alt="dblpts Potion" style={styles.image} />
+                <img src="/images/dblptsPotion.png" alt="dblpts Potion" style={styles.image} className={potionClass}/>
             </button>
             <button style={styles.button}>
-                <img src="/images/HintPotion.png" alt="Hint Potion" style={styles.image} />
+                <img src="/images/HintPotion.png" alt="Hint Potion" style={styles.image} className={potionClass}/>
             </button>
             <button style={styles.button}>
-                <img src="/images/freezePotion.png" alt="Freeze Potion" style={styles.image} />
+                <img src="/images/freezePotion.png" alt="Freeze Potion" style={styles.image} className={potionClass}/>
             </button>
         </div>
     );
