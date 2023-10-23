@@ -13,8 +13,14 @@
     color: #FFE150; 
 }
 
-.Timer{padding-left:45%;}
-
+.Timer{
+  position: absolute;
+  margin-top: 0.5rem;
+  left: 60%;
+  font-family:Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+  font-size: xx-large;
+  color: gold;
+}
 
 .cardContainer:not(.PlayerCardContainer){
     height: 100%;
@@ -61,16 +67,29 @@
     float: left;
     background-color: #434343;
     width: 45%;
-    height: 60%;
+    height: 40%;
     margin: 1%;  
     border-radius: 50px;
+    position: relative;
 }
 
 .progress{
     background: linear-gradient(90deg, #FFE863 0%, #F5BD1F 100%);
-    width: 60%;
     height: 100%;
     border-radius: 50px;
+}
+
+.scorePercentage{
+  position: absolute;
+  top: 0.3rem;
+  left: 1rem;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.opponentScorePercentage{
+  position: absolute;
+  left: 1rem;
+  font-family: Arial, Helvetica, sans-serif;
 }
 
 .score{position: absolute; left: 50%;}
@@ -150,4 +169,43 @@
     border: none;
   }
 
+
+  .gameStartContainer{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999999;
+  }
+
+  .startContent{
+    position: relative;
+    height: 30%;
+    width: 35%;
+    background: linear-gradient(180deg, #722E9A 0%, #522882 100%);
+    padding: 2%;
+    border-radius: 15px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
+    color: lightgrey;
+    font-family: Arial, Helvetica, sans-serif;
+    text-align: center;
+  }
+
+  .readyButton{
+    background: green;
+    color: white;
+    padding:1rem;
+    border-radius: 10px;
+    font-size: 20px;
+    outline: none;
+    border: none;
+    margin: 20% auto 5% auto;
+  }
+
+  .readyButton:disabled{opacity: 50%;}
  

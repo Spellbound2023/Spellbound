@@ -5,19 +5,22 @@ import HintPotion from './potions/hintPotion'
 import FreezePotion from './potions/freezePotion'
 import DblPointsPotion from './potions/dblPointsPotion'
 import PlayerScoreCounter from './playerScoreCounter'
+import CompletionBar from './completionBar'
+import Timer from './timer'
 
-const StatusBox = ({ nextWord }) => {
+
+const StatusBox = ({ nextWord, score, completionThreshold }) => {
   return (
     <div className={styles.cardContainer}>
-        <div className={styles.progressBar}>
-          <div className={styles.progress}>
 
-          </div>
-        </div>
+      <CompletionBar score={score} completionThreshold={completionThreshold}/>
         
         <div className={styles.score}>
         <PlayerScoreCounter nextWord={nextWord}/>
         </div>
+
+        <div className={styles.Timer}><Timer/></div>
+        
 
         <div className={styles.potionsBox}>
           <HintPotion/>

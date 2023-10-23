@@ -4,7 +4,7 @@ import Image from 'next/image'
 const DblPointsPotion = () => {
   return (
     <div >
-      <button type="button" style={{ background: "transparent", padding: "0", border: 'none', }}>
+      <button type="button" style={{ background: "transparent", padding: "0", border: 'none', cursor: 'pointer'}}>
             <img src='/images/dblptsPotion.png' width={50} height={50} />
         </button>
     </div>
