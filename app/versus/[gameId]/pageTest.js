@@ -6,32 +6,26 @@ import OpponentBox from "./opponentCard";
 import PlayerBox from "./playerCard";
 import StatusBox from "./statusBar";
 import NavBar from "@/components/NavBar";
+import TopBar from "./topBar";
 import GameEndDisplay from "./gameEnd";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import io from "socket.io-client";
 import { redirect } from "next/navigation";
-import SuccessPopup from "../../classic/successPopup";
 
 let versusSocket;
 
 const versusPage = ({ params }) => {
   const [gameEnded, setGameEnded] = useState(false);
   const [isWin, setIsWin] = useState(null); // Set to true if you win, false if you lose
-  const [score, setScore] = useState(0); // Replace with the actual score
+  const [PlayerScore, setPlayerScore] = useState(81); // Replace with the actual score
   const [opponentScore, setOpponentScore] = useState(15); // Replace with the actual score
   const [opponentUsername, setOpponentUsername] = useState("");
   const [potions, setPotions] = useState([]);
   const [opponentPotions, setOpponentPotions] = useState([]);
-  const [word, setWord] = useState("");
-  const [isCorrect, setIsCorrect] = useState(null);
   const { data: session, status } = useSession();
   const { push } = useRouter();
-  const [nextWord, setNextWord] = useState({
-    wordData: { definition: [], audioUrl: "" },
-    points: 0,
-    streak: 0,
-  });
+
   useEffect(() => {
     console.log(session);
     if (status === "authenticated") {
@@ -59,18 +53,17 @@ const versusPage = ({ params }) => {
       versusSocket.on("gameStarted", (timerStartTimestamp) => {
         console.log("The game has started at: ", timerStartTimestamp);
 
-        /* versusSocket.emit("typing");
+        versusSocket.emit("typing");
         versusSocket.emit("correctAttempt", 1);
         versusSocket.emit("correctAttempt", 2);
         versusSocket.emit("correctAttempt", 3);
-        versusSocket.emit("incorrectAttempt"); */
-        //versusSocket.emit("skipWord");
+        versusSocket.emit("incorrectAttempt");
+        versusSocket.emit("skipWord");
       });
 
       // Listen for incoming messages
       versusSocket.on("nextWord", (nextWord) => {
         console.log("nextWord: ", nextWord);
-        setNextWord(nextWord)
       });
 
       versusSocket.on("opponentTyping", () => {
@@ -84,6 +77,10 @@ const versusPage = ({ params }) => {
 
       versusSocket.on("userWon", () => {
         console.log("You have won the game!");
+      });
+
+      versusSocket.on("gameDraw", () => {
+        console.log("The game is a draw");
       });
 
       versusSocket.on("opponentWon", () => {
@@ -140,19 +137,19 @@ const versusPage = ({ params }) => {
       versusSocket.emit("userReady");
 
       // setTimeout(() => {
-      //   versusSocket.emit("userQuits");
-      // }, 25000);
+      //   if (session.user.username === "bla1") versusSocket.emit("userQuits");
+      // }, 2000);
     }
   }, [status]);
 
-  /* useEffect(() => {
+  useEffect(() => {
     if (versusSocket) {
       versusSocket.emit("potionUse", potions[0]);
       versusSocket.emit("correctAttempt", 1);
       versusSocket.emit("correctAttempt", 2);
       versusSocket.emit("correctAttempt", 3);
     }
-  }, [potions]); */
+  }, [potions]);
 
   if (status === "loading") return null;
 
@@ -167,13 +164,12 @@ const versusPage = ({ params }) => {
 
   return (
     <>
-      <SuccessPopup key={isCorrect} isCorrect={isCorrect}/>
       <div className={styles.navContainer}>
         <NavBar showDifficultyText={false} />
       </div>
       <div className={styles.versusContainer}>
         <div className={styles.opponentBox}>
-          <OpponentBox opponentScore={opponentScore}/>
+          <OpponentBox />
         </div>
         <div className={styles.Character}>
           <Image src="/images/opponentCharacter.png" width={200} height={200} />
@@ -182,22 +178,21 @@ const versusPage = ({ params }) => {
           <Image src="/images/PlayerCharacter.png" width={300} height={300} />
         </div>
         <div className={styles.playerBox}>
-          <PlayerBox score={score} setScore={setScore} setIsCorrect={setIsCorrect} nextWord={nextWord}/>
+          <PlayerBox />
         </div>
         <div className={styles.statusBar}>
-          <StatusBox score={score} />
+          <StatusBox />
         </div>
         <button onClick={() => setGameEnded(true)}>End Game</button>
 
-      {gameEnded && (
-        <GameEndDisplay
-          isWin={isWin}
-          PlayerScore={score}
-          opponentScore={opponentScore}
-          onPlayAgain={handlePlayAgain}
-        />
-      )}
-
+        {gameEnded && (
+          <GameEndDisplay
+            isWin={isWin}
+            PlayerScore={PlayerScore}
+            opponentScore={opponentScore}
+            onPlayAgain={handlePlayAgain}
+          />
+        )}
       </div>
     </>
   );

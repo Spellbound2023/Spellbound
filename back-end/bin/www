@@ -49,6 +49,7 @@ const {
   checkGameActive,
   playerGetsPotion,
   getSocketCallbackMutex,
+  checkGameExists,
 } = require("../utils/game/gameUtils");
 const {
   userStates,
@@ -334,7 +335,10 @@ versus.on("connection", (socket) => {
     setUserConnected(socket.gameId, socket);
 
     // set the opponents username on the socket
-    socket.opponent = getOpponentUsername(socket.gameId, socket.username);
+    socket.emit(
+      "opponentUsername",
+      getOpponentUsername(socket.gameId, socket.username)
+    );
 
     // TODO: When a user diconnects, instead of ending the game, set a timer for a few seconds and
     // wait for that user to connect again. If they do not connect within the given time, end the game
@@ -604,6 +608,9 @@ versus.on("connection", (socket) => {
       let opponentSocket = getOpponentSocket(socket.gameId, socket.username);
       opponentSocket.emit("opponentQuit");
 
+      // end the game gracefully
+      endGame(socket.gameId);
+
       // close the connection with the current player
       socket.disconnect();
       // process.stdout.write(" \\\\\\\\ Mutex released //// \n");
@@ -615,7 +622,7 @@ versus.on("connection", (socket) => {
     const mutex = getSocketCallbackMutex(socket.gameId);
     mutex.runExclusive(() => {
       // process.stdout.write(" //// Mutex acquired \\\\\\\\ \n");
-      if (!checkGameValidity(socket.gameId)) return;
+      if (!checkGameExists(socket.gameId)) return;
 
       // inform opponent that the current player has disconnected
       let opponentSocket = getOpponentSocket(socket.gameId, socket.username);

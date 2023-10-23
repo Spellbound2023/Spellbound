@@ -86,6 +86,10 @@ function checkGameActive(gameId) {
   return gameId in games && games[gameId].gameStatus === gameStates.ACTIVE;
 }
 
+function checkGameExists(gameId) {
+  return gameId in games;
+}
+
 function setUserConnected(gameId, socket) {
   if (!(socket.username in games[gameId].players)) {
     console.error("setting user ", socket.username, " as connected failed.");
@@ -160,6 +164,17 @@ function startGame(gameId) {
 
       // end the game on the backend
       endGame(gameId);
+    } else {
+      // handle draw case
+      let winnerSocket = getPlayerSocket(gameId, winner);
+      let loserSocket = getOpponentSocket(gameId, winner);
+      winnerSocket.emit("timerEnded");
+      loserSocket.emit("timerEnded");
+      winnerSocket.emit("gameDraw");
+      loserSocket.emit("gameDraw");
+
+      // end the game on the backend
+      endGame(gameId);
     }
   }, DEFAULT_GAME_TIME_MS);
 
@@ -169,6 +184,7 @@ function startGame(gameId) {
 function endGame(gameId) {
   if (games[gameId].gameStatus !== gameStates.ENDED) {
     games[gameId].gameStatus = gameStates.ENDED;
+    console.log(" ======== Ending the game ============== ");
     for (let player in games[gameId].players) {
       let socket = getPlayerSocket(gameId, player);
       socket.emit("gameEnded");
@@ -223,16 +239,25 @@ function getOpponentUsername(gameId, username) {
   }
 }
 
+// checks for the game existing are done at multiple points
+// since this function can lead to race conditions and also
+// unnecessarily hold up the event loop
 async function addWords(gameId, numWords) {
   // console.log(`Adding ${numWords} words to the wordList`);
+  if (!checkGameExists(gameId)) return;
+
   for (let i = 0; i < numWords; ++i) {
+    if (!checkGameExists(gameId)) return;
+    let newWord = await getWords(1);
     const addWordMutex = getAddWordMutex(gameId);
     await addWordMutex.runExclusive(async () => {
-      games[gameId].wordList = games[gameId].wordList.concat(await getWords(1));
+      if (!checkGameExists(gameId)) return;
+      games[gameId].wordList = games[gameId].wordList.concat(newWord);
       // console.log("Added a word!");
     });
   }
 
+  if (!checkGameExists(gameId)) return;
   console.log(" --- new wordList ---");
   console.log(games[gameId].wordList.map((wordData) => wordData.word));
   console.log(" -----------------------");
@@ -250,6 +275,7 @@ async function getNextWord(gameId, username) {
     // the asynchronous add functions have not completed yet.
     // Sleep for some time to let these functions load some
     // words in
+
     // console.log(
     //   "The wordlist has only ",
     //   games[gameId].wordList.length,
@@ -286,30 +312,6 @@ function modifyPoints(gameId, username, event) {
     console.error("The points modifier event ", event, " is not valid");
     return null;
   }
-
-  // if (event === pointsModifiers.SUCCESS_FIRST_ATTEMPT) {
-  //   games[gameId].players[username].points += potionPointsModifier(
-  //     gameId,
-  //     username,
-  //     pointsModifierPoints[event]
-  //   );
-  // } else if (event === pointsModifiers.SUCCESS_SECOND_ATTEMPT) {
-  //   games[gameId].players[username].points += potionPointsModifier(
-  //     gameId,
-  //     username,
-  //     pointsModifierPoints[event]
-  //   );
-  // } else if (event === pointsModifiers.SUCCESS_THIRD_ATTEMPT) {
-  //   games[gameId].players[username].points += potionPointsModifier(
-  //     gameId,
-  //     username,
-  //     pointsModifierPoints[event]
-  //   );
-  // } else if (event === pointsModifiers.UNSUCCESSFUL) {
-  // games[gameId].players[username].points += pointsModifierPoints[event];
-  // } else if (event === pointsModifiers.SKIP) {
-  // games[gameId].players[username].points += pointsModifierPoints[event];
-  // }
 
   // get the points associated with the event and apply any potion effects
   games[gameId].players[username].points += potionPointsModifier(
@@ -420,6 +422,7 @@ exports.getSocketCallbackMutex = getSocketCallbackMutex;
 exports.getGameUrl = getGameUrl;
 exports.checkGameValidity = checkGameValidity;
 exports.checkGameActive = checkGameActive;
+exports.checkGameExists = checkGameExists;
 exports.setUserConnected = setUserConnected;
 exports.setUserDisconnected = setUserDisconnected;
 exports.setUserReady = setUserReady;
