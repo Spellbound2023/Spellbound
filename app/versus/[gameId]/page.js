@@ -204,7 +204,7 @@ const versusPage = ({ params }) => {
     <>
       <SuccessPopup key={isCorrect} isCorrect={isCorrect}/>
       <div className={styles.navContainer}>
-        <NavBar showDifficultyText={false} />
+        <NavBar showDifficultyText={false} TitleText={"Versus"}/>
       </div>
       <div className={styles.versusContainer}>
         <div className={styles.opponentBox}>

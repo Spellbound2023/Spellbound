@@ -5,7 +5,7 @@ import DifficultyText from "./DifficultyText";
 import HamburgerButton from "./HamburgerButton";
 import { signOut, useSession } from "next-auth/react";
 
-const NavBar = ({ showDifficultyText = true }) => {
+const NavBar = ({ showDifficultyText = true, TitleText}) => {
   const { data: session } = useSession();
   const menuItems = [
     { href: "/", label: "Main" },
@@ -32,7 +32,7 @@ const NavBar = ({ showDifficultyText = true }) => {
         <HamburgerButton items={menuItems} />
       </div>
       <div style={{ flex: 2, textAlign: "center" }}>
-        <SpellBoundTitle />
+        <SpellBoundTitle text={TitleText}/>
       </div>
       {showDifficultyText ? (
         <div style={{ flex: 1, textAlign: "right" }}>

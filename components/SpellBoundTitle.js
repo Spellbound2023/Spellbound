@@ -1,7 +1,7 @@
 // components/SpellBoundTitle.js
 import React from 'react';
 
-const SpellBoundTitle = () => {
+const SpellBoundTitle = ({ text }) => {
   const containerStyle = {
     display: 'flex',
     flexDirection: 'column',
@@ -26,7 +26,8 @@ const SpellBoundTitle = () => {
   return (
     <div style={containerStyle}>
       <div style={titleStyle}>
-        <span>Spell</span>
+        {text}
+        {/*<span>Spell</span>
         <span style={boundStyle}>Bound</span> {/* Apply different styles to "Bound" */}
       </div>
     </div>

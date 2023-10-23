@@ -9,7 +9,7 @@ const Page = () => {
   return (
     <main className={styles.container}>
       <div className={styles.navContainer}>
-        <NavBar />
+        <NavBar showDifficultyText={false} TitleText={"Classic"}/>
       </div>
       <div className={styles.gameBoxContainer}>
         <GameBox />
