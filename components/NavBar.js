@@ -4,6 +4,7 @@ import SpellBoundTitle from "./SpellBoundTitle";
 import DifficultyText from "./DifficultyText";
 import HamburgerButton from "./HamburgerButton";
 import { signOut, useSession } from "next-auth/react";
+import HomePageNav from "./HomepageNav";
 
 const NavBar = ({ showDifficultyText = true, TitleText}) => {
   const { data: session } = useSession();
@@ -42,9 +43,7 @@ const NavBar = ({ showDifficultyText = true, TitleText}) => {
         <div style={{ flex: 1 }}></div> // Empty placeholder div
       )}
       {session && (
-        <a onClick={signOut} style={{ color: "white", padding: 20 }}>
-          Sign Out
-        </a>
+        <HomePageNav/>
       )}
     </nav>
   );
