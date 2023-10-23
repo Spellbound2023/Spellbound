@@ -1,7 +1,6 @@
 import styles from "../../styles/classic/WordInput.module.css";
 
-/* Text input and submit button to validate a typed word */
-const WordInput = ({ onSubmitHandler }) => {
+const WordInput = ({ onSubmitHandler, onTypingHandler }) => {
   return (
     <div className={styles.mainContainer}>
       <div className={styles.inputContainer}>
@@ -11,6 +10,7 @@ const WordInput = ({ onSubmitHandler }) => {
             id="wordInput"
             name="wordInput"
             className={styles.input}
+            onChange={onTypingHandler}
           ></input>
           <br></br>
           <input

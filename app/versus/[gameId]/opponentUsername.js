@@ -1,13 +1,14 @@
 import React from 'react';
 
-const OpponentUsername = () => {
+const OpponentUsername = ({ username }) => {
     const usernameStyle = {
-        color: "#FFD700" 
+        color: "#FFD700",
+        paddingLeft: "1rem"
     };
 
     return (
         <div style={usernameStyle}>
-            opponentusername
+            {username || 'DEBUG USERNAME'}
         </div>
     );
 }

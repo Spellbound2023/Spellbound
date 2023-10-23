@@ -18,6 +18,8 @@ const GameBox = ({ score, setScore, setIsCorrect, nextWord, emitSocketEvent }) =
   const [definition, setDefinition] = useState([]);
   const [audioUrl, setAudioUrl] = useState("");
   const [attempts, setAttempts] = useState(0);
+  const [isTyping, setIsTyping] = useState(false);
+
 
   
 
@@ -69,7 +71,7 @@ const GameBox = ({ score, setScore, setIsCorrect, nextWord, emitSocketEvent }) =
         setIsCorrect(false) //INCORRECT POPUP
         setAttempts(attempts + 1);
         try{
-          emitSocketEvent.emit("incorrectAttempt")
+          emitSocketEvent("incorrectAttempt")
         } catch (error){
         }
       }
@@ -78,8 +80,14 @@ const GameBox = ({ score, setScore, setIsCorrect, nextWord, emitSocketEvent }) =
 
   const skipWord = () => {
     emitSocketEvent("skipWord")
-
   }
+
+  const onTyping = () => {
+    setIsTyping(true);
+    emitSocketEvent("typing")
+
+  };
+  
 
   useEffect(() => {
     setupRound();
@@ -98,7 +106,7 @@ const GameBox = ({ score, setScore, setIsCorrect, nextWord, emitSocketEvent }) =
           />
           </div>
           
-          <WordInput onSubmitHandler={checkUserInput} />
+          <WordInput onSubmitHandler={checkUserInput} onTypingHandler={onTyping} />
 
           <div className={styles.attemptsSkipContainer}>
         <div className={styles.linkContainer}>

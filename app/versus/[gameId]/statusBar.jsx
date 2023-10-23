@@ -6,7 +6,7 @@ import FreezePotion from './potions/freezePotion'
 import DblPointsPotion from './potions/dblPointsPotion'
 import PlayerScoreCounter from './playerScoreCounter'
 
-const StatusBox = ({ score }) => {
+const StatusBox = ({ nextWord }) => {
   return (
     <div className={styles.cardContainer}>
         <div className={styles.progressBar}>
@@ -16,7 +16,7 @@ const StatusBox = ({ score }) => {
         </div>
         
         <div className={styles.score}>
-        <PlayerScoreCounter score={score}/>
+        <PlayerScoreCounter nextWord={nextWord}/>
         </div>
 
         <div className={styles.potionsBox}>

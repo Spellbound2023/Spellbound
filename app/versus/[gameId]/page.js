@@ -12,6 +12,7 @@ import { useRouter } from "next/navigation";
 import io from "socket.io-client";
 import { redirect } from "next/navigation";
 import SuccessPopup from "../../classic/successPopup";
+import next from "next";
 
 let versusSocket;
 
@@ -27,11 +28,19 @@ const versusPage = ({ params }) => {
   const [isCorrect, setIsCorrect] = useState(null);
   const { data: session, status } = useSession();
   const { push } = useRouter();
+
   const [nextWord, setNextWord] = useState({
     wordData: { definition: [], audioUrl: "" },
     points: 0,
     streak: 0,
   });
+  const [opponentIsTyping, setOpponentIsTyping] = useState(false);
+  //const [opponentStreak, setOpponentStreak] = useState(0);
+  const [playerStreak, SetplayerStreak] = useState(0);
+
+
+
+
   useEffect(() => {
     console.log(session);
     if (status === "authenticated") {
@@ -48,6 +57,7 @@ const versusPage = ({ params }) => {
       versusSocket.on("opponentUsername", (opponentUsername) => {
         console.log("The opponents username is: ", opponentUsername);
         setOpponentUsername(opponentUsername);
+        console.log(opponentUsername)
       });
 
       // Listen for incoming messages
@@ -71,10 +81,18 @@ const versusPage = ({ params }) => {
       versusSocket.on("nextWord", (nextWord) => {
         console.log("nextWord: ", nextWord);
         setNextWord(nextWord)
+
+        SetplayerStreak(nextWord.wordData.streak)
+        console.log("streak: ", nextWord.wordData.streak)
       });
 
       versusSocket.on("opponentTyping", () => {
         console.log("The opponent is typing!");
+        setOpponentIsTyping(true);
+
+        setTimeout(() => {
+          setOpponentIsTyping(false);
+        }, 400);
       });
 
       versusSocket.on("redirect", (url) => {
@@ -182,7 +200,11 @@ const versusPage = ({ params }) => {
       </div>
       <div className={styles.versusContainer}>
         <div className={styles.opponentBox}>
-          <OpponentBox opponentScore={opponentScore}/>
+        <OpponentBox 
+        opponentScore={opponentScore} 
+        isTyping={opponentIsTyping} 
+        username={opponentUsername} 
+        />
         </div>
         <div className={styles.Character}>
           <Image src="/images/opponentCharacter.png" width={200} height={200} />
@@ -200,7 +222,7 @@ const versusPage = ({ params }) => {
             />
         </div>
         <div className={styles.statusBar}>
-          <StatusBox score={score} />
+          <StatusBox nextWord={nextWord} />
         </div>
         <button onClick={() => setGameEnded(true)}>End Game</button>
 
