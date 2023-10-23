@@ -26,6 +26,13 @@ exports.potions = Object.freeze({
   HINT: Symbol("hint"),
 });
 
+exports.gameEndReasons = Object.freeze({
+  TIMER_ENDED: Symbol("timer_end"),
+  TARGET_REACHED: Symbol("target_reached"),
+  USER_QUIT: Symbol("user_quit"),
+  USER_DISCONNECTED: Symbol("user_disconnected"),
+});
+
 // The number of milliseconds for which each potion is active
 let potionActiveTimes = {};
 potionActiveTimes[this.potions.DOUBLE_POINTS] = 20000;
