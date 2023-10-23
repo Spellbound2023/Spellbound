@@ -7,7 +7,7 @@ import DblPointsPotion from './potions/dblPointsPotion'
 import PlayerScoreCounter from './playerScoreCounter'
 import CompletionBar from './completionBar'
 
-const StatusBox = ({ score, completionThreshold }) => {
+const StatusBox = ({ score, completionThreshold, freezeEffect }) => {
   return (
     <div className={styles.cardContainer}>
 
@@ -19,7 +19,7 @@ const StatusBox = ({ score, completionThreshold }) => {
 
         <div className={styles.potionsBox}>
           <HintPotion/>
-          <FreezePotion/>
+          <FreezePotion freezeOpponent={freezeEffect}/>
           <DblPointsPotion/>
   
         </div>

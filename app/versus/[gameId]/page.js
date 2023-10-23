@@ -31,6 +31,11 @@ const versusPage = ({ params }) => {
 
   //Completion score, change if you want
   const completionThreshold = 30;
+
+
+  //Potions
+  const [freezeEffect, setFreezeEffect] = useState("1px solid black");
+
   
 
   useEffect(() => {
@@ -132,14 +137,12 @@ const versusPage = ({ params }) => {
         console.log("The game timer has ended");
       });
 
-      if (score >= 5){
-        versusSocket.on("gameEnded", () => {
+      versusSocket.on("gameEnded", () => {
+        if (score >= 5){
           console.log("The game has ended");
           setGameEnded(true)
-          
-        });
-      }
-    
+        }        
+      });    
 
       // console.log("The game has ended");
       versusSocket.emit("userReady");
@@ -170,6 +173,13 @@ const versusPage = ({ params }) => {
     setGameEnded(false);
   };
 
+  const changeFreezeEffect = () => {
+    setFreezeEffect("5px solid blue");
+    setTimeout(() => {
+      setFreezeEffect("1px solid black");
+    }, 5000); // Reset the border after 5 seconds
+  };
+
   return (
     <>
     <GameStart gameId={params.gameId} />
@@ -179,10 +189,10 @@ const versusPage = ({ params }) => {
       </div>
       <div className={styles.versusContainer}>
         <div className={styles.opponentBox}>
-          <OpponentBox opponentScore={opponentScore} completionThreshold={completionThreshold}/>
+          <OpponentBox opponentScore={opponentScore} completionThreshold={completionThreshold} border={freezeEffect}/>
         </div>
         <div className={styles.Character}>
-          <Image src="/images/opponentCharacter.png" width={200} height={200} />
+          <Image src="/images/opponentCharacter.png" width={250} height={250} />
         </div>
         <div className={styles.Character}>
           <Image src="/images/PlayerCharacter.png" width={300} height={300} />
@@ -191,7 +201,7 @@ const versusPage = ({ params }) => {
           <PlayerBox score={score} setScore={setScore} setIsCorrect={setIsCorrect}/>
         </div>
         <div className={styles.statusBar}>
-          <StatusBox score={score} completionThreshold={completionThreshold}/>
+          <StatusBox score={score} completionThreshold={completionThreshold} freezeEffect={changeFreezeEffect}/>
         </div>
         <button onClick={() => setGameEnded(true)}>End Game</button>
 

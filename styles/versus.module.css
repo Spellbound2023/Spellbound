@@ -199,7 +199,6 @@
     outline: none;
     border: none;
     margin: 20% auto 5% auto;
-
   }
 
   .readyButton:disabled{opacity: 50%;}
