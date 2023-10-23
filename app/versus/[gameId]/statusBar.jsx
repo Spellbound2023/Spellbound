@@ -24,7 +24,7 @@ const StatusBox = ({ score, completionThreshold, freezeEffect }) => {
 
         <div className={styles.potionsBox}>
           <HintPotion/>
-          <FreezePotion freezeOpponent={freezeEffect}/>
+          <FreezePotion/>
           <DblPointsPotion/>
   
         </div>

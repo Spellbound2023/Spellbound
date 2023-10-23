@@ -15,7 +15,11 @@
 
 .Timer{
   position: absolute;
+  margin-top: 0.5rem;
   left: 60%;
+  font-family:Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+  font-size: xx-large;
+  color: gold;
 }
 
 .cardContainer:not(.PlayerCardContainer){

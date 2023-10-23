@@ -32,10 +32,6 @@ const versusPage = ({ params }) => {
   //Completion score, change if you want
   const completionThreshold = 30;
 
-
-  //Potions
-  const [freezeEffect, setFreezeEffect] = useState("1px solid black");
-
   
 
   useEffect(() => {
@@ -173,23 +169,15 @@ const versusPage = ({ params }) => {
     setGameEnded(false);
   };
 
-  const changeFreezeEffect = () => {
-    setFreezeEffect("5px solid blue");
-    setTimeout(() => {
-      setFreezeEffect("1px solid black");
-    }, 5000); // Reset the border after 5 seconds
-  };
-
   return (
     <>
-    <GameStart gameId={params.gameId} />
       <SuccessPopup key={isCorrect} isCorrect={isCorrect}/>
       <div className={styles.navContainer}>
         <NavBar showDifficultyText={false} />
       </div>
       <div className={styles.versusContainer}>
         <div className={styles.opponentBox}>
-          <OpponentBox opponentScore={opponentScore} completionThreshold={completionThreshold} border={freezeEffect}/>
+          <OpponentBox opponentScore={opponentScore} completionThreshold={completionThreshold}/>
         </div>
         <div className={styles.Character}>
           <Image src="/images/opponentCharacter.png" width={250} height={250} />
@@ -201,7 +189,7 @@ const versusPage = ({ params }) => {
           <PlayerBox score={score} setScore={setScore} setIsCorrect={setIsCorrect}/>
         </div>
         <div className={styles.statusBar}>
-          <StatusBox score={score} completionThreshold={completionThreshold} freezeEffect={changeFreezeEffect}/>
+          <StatusBox score={score} completionThreshold={completionThreshold}/>
         </div>
         <button onClick={() => setGameEnded(true)}>End Game</button>
 
