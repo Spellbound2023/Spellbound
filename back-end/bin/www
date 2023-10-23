@@ -371,19 +371,22 @@ versus.on("connection", (socket) => {
         opponentSocket.emit("gameStarted", timerStartTimestamp);
 
         // These words should be the same since both players are just starting
-        let playerNextWordData = {
+        let nextWordData = {
           wordData: await getNextWord(gameId, socket.username),
+        };
+        let playerNextWordData = {
+          // wordData: await getNextWord(gameId, socket.username),
           points: getPlayerPoints(gameId, socket.username),
           streak: getPlayerStreak(gameId, socket.username),
         };
         let opponentNextWordData = {
-          wordData: await getNextWord(gameId, opponentSocket.username),
+          // wordData: await getNextWord(gameId, opponentSocket.username),
           points: getPlayerPoints(gameId, opponentSocket.username),
           streak: getPlayerStreak(gameId, opponentSocket.username),
         };
 
-        socket.emit("nextWord", playerNextWordData);
-        opponentSocket.emit("nextWord", opponentNextWordData);
+        socket.emit("nextWord", nextWordData, playerNextWordData);
+        opponentSocket.emit("nextWord", nextWordData, opponentNextWordData);
       }
       // process.stdout.write(" \\\\\\\\ Mutex released //// \n");
     });
