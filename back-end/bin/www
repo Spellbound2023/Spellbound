@@ -30,6 +30,7 @@ const {
   setUserReady,
   gameStartable,
   getOpponentSocket,
+  secondReady,
   startGame,
   checkGameValidity,
   setUserConnected,
@@ -360,9 +361,11 @@ versus.on("connection", (socket) => {
       if (opponentSocket) opponentSocket.emit("opponentReady");
       else return;
 
+      //implement secondReady logic here
+
       if (gameStartable(gameId)) {
         let timerStartTimestamp = startGame(gameId);
-
+        
         // send gameStarted event to both players
         socket.emit("gameStarted", timerStartTimestamp);
         opponentSocket.emit("gameStarted", timerStartTimestamp);

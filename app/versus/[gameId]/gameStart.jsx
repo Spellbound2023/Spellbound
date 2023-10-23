@@ -9,9 +9,10 @@ const GameStart = ({ gameId }) => {
   const [isActive, setIsActive] = useState(true);
   const [ready, setReady] = useState(false);
   const [opponentReady, setOpponentReady] = useState(true);
+  // opponentReady should be set to false for prod
 
-  const handleReady = () => {
-    //versusSocket.emit("playerReady"); ---------------HELP
+  /* const handleReady = () => {
+    versusSocket.emit("playerReady"); //HELP
 
     // Set the "ready" state to true
     setReady(true);
@@ -20,10 +21,10 @@ const GameStart = ({ gameId }) => {
     // Check if both player and opponent are ready
     if (ready && opponentReady) {
       // Emit a socket event to start the game
-      //versusSocket.emit("startGame"); ---------HELP
+      versusSocket.emit("startGame"); //HELP
       
       setIsActive(false)
-    }
+    } */ 
   };
 
   return (

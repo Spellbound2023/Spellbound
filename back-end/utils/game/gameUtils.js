@@ -144,6 +144,11 @@ function gameStartable(gameId) {
   return startable;
 }
 
+// A second ready for both users to accept to start the game.
+function secondReady(gameId) {
+  //write something here
+}
+
 // returns the timestamp at which the game (timer) was started
 function startGame(gameId) {
   games[gameId].gameStatus = gameStates.ACTIVE;
