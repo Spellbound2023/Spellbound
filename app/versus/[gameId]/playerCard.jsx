@@ -8,11 +8,15 @@ import { checkValidInput, upperCaseFirstLetter } from "@/utils/utils";
 import SuccessPopup from "../../classic/successPopup";
 import ScoreCounter from "../../classic/scoreCount";
 import PlayerScoreCounter from "./playerScoreCounter";
+import next from "next";
+import io from "socket.io-client";
+
 
 const ATTEMPTS_PER_WORD = 3;
+let socket;
 
 /* Container for WordInfo and WordInput */
-const GameBox = ({ score, setScore }) => {
+const GameBox = ({ score, setScore, nextWord }) => {
   const [word, setWord] = useState("");
   const [definition, setDefinition] = useState([]);
   const [audioUrl, setAudioUrl] = useState("");
@@ -30,19 +34,18 @@ const GameBox = ({ score, setScore }) => {
   // -> if not then print wrong and reset and rerender
 
   const setupRound = () => {
-    fetch("/api/randword", { cache: "no-store" })
-      .then((response) => response.json())
-      .then((wordData) => {
-        setWord(wordData.word);
-        setDefinition(wordData.definition);
-        setAudioUrl(wordData.audioUrl);
-        setAttempts(0);
-      });
+    if (nextWord && nextWord.wordData) {
+      setWord(nextWord.wordData.word);
+      console.log("PENIS " + nextWord.wordData.word)
+      setDefinition(nextWord.wordData.definition);
+      setAudioUrl(nextWord.wordData.audioUrl);
+      setAttempts(0);
+    }
   };
+  
 
   const checkUserInput = (input) => {
     if (checkValidInput(input, word)) {
-      let pointsToAdd = 0;
 
     if (attempts === 0) {
       pointsToAdd = 3; // Correct on the first try
@@ -53,28 +56,40 @@ const GameBox = ({ score, setScore }) => {
     }
 
       setIsCorrect(true) //CORRECT POPUP
-      setScore(score + pointsToAdd); // Update the score
-
-      setupRound();
-      setTimeout(() => setIsCorrect(null), 1500);
-    } else {
+      try {
+        socket.emit("correctAttempt", attempts) //emit correct attempt and amnt of attempts to backend
+      } catch (error) {
+        <p>eat my ass</p>
+      }
+/*       setTimeout(() => setIsCorrect(null), 1500);*/    
+      } else {
       if (attempts + 1 >= ATTEMPTS_PER_WORD) {
-        setScore((prevScore) => prevScore - 1);
+        
         setIsCorrect(false) //INCORRECT POPUP
+        try{
+          socket.emit("incorrectAttempt")
+        } catch (error){
+          <p>eat more ass</p>
+        }
         alert(
           `Wrong. Again. \n Out of attempts! Correct spelling: \"${word}\"`
         );        
-        setupRound();
-        setTimeout(() => setIsCorrect(null), 1500);
       } else {
         setIsCorrect(false) //INCORRECT POPUP
         setAttempts(attempts + 1);
-        setTimeout(() => setIsCorrect(null), 1500);
+        try{
+          socket.emit("incorrectAttempt")
+        } catch (error){
+          <p>eat more ass</p>
+        }
       }
     }
   };
 
-  useEffect(() => setupRound(), []);
+  useEffect(() => {
+    setupRound();
+  }, [nextWord]);
+  
 
   return (
     <div>
