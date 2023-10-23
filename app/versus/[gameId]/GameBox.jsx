@@ -1,24 +1,23 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import WordInfo from "../../classic/WordInfo";
-import WordInput from "../../classic/WordInput";
-import styles from "../../../styles/versusGameBox.module.css"
+import WordInfo from "./WordInfo";
+import WordInput from "./WordInput";
+import styles from "../../styles/classic/GameBox.module.css";
 import { checkValidInput, upperCaseFirstLetter } from "@/utils/utils";
-import SuccessPopup from "../../classic/successPopup";
-import io from "socket.io-client";
-
-let versusSocket;
+import SuccessPopup from "./successPopup";
+import ScoreCounter from "./scoreCount";
 
 const ATTEMPTS_PER_WORD = 3;
 
 /* Container for WordInfo and WordInput */
-const GameBox = ({ score, setScore, setIsCorrect }) => {
+const GameBox = () => {
   const [word, setWord] = useState("");
   const [definition, setDefinition] = useState([]);
   const [audioUrl, setAudioUrl] = useState("");
   const [attempts, setAttempts] = useState(0);
-  
+  const [isCorrect, setIsCorrect] = useState(null);
+  const [score, setScore] = useState(0);
 
 
   // the gamebox component controls the flow of the game
@@ -38,7 +37,7 @@ const GameBox = ({ score, setScore, setIsCorrect }) => {
         setAudioUrl(wordData.audioUrl);
         setAttempts(0);
       });
-  }; 
+  };
 
   const checkUserInput = (input) => {
     if (checkValidInput(input, word)) {
@@ -78,19 +77,9 @@ const GameBox = ({ score, setScore, setIsCorrect }) => {
 
   return (
     <div>
+      <nav><SuccessPopup key={isCorrect} isCorrect={isCorrect}/></nav>
       
-      
-       <div className={styles.mainContainer} >
-          <div className={styles.wordInfo}>
-          <WordInfo
-            definition={upperCaseFirstLetter(definition[0])}
-            audioUrl={audioUrl}
-          />
-          </div>
-          
-          <WordInput onSubmitHandler={checkUserInput} />
-
-          <div className={styles.attemptsSkipContainer}>
+      <div className={styles.attemptsSkipContainer}>
         <div className={styles.linkContainer}>
           <a className={`${styles.link} ${styles.linkLeft}`}>
             <div>
@@ -113,6 +102,17 @@ const GameBox = ({ score, setScore, setIsCorrect }) => {
           </a>
         </div>
       </div>
+       <div className={styles.mainContainer} >
+          <WordInfo
+            definition={upperCaseFirstLetter(definition[0])}
+            audioUrl={audioUrl}
+          />
+          <br />
+          <br />
+          <br />
+          
+          <WordInput onSubmitHandler={checkUserInput} />
+          <ScoreCounter score={score}/>
         </div>
     </div>
   );
