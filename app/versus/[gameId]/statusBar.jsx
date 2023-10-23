@@ -7,10 +7,13 @@ import DblPointsPotion from './potions/dblPointsPotion'
 import PlayerScoreCounter from './playerScoreCounter'
 
 const StatusBox = ({ nextWord }) => {
+
+  const progressPercentage = (nextWord.points / 30) * 100;
+
   return (
     <div className={styles.cardContainer}>
         <div className={styles.progressBar}>
-          <div className={styles.progress}>
+        <div className={styles.progress} style={{ width: `${progressPercentage}%` }}>
 
           </div>
         </div>

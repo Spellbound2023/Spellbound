@@ -34,9 +34,9 @@ const versusPage = ({ params }) => {
     points: 0,
     streak: 0,
   });
+  const [opponentsPoints, setOpponentsPoints] = useState(0);
+  const [opponentStreak, setOpponentStreak] = useState(0);
   const [opponentIsTyping, setOpponentIsTyping] = useState(false);
-  //const [opponentStreak, setOpponentStreak] = useState(0);
-  const [playerStreak, SetplayerStreak] = useState(0);
 
 
 
@@ -81,18 +81,19 @@ const versusPage = ({ params }) => {
       versusSocket.on("nextWord", (nextWord) => {
         console.log("nextWord: ", nextWord);
         setNextWord(nextWord)
-
-        SetplayerStreak(nextWord.wordData.streak)
-        console.log("streak: ", nextWord.wordData.streak)
       });
 
+     /*  versusSocket.on("opponentNextWord", (opponentNextWord) => {
+        console.log("opponentNextWord: ", opponentNextWord);
+        setOpponentNextWord(opponentNextWord)
+      }); */
+
       versusSocket.on("opponentTyping", () => {
-        console.log("The opponent is typing!");
         setOpponentIsTyping(true);
 
         setTimeout(() => {
           setOpponentIsTyping(false);
-        }, 400);
+        }, 800);
       });
 
       versusSocket.on("redirect", (url) => {
@@ -113,10 +114,13 @@ const versusPage = ({ params }) => {
         setPotions(potions);
       });
 
-      versusSocket.on("opponentPointsChange", (points) => {
-        // console.log("Your opponent has ", points, " points");
+      versusSocket.on("opponentPointsChange", (points, streak) => {
+        console.log("Your opponent has ", points, " points");
+        console.log("Your opponent streak is ", streak);
+        setOpponentsPoints(points);
+        setOpponentStreak(streak);
       });
-
+      
       versusSocket.on("opponentPotionsChange", (potions) => {
         console.log("Your opponent has the following potions: ", potions);
         setOpponentPotions(potions);
@@ -204,6 +208,8 @@ const versusPage = ({ params }) => {
         opponentScore={opponentScore} 
         isTyping={opponentIsTyping} 
         username={opponentUsername} 
+        points = {opponentsPoints}
+        streak = {opponentStreak}
         />
         </div>
         <div className={styles.Character}>

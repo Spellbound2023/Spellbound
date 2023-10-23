@@ -68,9 +68,10 @@
 
 .progress{
     background: linear-gradient(90deg, #FFE863 0%, #F5BD1F 100%);
-    width: 60%;
     height: 100%;
     border-radius: 50px;
+    transition: width 0.2s ease-out;
+
 }
 
 .score{position: absolute; left: 50%;}

@@ -71,7 +71,7 @@ const GameBox = ({ score, setScore, setIsCorrect, nextWord, emitSocketEvent }) =
         setIsCorrect(false) //INCORRECT POPUP
         setAttempts(attempts + 1);
         try{
-          emitSocketEvent("incorrectAttempt")
+          emitSocketEvent.emit("incorrectAttempt")
         } catch (error){
         }
       }
