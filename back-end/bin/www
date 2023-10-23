@@ -386,6 +386,12 @@ versus.on("connection", (socket) => {
     });
   });
 
+  // timer event 
+  
+  socket.on("timer"), () => {
+    // something
+  }
+
   // typing event
   socket.on("typing", () => {
     const mutex = getSocketCallbackMutex(socket.gameId);
