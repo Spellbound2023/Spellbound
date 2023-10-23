@@ -7,7 +7,7 @@ import OpponentStatusBox from "./opponentStatusBar";
 import OpponentUsername from "./opponentUsername";
 import OpponentWordInput from "./opponentWordInput";
 
-const OpponentBox = ({ isTyping, username, points, streak }) => {
+const OpponentBox = ({ isTyping, username, points, streak, potions }) => {
   return (
     <div className={styles.opponentBoxContainer}> 
 
@@ -25,7 +25,7 @@ const OpponentBox = ({ isTyping, username, points, streak }) => {
         <div className={styles.rowContainer}>
           <div className={styles.leftContainer}>
             <div className={styles.potionsBox}>
-              <PotionsRow />
+              <PotionsRow potions={potions}/>
             </div>
           </div>
           <div className={styles.rightContainer}>

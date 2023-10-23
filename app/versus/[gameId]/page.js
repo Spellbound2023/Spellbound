@@ -27,6 +27,18 @@ const versusPage = ({ params }) => {
   const [word, setWord] = useState("");
   const [isCorrect, setIsCorrect] = useState(null);
   const [gameEndMessage, setGameEndMessage] = useState("");
+  const [freezePotionEffective, setFreezePotionEffective] = useState(false);
+  const [hintPotionEffective, setHintPotionEffective] = useState(false);
+  const [doublePointsPotionEffective, setDoublePointsPotionEffective] =
+    useState(false);
+  const [opponentFreezePotionEffective, setOpponentFreezePotionEffective] =
+    useState(false);
+  const [opponentHintPotionEffective, setOpponentHintPotionEffective] =
+    useState(false);
+  const [
+    opponentDoublePointsPotionEffective,
+    setOpponentDoublePointsPotionEffective,
+  ] = useState(false);
   const { data: session, status } = useSession();
   const { push } = useRouter();
 
@@ -131,18 +143,62 @@ const versusPage = ({ params }) => {
 
       versusSocket.on("potionUseStart", (potion) => {
         console.log("The potion ", potion, " is now in effect");
+        switch (potion) {
+          case "DOUBLE_POINTS":
+            setDoublePointsPotionEffective(true);
+            break;
+          case "FREEZE":
+            setFreezePotionEffective(true);
+            break;
+          case "HINT":
+            setHintPotionEffective(true);
+            break;
+        }
       });
 
       versusSocket.on("opponentPotionUseStart", (potion) => {
         console.log("Your opponents potion ", potion, " is now in effect");
+        switch (potion) {
+          case "DOUBLE_POINTS":
+            setOpponentDoublePointsPotionEffective(true);
+            break;
+          case "FREEZE":
+            setOpponentFreezePotionEffective(true);
+            break;
+          case "HINT":
+            setOpponentHintPotionEffective(true);
+            break;
+        }
       });
 
       versusSocket.on("potionUseEnd", (potion) => {
         console.log("The potion ", potion, " has worn off");
+        switch (potion) {
+          case "DOUBLE_POINTS":
+            setDoublePointsPotionEffective(false);
+            break;
+          case "FREEZE":
+            setFreezePotionEffective(false);
+            break;
+          case "HINT":
+            setHintPotionEffective(false);
+            break;
+        }
       });
 
       versusSocket.on("opponentPotionUseEnd", (potion) => {
         console.log("Your opponents potion ", potion, " has worn off");
+        switch (potion) {
+          case "DOUBLE_POINTS":
+            setOpponentDoublePointsPotionEffective(false);
+            break;
+          case "FREEZE":
+            setOpponentFreezePotionEffective(false);
+            break;
+          case "HINT":
+            setOpponentHintPotionEffective(false);
+            break;
+        }
       });
 
       // versusSocket.on("opponentQuit", () => {
@@ -238,6 +294,18 @@ const versusPage = ({ params }) => {
     }
   };
 
+  const freezeHandler = () => {
+    versusSocket.emit("potionUse", "FREEZE");
+  };
+
+  const doublePointsHandler = () => {
+    versusSocket.emit("potionUse", "DOUBLE_POINTS");
+  };
+
+  const hintHandler = () => {
+    versusSocket.emit("potionUse", "HINT");
+  };
+
   return (
     <>
       <SuccessPopup key={isCorrect} isCorrect={isCorrect} />
@@ -253,6 +321,7 @@ const versusPage = ({ params }) => {
             username={opponentUsername}
             points={opponentsPoints}
             streak={opponentStreak}
+            potions={opponentPotions}
           />
         </div>
         <div className={styles.Character}>
@@ -268,6 +337,7 @@ const versusPage = ({ params }) => {
             setIsCorrect={setIsCorrect}
             nextWord={nextWord}
             emitSocketEvent={emitSocketEvent}
+            frozen={opponentFreezePotionEffective}
           />
         </div>
         <div className={styles.statusBar}>
@@ -275,6 +345,10 @@ const versusPage = ({ params }) => {
             nextWord={nextWord}
             completionThreshold={completionThreshold}
             score={score}
+            potions={potions}
+            hintHandler={hintHandler}
+            freezeHandler={freezeHandler}
+            doublePointsHandler={doublePointsHandler}
           />
         </div>
 
