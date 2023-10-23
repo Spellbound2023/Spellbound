@@ -1,8 +1,8 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import WordInfo from "../../classic/WordInfo";
-import WordInput from "../../classic/WordInput";
+import WordInfo from "./versusWordInfo";
+import WordInput from "./versusWordInput";
 import styles from "../../../styles/versusGameBox.module.css"
 import { checkValidInput, upperCaseFirstLetter } from "@/utils/utils";
 import SuccessPopup from "../../classic/successPopup";

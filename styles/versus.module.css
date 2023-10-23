@@ -13,8 +13,10 @@
     color: #FFE150; 
 }
 
-.Timer{padding-left:45%;}
-
+.Timer{
+  position: absolute;
+  left: 60%;
+}
 
 .cardContainer:not(.PlayerCardContainer){
     height: 100%;

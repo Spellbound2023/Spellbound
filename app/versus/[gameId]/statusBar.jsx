@@ -6,6 +6,8 @@ import FreezePotion from './potions/freezePotion'
 import DblPointsPotion from './potions/dblPointsPotion'
 import PlayerScoreCounter from './playerScoreCounter'
 import CompletionBar from './completionBar'
+import Timer from './timer'
+
 
 const StatusBox = ({ score, completionThreshold, freezeEffect }) => {
   return (
@@ -16,6 +18,9 @@ const StatusBox = ({ score, completionThreshold, freezeEffect }) => {
         <div className={styles.score}>
         <PlayerScoreCounter score={score}/>
         </div>
+
+        <div className={styles.Timer}><Timer/></div>
+        
 
         <div className={styles.potionsBox}>
           <HintPotion/>
