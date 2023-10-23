@@ -580,11 +580,18 @@ versus.on("connection", (socket) => {
       // set the potion as active
       activatePotion(gameId, socket.username, potion);
 
+      // Let both users know that the potions of the current user have changed
+      let opponentSocket = getOpponentSocket(gameId, socket.username);
+      socket.emit("potionsChange", getPlayerPotions(gameId, socket.username));
+      opponentSocket.emit(
+        "opponentPotionsChange",
+        getPlayerPotions(gameId, socket.username)
+      );
+
       // inform users that the potion is in effect
       // These events are indications to the frontend that a potion is in use
       // and to modify the UI (and possibly handle potion effects such as freeze or hint)
       socket.emit("potionUseStart", potion);
-      let opponentSocket = getOpponentSocket(gameId, socket.username);
       opponentSocket.emit("opponentPotionUseStart", potion);
 
       // start a timer for the potion
