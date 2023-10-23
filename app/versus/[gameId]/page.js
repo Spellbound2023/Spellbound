@@ -227,7 +227,7 @@ const versusPage = ({ params }) => {
             />
         </div>
         <div className={styles.statusBar}>
-          <StatusBox nextWord={nextWord} completionThreshold={completionThreshold}/>
+          <StatusBox nextWord={nextWord} completionThreshold={completionThreshold} score={score}/>
         </div>
         <button onClick={() => setGameEnded(true)}>End Game</button>
 

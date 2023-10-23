@@ -322,7 +322,12 @@ const versusPage = () => {
       </div>
       <div className={styles.versusContainer}>
         <div className={styles.opponentBox}>
-          <OpponentBox />
+          <OpponentBox 
+          opponentScore={opponentScore} 
+          completionThreshold={completionThreshold} 
+          isTyping={opponentIsTyping} 
+          username={opponentUsername} 
+          />
         </div>
         <div className={styles.Character}>
           <Image src="/images/opponentCharacter.png" width={200} height={200} />
