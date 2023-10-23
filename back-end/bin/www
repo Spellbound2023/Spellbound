@@ -401,8 +401,6 @@ versus.on("connection", (socket) => {
     });
   });
 
-  
-
   // correctAttempt event
   socket.on("correctAttempt", async (attemptNum) => {
     const mutex = getSocketCallbackMutex(socket.gameId);
@@ -470,7 +468,8 @@ versus.on("connection", (socket) => {
       let opponentSocket = getOpponentSocket(gameId, socket.username);
       opponentSocket.emit(
         "opponentPointsChange",
-        getPlayerPoints(gameId, socket.username)
+        getPlayerPoints(gameId, socket.username),
+        getPlayerStreak(gameId, socket.username)
       );
       opponentSocket.emit(
         "opponentPotionsChange",
@@ -513,7 +512,8 @@ versus.on("connection", (socket) => {
       let opponentSocket = getOpponentSocket(gameId, socket.username);
       opponentSocket.emit(
         "opponentPointsChange",
-        getPlayerPoints(gameId, socket.username)
+        getPlayerPoints(gameId, socket.username),
+        getPlayerStreak(gameId, socket.username)
       );
       // The potions cannot change after an incorrect attempt
       // process.stdout.write(" \\\\\\\\ Mutex released //// \n");
@@ -550,7 +550,8 @@ versus.on("connection", (socket) => {
       let opponentSocket = getOpponentSocket(gameId, socket.username);
       opponentSocket.emit(
         "opponentPointsChange",
-        getPlayerPoints(gameId, socket.username)
+        getPlayerPoints(gameId, socket.username),
+        getPlayerStreak(gameId, socket.username)
       );
       // The potions cannot change after skipping a word
       // process.stdout.write(" \\\\\\\\ Mutex released //// \n");
