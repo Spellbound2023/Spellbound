@@ -71,11 +71,18 @@
 
 @media only screen and (max-width: 1000px) {
     .opponentBoxContainer{
-        box-shadow: 0 0 10px red;
         height: 25vw;
     }
 
     .wordInputContainer{
         display: none;
     }
+}
+
+
+@media only screen and (max-width: 600px) {
+    .opponentBoxContainer{
+        box-shadow: 0 0 10px red;
+    }
+
 }

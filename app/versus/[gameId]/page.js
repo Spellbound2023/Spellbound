@@ -319,6 +319,7 @@ const versusPage = ({ params }) => {
       <div className={styles.navContainer}>
         <NavBar showDifficultyText={false} TitleText={"Versus"} />
       </div>
+      <button onClick={handleUserQuits} className={styles.quitButton}>End Game</button>
       <div className={styles.versusContainer}>
         <div className={styles.opponentBox}>
           <OpponentBox
@@ -359,7 +360,7 @@ const versusPage = ({ params }) => {
             timeStamp={timeStamp}
           />
         </div>
-        <button onClick={handleUserQuits}>End Game</button>
+        
 
         {gameEnded && (
           <GameEndDisplay

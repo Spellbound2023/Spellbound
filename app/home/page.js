@@ -9,9 +9,12 @@ import SpellBoundTitle from "@/components/SpellBoundTitle 2";
 /* Homepage. */
 export default function Home() {
   return (
-    <main style={{ height: "100vh" }}>
-      <div className={styles.Header}>
+    <main>
+      <div className={styles.HeaderFullScreen}>
         <NavBar  TitleText={<SpellBoundTitle/>} showDifficultyText={false}/>
+      </div>
+      <div className={styles.HeaderMobile}>
+        <NavBar TitleText={"SpellBound"} showDifficultyText={false}/>
       </div>
       <MainMenu/>
     </main>

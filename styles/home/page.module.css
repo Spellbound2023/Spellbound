@@ -1,8 +1,22 @@
-.Header { 
+.HeaderFullScreen { 
     color: #FACB2E;
     text-align: center;
     padding: 3%;
     font-size: x-large;
     position: relative; 
     z-index: 5;
+}
+
+.HeaderMobile{
+    display: None
+}
+
+@media only screen and (max-width: 600px) {
+    .HeaderFullScreen{
+        display: none;
+    }
+
+    .HeaderMobile{
+        display:block;
+    }
 }
