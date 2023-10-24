@@ -13,7 +13,7 @@ const ATTEMPTS_PER_WORD = 3; //for backend logic turn this from
 
 
 /* Container for WordInfo and WordInput */
-const GameBox = ({ score, setScore, setIsCorrect, nextWord, emitSocketEvent }) => {
+const GameBox = ({ score, setScore, setIsCorrect, nextWord, emitSocketEvent, frozen }) => {
   const [word, setWord] = useState("");
   const [definition, setDefinition] = useState([]);
   const [audioUrl, setAudioUrl] = useState("");
@@ -103,14 +103,15 @@ const GameBox = ({ score, setScore, setIsCorrect, nextWord, emitSocketEvent }) =
           <WordInfo
             definition={upperCaseFirstLetter(definition[0])}
             audioUrl={audioUrl}
+            frozen={frozen}
           />
           </div>
           
-          <WordInput onSubmitHandler={checkUserInput} onTypingHandler={onTyping} />
+          <WordInput onSubmitHandler={checkUserInput} onTypingHandler={onTyping} frozen={frozen}/>
 
           <div className={styles.attemptsSkipContainer}>
         <div className={styles.linkContainer}>
-          <a className={`${styles.link} ${styles.linkLeft}`}>
+          <a className={`${styles.link} ${styles.linkLeft} ${frozen ? styles.disabled : ""}`}>
             <div>
               <p className={styles.linkText}>
                 Attemps remaining: {ATTEMPTS_PER_WORD - attempts}
@@ -120,7 +121,7 @@ const GameBox = ({ score, setScore, setIsCorrect, nextWord, emitSocketEvent }) =
         </div>
         <div className={styles.linkContainer}>
           <a
-            className={`${styles.link} ${styles.linkRight}`}
+            className={`${styles.link} ${styles.linkRight} ${frozen ? styles.disabled : ""}`}
             onClick={() => {
               skipWord();
             }}

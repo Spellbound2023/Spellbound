@@ -27,7 +27,7 @@ const MainMenu = () => {
         </Link>
       </div>
 
-      <div className={styles.ButtonOuter}>
+      {/* <div className={styles.ButtonOuter}>
         <Link href="/">
           <div className={styles.Button}>
             <Image
@@ -50,7 +50,7 @@ const MainMenu = () => {
             Statistics
           </div>
         </Link>
-      </div>
+      </div> */}
     </div>
   );
 };

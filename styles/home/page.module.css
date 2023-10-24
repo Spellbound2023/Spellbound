@@ -4,4 +4,5 @@
     padding: 3%;
     font-size: x-large;
     position: relative; 
+    z-index: 5;
 }

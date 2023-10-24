@@ -29,10 +29,11 @@
 .definition {
     font-size: 18px;
     font-weight: 200;
-    max-width:450px;
-    word-wrap:break-word;
+    max-width: 450px;
+    word-wrap: break-word;
 
 }
+
 .soundIcon {
     width: 50px;
 }
@@ -41,4 +42,10 @@
     display: block;
     height: max-content;
     width: max-content;
+}
+
+/* Reference: https://stackoverflow.com/questions/13955667/disabled-href-tag */
+.disabled {
+    cursor: default;
+    pointer-events: none;
 }

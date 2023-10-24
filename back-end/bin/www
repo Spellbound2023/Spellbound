@@ -56,6 +56,7 @@ const {
   pointsModifiers,
   potionActiveTimes,
   potions,
+  gameEndReasons,
 } = require("../utils/game/enums");
 const { error } = require("console");
 const { v4: uuidv4 } = require("uuid");
@@ -437,12 +438,12 @@ versus.on("connection", (socket) => {
       // modify the points and check if game has ended
       if (modifyPoints(gameId, socket.username, event)) {
         // The user has won the game by filling up the points bar first
-        socket.emit("userWon");
-        let opponentSocket = getOpponentSocket(gameId, socket.username);
-        opponentSocket.emit("opponentWon");
+        // socket.emit("userWon");
+        // let opponentSocket = getOpponentSocket(gameId, socket.username);
+        // opponentSocket.emit("opponentWon");
 
         // end the game on the backend
-        endGame(gameId);
+        endGame(gameId, gameEndReasons.TARGET_REACHED, socket.username);
       }
 
       // update the streak
@@ -579,11 +580,18 @@ versus.on("connection", (socket) => {
       // set the potion as active
       activatePotion(gameId, socket.username, potion);
 
+      // Let both users know that the potions of the current user have changed
+      let opponentSocket = getOpponentSocket(gameId, socket.username);
+      socket.emit("potionsChange", getPlayerPotions(gameId, socket.username));
+      opponentSocket.emit(
+        "opponentPotionsChange",
+        getPlayerPotions(gameId, socket.username)
+      );
+
       // inform users that the potion is in effect
       // These events are indications to the frontend that a potion is in use
       // and to modify the UI (and possibly handle potion effects such as freeze or hint)
       socket.emit("potionUseStart", potion);
-      let opponentSocket = getOpponentSocket(gameId, socket.username);
       opponentSocket.emit("opponentPotionUseStart", potion);
 
       // start a timer for the potion
@@ -608,11 +616,11 @@ versus.on("connection", (socket) => {
     mutex.runExclusive(() => {
       // process.stdout.write(" //// Mutex acquired \\\\\\\\ \n");
       // inform opponent that the current player has quit
-      let opponentSocket = getOpponentSocket(socket.gameId, socket.username);
-      opponentSocket.emit("opponentQuit");
+      // let opponentSocket = getOpponentSocket(socket.gameId, socket.username);
+      // opponentSocket.emit("opponentQuit");
 
       // end the game gracefully
-      endGame(socket.gameId);
+      endGame(socket.gameId, gameEndReasons.USER_QUIT, socket.username);
 
       // close the connection with the current player
       socket.disconnect();
@@ -628,13 +636,13 @@ versus.on("connection", (socket) => {
       if (!checkGameExists(socket.gameId)) return;
 
       // inform opponent that the current player has disconnected
-      let opponentSocket = getOpponentSocket(socket.gameId, socket.username);
-      opponentSocket.emit("opponentDisconnected");
+      // let opponentSocket = getOpponentSocket(socket.gameId, socket.username);
+      // opponentSocket.emit("opponentDisconnected");
 
       setUserDisconnected(socket.gameId, socket.username);
 
       // end the game gracefully
-      endGame(socket.gameId);
+      endGame(socket.gameId, gameEndReasons.USER_DISCONNECTED, socket.username);
       // process.stdout.write(" \\\\\\\\ Mutex released //// \n");
     });
   });

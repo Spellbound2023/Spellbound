@@ -4,14 +4,16 @@ import SpellBoundTitle from "./SpellBoundTitle";
 import DifficultyText from "./DifficultyText";
 import HamburgerButton from "./HamburgerButton";
 import { signOut, useSession } from "next-auth/react";
+import HomePageNav from "./HomepageNav";
 
-const NavBar = ({ showDifficultyText = true }) => {
+const NavBar = ({ showDifficultyText = true, TitleText}) => {
   const { data: session } = useSession();
   const menuItems = [
-    { href: '/home', label: 'Home' },
-    { href: '#', label: 'Stats' },
-    { href: '#', label: 'Challenges' },
-    { href: '#', label: '1v1 Mode' },
+    { href: "/", label: "Main" },
+    { href: "/home", label: "Home" },
+    // { href: "#", label: "Stats" },
+    // { href: "#", label: "Challenges" },
+    { href: "/versus", label: "Versus" },
   ];
 
   return (
@@ -25,26 +27,23 @@ const NavBar = ({ showDifficultyText = true }) => {
         backgroundColor: "transparent",
         color: "#333",
         width: "100%", // Add this line
-
       }}
     >
       <div style={{ flex: 1, textAlign: "left" }}>
         <HamburgerButton items={menuItems} />
       </div>
       <div style={{ flex: 2, textAlign: "center" }}>
-        <SpellBoundTitle />
+        <SpellBoundTitle text={TitleText}/>
       </div>
       {showDifficultyText ? (
         <div style={{ flex: 1, textAlign: "right" }}>
           <DifficultyText />
         </div>
       ) : (
-        <div style={{ flex: 1 }}></div>  // Empty placeholder div
+        <div style={{ flex: 1 }}></div> // Empty placeholder div
       )}
       {session && (
-        <a onClick={signOut} style={{ color: "white", padding: 20 }}>
-          Sign Out
-        </a>
+        <HomePageNav/>
       )}
     </nav>
   );

@@ -9,7 +9,7 @@ const playAudio = (e) => {
   document.getElementById("pronounciation").play();
 };
 
-const WordInfo = ({ definition, audioUrl }) => {
+const WordInfo = ({ definition, audioUrl, frozen }) => {
   return (
     <div className={styles.mainContainer}>
       <div className={styles.defContainer}>
@@ -21,7 +21,7 @@ const WordInfo = ({ definition, audioUrl }) => {
           id="pronounciation"
           src={audioUrl}
         ></audio>
-        <a className={styles.audioButton} onClick={playAudio}>
+        <a className={`${styles.audioButton} ${frozen ? styles.disabled : ""}`} onClick={playAudio} >
           <object className={styles.soundIcon} data="/images/sound_icon.svg">
             {" "}
           </object>

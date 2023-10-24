@@ -72,3 +72,9 @@
     transform: translate(-50%, -50%);
     color:black;
   }
+
+  /* Reference: https://stackoverflow.com/questions/13955667/disabled-href-tag */
+  .disabled {
+    cursor: default;
+    pointer-events: none;
+  }

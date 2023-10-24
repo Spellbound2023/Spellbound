@@ -10,6 +10,7 @@ import { redirect } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import InstructionsPopup from "./instructions";
+import NavBar from "@/components/NavBar";
 
 let socket;
 
@@ -97,7 +98,7 @@ const page = () => {
   // Returns active players in table format displaying username, status and
   return (
     <>
-      <h1 className={styles.Header}>Lobby</h1>
+      <NavBar showDifficultyText={false} TitleText={"Lobby"}/>
       <div className={styles.tableContainer}>
         <table className={styles.lobbyList}>
           <thead>

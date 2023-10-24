@@ -6,6 +6,7 @@ const {
   pointsModifiers,
   potions,
   pointsModifierPoints,
+  gameEndReasons,
 } = require("./enums");
 const { Mutex } = require("async-mutex");
 
@@ -152,43 +153,73 @@ function startGame(gameId) {
   setTimeout(() => {
     if (!checkGameActive(gameId)) return;
 
-    let winner = getWinner(gameId);
+    // let winner = getWinner(gameId);
 
-    if (winner) {
-      let winnerSocket = getPlayerSocket(gameId, winner);
-      let loserSocket = getOpponentSocket(gameId, winner);
-      winnerSocket.emit("timerEnded");
-      loserSocket.emit("timerEnded");
-      winnerSocket.emit("userWon");
-      loserSocket.emit("opponentWon");
+    // if (winner) {
+    //   let winnerSocket = getPlayerSocket(gameId, winner);
+    //   let loserSocket = getOpponentSocket(gameId, winner);
+    // winnerSocket.emit("timerEnded");
+    // loserSocket.emit("timerEnded");
+    // winnerSocket.emit("userWon");
+    // loserSocket.emit("opponentWon");
 
-      // end the game on the backend
-      endGame(gameId);
-    } else {
-      // handle draw case
-      let winnerSocket = getPlayerSocket(gameId, winner);
-      let loserSocket = getOpponentSocket(gameId, winner);
-      winnerSocket.emit("timerEnded");
-      loserSocket.emit("timerEnded");
-      winnerSocket.emit("gameDraw");
-      loserSocket.emit("gameDraw");
+    // end the game on the backend
+    endGame(gameId, gameEndReasons.TIMER_ENDED, null);
+    // } else {
+    //   // handle draw case
+    //   let winnerSocket = getPlayerSocket(gameId, winner);
+    //   let loserSocket = getOpponentSocket(gameId, winner);
+    //   // winnerSocket.emit("timerEnded");
+    //   // loserSocket.emit("timerEnded");
+    //   // winnerSocket.emit("gameDraw");
+    //   // loserSocket.emit("gameDraw");
 
-      // end the game on the backend
-      endGame(gameId);
-    }
+    //   // end the game on the backend
+    //   endGame(gameId, "The timer has ended");
+    // }
   }, DEFAULT_GAME_TIME_MS);
 
   return new Date();
 }
 
-function endGame(gameId) {
+// This function takes a gameId, a gameEndReason instance,
+// and the username of the player connected with the gameEndReason
+// (For example, the user that quit or disconnected)
+function endGame(gameId, endReason, endingPlayer) {
   if (games[gameId].gameStatus !== gameStates.ENDED) {
     games[gameId].gameStatus = gameStates.ENDED;
     console.log(" ======== Ending the game ============== ");
-    for (let player in games[gameId].players) {
-      let socket = getPlayerSocket(gameId, player);
-      socket.emit("gameEnded");
+    let player1 = Object.keys(games[gameId].players)[0];
+    let player2 = Object.keys(games[gameId].players)[1];
+    let player1Socket = getPlayerSocket(gameId, player1);
+    let player2Socket = getPlayerSocket(gameId, player2);
+    let player1Points = getPlayerPoints(gameId, player1);
+    let player2Points = getPlayerPoints(gameId, player2);
+
+    let winner = getWinner(gameId);
+
+    // get the key (name) of the gameEndReason
+    for (let reason in gameEndReasons) {
+      if (gameEndReasons[reason] === endReason) {
+        endReason = reason;
+        break;
+      }
     }
+
+    player1Socket.emit("gameEnded", {
+      winner: winner,
+      points: player1Points,
+      opponentPoints: player2Points,
+      endReason: endReason,
+      endingPlayer: endingPlayer,
+    });
+    player2Socket.emit("gameEnded", {
+      winner: winner,
+      points: player2Points,
+      opponentPoints: player1Points,
+      endReason: endReason,
+      endingPlayer: endingPlayer,
+    });
   }
 
   // delete the game if both users have disconnected

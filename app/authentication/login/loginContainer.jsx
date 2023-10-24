@@ -17,9 +17,9 @@ const ContainerCard = () => {
                 <Image src='/images/underline.png' width={200} height={10}/>
             </div>
             <Form/>
-            <div className={styles.bottomBanner}>
+            {/* <div className={styles.bottomBanner}>
               <Link href="#">forgot Password?</Link>
-            </div>
+            </div> */}
         </div>
     </div>
   )
