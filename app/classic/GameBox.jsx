@@ -77,7 +77,11 @@ const GameBox = () => {
 
   return (
     <div>
-      <nav><SuccessPopup key={isCorrect} isCorrect={isCorrect}/></nav>
+      {/* <nav><SuccessPopup key={isCorrect} isCorrect={isCorrect}/></nav>
+       */}
+      <div className={styles.popupContainer}>
+        <SuccessPopup key={isCorrect} isCorrect={isCorrect} />
+      </div>
       
       <div className={styles.attemptsSkipContainer}>
         <div className={styles.linkContainer}>

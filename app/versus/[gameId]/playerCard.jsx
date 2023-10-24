@@ -5,9 +5,6 @@ import WordInfo from "../../classic/WordInfo";
 import WordInput from "../../classic/WordInput";
 import styles from "../../../styles/versusGameBox.module.css";
 import { checkValidInput, upperCaseFirstLetter } from "@/utils/utils";
-import SuccessPopup from "../../classic/successPopup";
-import ScoreCounter from "../../classic/scoreCount";
-import PlayerScoreCounter from "./playerScoreCounter";
 import _ from "lodash";
 
 const ATTEMPTS_PER_WORD = 3; //for backend logic turn this from
@@ -35,22 +32,26 @@ const GameBox = ({
   emitSocketEvent,
   frozen,
   hintActive,
+  setPopupMessage,
+  setPopupActiveTime,
 }) => {
   const [word, setWord] = useState("");
-  // const [hintShown, setHintShown] = useState(false);
   const [definition, setDefinition] = useState([]);
   const [audioUrl, setAudioUrl] = useState("");
   const [attempts, setAttempts] = useState(0);
   const [isTyping, setIsTyping] = useState(false);
+  const [isFrozen, setIsFrozen] = useState(false);
+  const [wordReceived, setWordReceived] = useState(false);
 
   let hintShownRef = useRef(false);
 
   useEffect(() => {
     if (hintActive && !hintShownRef.current && word && word !== "") {
-      alert(`HINT: ${getHint(word)}`);
+      setPopupMessage(`Hint:     ${getHint(word)}`);
+      setPopupActiveTime(4000);
       hintShownRef.current = true;
     }
-  }, [definition, hintActive])
+  }, [definition, hintActive]);
 
   // the gamebox component controls the flow of the game
   // When it is rendered, it must fetch a random word from the API
@@ -68,6 +69,7 @@ const GameBox = ({
       setAudioUrl(nextWord.wordData.audioUrl);
       setAttempts(0);
       hintShownRef.current = false;
+      setWordReceived(true);
     }
   };
 
@@ -117,28 +119,37 @@ const GameBox = ({
     setupRound();
   }, [nextWord]);
 
+  useEffect(() => {
+    setIsFrozen(frozen);
+  }, [frozen]);
+
   return (
     <div>
-      <div className={styles.mainContainer}>
+      <div
+        className={`${styles.mainContainer} ${
+          isFrozen ? styles.frozenContainer : ""
+        }`}
+      >
         <div className={styles.wordInfo}>
           <WordInfo
             definition={upperCaseFirstLetter(definition[0])}
             audioUrl={audioUrl}
-            frozen={frozen}
+            frozen={isFrozen}
           />
         </div>
 
         <WordInput
           onSubmitHandler={checkUserInput}
           onTypingHandler={onTyping}
-          frozen={frozen}
+          frozen={isFrozen}
+          disabled={!wordReceived}
         />
 
         <div className={styles.attemptsSkipContainer}>
           <div className={styles.linkContainer}>
             <a
               className={`${styles.link} ${styles.linkLeft} ${
-                frozen ? styles.disabled : ""
+                isFrozen ? styles.disabled : ""
               }`}
             >
               <div>
@@ -151,7 +162,7 @@ const GameBox = ({
           <div className={styles.linkContainer}>
             <a
               className={`${styles.link} ${styles.linkRight} ${
-                frozen ? styles.disabled : ""
+                isFrozen ? styles.disabled : ""
               }`}
               onClick={() => {
                 skipWord();

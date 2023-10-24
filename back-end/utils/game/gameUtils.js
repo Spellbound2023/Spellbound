@@ -152,31 +152,7 @@ function startGame(gameId) {
   // start a timer that ends the game
   setTimeout(() => {
     if (!checkGameActive(gameId)) return;
-
-    // let winner = getWinner(gameId);
-
-    // if (winner) {
-    //   let winnerSocket = getPlayerSocket(gameId, winner);
-    //   let loserSocket = getOpponentSocket(gameId, winner);
-    // winnerSocket.emit("timerEnded");
-    // loserSocket.emit("timerEnded");
-    // winnerSocket.emit("userWon");
-    // loserSocket.emit("opponentWon");
-
-    // end the game on the backend
     endGame(gameId, gameEndReasons.TIMER_ENDED, null);
-    // } else {
-    //   // handle draw case
-    //   let winnerSocket = getPlayerSocket(gameId, winner);
-    //   let loserSocket = getOpponentSocket(gameId, winner);
-    //   // winnerSocket.emit("timerEnded");
-    //   // loserSocket.emit("timerEnded");
-    //   // winnerSocket.emit("gameDraw");
-    //   // loserSocket.emit("gameDraw");
-
-    //   // end the game on the backend
-    //   endGame(gameId, "The timer has ended");
-    // }
   }, DEFAULT_GAME_TIME_MS);
 
   return new Date();
@@ -196,7 +172,16 @@ function endGame(gameId, endReason, endingPlayer) {
     let player1Points = getPlayerPoints(gameId, player1);
     let player2Points = getPlayerPoints(gameId, player2);
 
+    // get the winner based on points
     let winner = getWinner(gameId);
+    // If a user has quit or disconnected, the other player wins
+    // automatically
+    if (
+      endReason === gameEndReasons.USER_DISCONNECTED ||
+      endReason === gameEndReasons.USER_QUIT
+    ) {
+      winner = getOpponentUsername(gameId, endingPlayer);
+    }
 
     // get the key (name) of the gameEndReason
     for (let reason in gameEndReasons) {
