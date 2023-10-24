@@ -6,22 +6,24 @@ import Close from '../authentication/closeButton';
 
 const InstructionsPopup = () => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
-
+  //function to open Instructions
   const openPopup = () => {
     setIsPopupOpen(true);
   };
-
+  //function to close the popup, called by button onClick
   const closePopup = () => {
     setIsPopupOpen(false);
   };
 
   return (
     <div>
+      {/*Button with a callback to make the instructions Popup open*/}
       <button onClick={openPopup} className={styles.InstructionsButton}>Instructions</button>
       {isPopupOpen && (
         <div className={styles.instructions}>
           <div className={styles.instructionsContent}>
           <button onClick={closePopup} className={styles.closeButton}>Close</button>
+          {/*Content for instructions */}
             <h2>Versus Mode Instructions</h2>
             <p>Welcome to the Spelling Bee Competition!
                  In this game, you'll compete against an opponent in a battle of words, strategy, and wits. 

@@ -24,6 +24,8 @@
     flex-direction: column;
     align-items: center;
   }
+
+  
 .contentContainer {
     width: 400px;
     display: flex;
