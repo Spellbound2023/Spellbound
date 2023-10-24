@@ -346,6 +346,7 @@ const versusPage = ({ params }) => {
             nextWord={nextWord}
             emitSocketEvent={emitSocketEvent}
             frozen={opponentFreezePotionEffective}
+            hintActive={hintPotionEffective}
           />
         </div>
         <div className={styles.statusBar}>
