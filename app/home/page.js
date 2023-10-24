@@ -11,7 +11,8 @@ export default function Home() {
   return (
     <main>
       <div className={styles.HeaderFullScreen}>
-        <NavBar  TitleText={<SpellBoundTitle/>} showDifficultyText={false}/>
+        <SpellBoundTitle/>
+        <HomepageNav/>
       </div>
       <div className={styles.HeaderMobile}>
         <NavBar TitleText={"SpellBound"} showDifficultyText={false}/>
