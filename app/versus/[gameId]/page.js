@@ -287,6 +287,10 @@ const versusPage = ({ params }) => {
     // setGameEnded(false);
   };
 
+  const handleUserQuits = () => {
+    versusSocket.emit("userQuits");
+  };
+
   const emitSocketEvent = (eventName, data) => {
     //for passing socket.emits to components
     if (versusSocket) {
@@ -310,7 +314,7 @@ const versusPage = ({ params }) => {
     <>
       <SuccessPopup key={isCorrect} isCorrect={isCorrect} />
       <div className={styles.navContainer}>
-        <NavBar showDifficultyText={false} TitleText={"Versus"}/>
+        <NavBar showDifficultyText={false} TitleText={"Versus"} />
       </div>
       <div className={styles.versusContainer}>
         <div className={styles.opponentBox}>
@@ -351,7 +355,7 @@ const versusPage = ({ params }) => {
             doublePointsHandler={doublePointsHandler}
           />
         </div>
-        <button onClick={() => setGameEnded(true)}>End Game</button>
+        <button onClick={handleUserQuits}>End Game</button>
 
         {gameEnded && (
           <GameEndDisplay
