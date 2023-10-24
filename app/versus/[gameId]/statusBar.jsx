@@ -8,7 +8,7 @@ import PlayerScoreCounter from './playerScoreCounter'
 import Timer from './timer'
 
 
-const StatusBox = ({ nextWord, potions, hintHandler, freezeHandler, doublePointsHandler }) => {
+const StatusBox = ({ nextWord, potions, hintHandler, freezeHandler, doublePointsHandler, timeStamp }) => {
 
   const progressPercentage = (nextWord.points / 30) * 100;
 
@@ -22,8 +22,7 @@ const StatusBox = ({ nextWord, potions, hintHandler, freezeHandler, doublePoints
         <div className={styles.score}>
         <PlayerScoreCounter nextWord={nextWord}/>
         </div>
-
-        <div className={styles.Timer}><Timer/></div>
+        <div className={styles.Timer}><Timer gameStartTimestamp={timeStamp}/></div>
         
         <div className={styles.potionsBox}>
           {potions && potions.indexOf("HINT") >= 0 ? (<HintPotion onClick={hintHandler}/>) : (<></>)}

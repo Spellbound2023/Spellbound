@@ -5,13 +5,12 @@
     background: linear-gradient(180deg, #722E9A 0%, #522882 100%);
     border: 1px solid #47297B;
     border-radius: 30px;
-    margin-left: auto;
   }
   
   
   .attemptsSkipContainer {
     display: flex;
-    width: max-content;
+    
     justify-content: space-between;
     margin-bottom: 3vh;
   }
@@ -19,7 +18,7 @@
   .linkContainer {
     display: flex;
     justify-content: center;
-    width: 300px;
+    width: 100%;
   }
   
   .link:hover {

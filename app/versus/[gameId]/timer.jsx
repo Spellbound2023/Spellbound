@@ -1,24 +1,29 @@
 import React, { useState, useEffect } from "react";
-import styles from "../../../styles/versus.module.css"
+import styles from "../../../styles/versus.module.css";
 
-const Timer = () => {
-  const [timer, setTimer] = useState(300000); // 5 minutes in milliseconds
+const Timer = ({ gameStartTimestamp }) => {
+  const [elapsedTime, setElapsedTime] = useState(0); // Elapsed time in milliseconds
+  const timerDuration = 5 * 60 * 1000; // 5 minutes in milliseconds
 
   useEffect(() => {
-    const updateTimer = () => {
-      if (timer > 0) {
-        setTimer(timer - 1000);
-      } else {
-        // Handle timer expiration here if needed
-      }
-    };
+    if (gameStartTimestamp) {
+      const intervalId = setInterval(() => {
+        const currentTime = Date.now();
+        const startTime = new Date(gameStartTimestamp).getTime();
+        const timePassed = currentTime - startTime;
+        setElapsedTime(timePassed);
+      }, 1000);
 
-    const timerInterval = setInterval(updateTimer, 1000);
+      return () => clearInterval(intervalId);
+    }
+  }, [gameStartTimestamp]);
 
-    return () => clearInterval(timerInterval);
-  }, [timer]);
+  const remainingTime = Math.max(timerDuration - elapsedTime, 0);
 
-  const formattedTime = new Date(timer).toISOString().substr(14, 5);
+  const minutes = Math.floor(remainingTime / 60000);
+  const seconds = Math.floor((remainingTime % 60000) / 1000);
+
+  const formattedTime = `${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
 
   return <div className={styles.Timer}>{formattedTime}</div>;
 };

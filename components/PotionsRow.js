@@ -21,6 +21,8 @@ const PotionsRow = ({ potions }) => {
       maxWidth: "100%",
       maxHeight: "100%",
       height: "auto",
+      width: "200px"
+
     },
   };
 

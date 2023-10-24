@@ -45,6 +45,9 @@ const versusPage = ({ params }) => {
   //Completion score, change if you want
   const completionThreshold = 30;
 
+  //timestamp
+  const [timeStamp, setTimeStamp] = useState("")
+
   const [nextWord, setNextWord] = useState({
     wordData: { definition: [], audioUrl: "" },
     points: 0,
@@ -81,7 +84,7 @@ const versusPage = ({ params }) => {
       // Listen for incoming messages
       versusSocket.on("gameStarted", (timerStartTimestamp) => {
         console.log("The game has started at: ", timerStartTimestamp);
-
+        setTimeStamp(timerStartTimestamp);
         /* versusSocket.emit("typing");
         versusSocket.emit("correctAttempt", 1);
         versusSocket.emit("correctAttempt", 2);
@@ -349,6 +352,7 @@ const versusPage = ({ params }) => {
             hintHandler={hintHandler}
             freezeHandler={freezeHandler}
             doublePointsHandler={doublePointsHandler}
+            timeStamp={timeStamp}
           />
         </div>
 

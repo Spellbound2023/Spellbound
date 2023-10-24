@@ -1,14 +1,13 @@
 .mainContainer {
   display: flex;
   flex-direction: column;
-  width: 800px;
+  width: 100%;
   flex-shrink: 0;
   background: linear-gradient(180deg, #722E9A 0%, #522882 100%);
   border: 1px solid #47297B;
   border-radius: 30px;
   position: relative;
   margin-bottom: 10vh;
-  box-sizing: content-box;
 }
 
 
