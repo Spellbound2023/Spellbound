@@ -240,6 +240,11 @@ const versusPage = ({ params }) => {
   if (status === "unauthenticated") redirect("/");
 
 
+  const handlePlayAgain = () => {
+    // Implement your logic to start a new game
+    // Do nothing for now
+  };
+
   const handleUserQuits = () => {
     versusSocket.emit("userQuits");
   };
