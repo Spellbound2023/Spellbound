@@ -20,8 +20,8 @@ const PotionsRow = ({ potions }) => {
     image: {
       maxWidth: "100%",
       maxHeight: "100%",
-      height: "auto",
-      width: "200px"
+      width: "200px",
+      height: "auto"
 
     },
   };
