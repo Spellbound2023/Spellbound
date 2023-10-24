@@ -1,37 +1,22 @@
-import React from 'react'
+import React, { useState } from 'react';
 import Image from 'next/image'
+import styles from '../../../../styles/versus.module.css'
 
 const DblPointsPotion = ({onClick}) => {
+
+
+const [animate, setAnimate] = useState(false);
+const handleAnimationEnd = () => {
+  setAnimate(false);
+};
+
   return (
     <div >
-      <button onClick={onClick} type="button" style={{ background: "transparent", padding: "0", border: 'none', cursor: 'pointer'}}>
+      <button onClick={onClick} /**setAnimate(true)} */ type="button" style={{ background: "transparent", padding: "0", border: 'none', cursor: 'pointer'}}>
             <img src='/images/dblptsPotion.png' width={50} height={50} />
         </button>
     </div>
   )
 }
-
 export default DblPointsPotion
 
-/* 
-const styles =  {
-    button: {
-      flex: 1,
-      height: 'auto',
-      padding: 0,
-      border: 'none',
-      background: 'transparent',
-      cursor: 'pointer',
-  },
-  image: {
-      maxWidth: '100%',
-      maxHeight: '100%',
-      height: 'auto',
-  },
-  }
-  return (
-    <div>
-      <button style={styles.button}>
-        <img src="/images/dblptsPotion.png" alt="dblpts Potion" style={styles.image} />
-    </button>
-     */
