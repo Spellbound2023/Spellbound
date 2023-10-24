@@ -8,7 +8,7 @@ const PotionsRow = () => {
     useEffect(() => {
         const interval = setInterval(() => {
             setAnimate(!animate);
-        }, 3000);  // 3 seconds
+        }, 3000);  // 3 Seconds
 
         return () => {
             clearInterval(interval);
