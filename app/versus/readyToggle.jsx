@@ -10,6 +10,7 @@ const ReadyToggle = ({ onClick : onClickHandler }) => {
   }
 
   return (
+    //component to activate player ready event and broadcast it to the backend.
     <div>
       <label className={styles.switch}>
         <input
@@ -17,6 +18,7 @@ const ReadyToggle = ({ onClick : onClickHandler }) => {
           onClick={handleReadyCheck}
           type="checkbox"
         />
+        {/*formatted as a slider for recognisability*/}
         <span className={styles.slider}></span>
       </label>
     </div>

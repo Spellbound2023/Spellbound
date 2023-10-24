@@ -18,9 +18,9 @@ let versusSocket;
 
 const versusPage = ({ params }) => {
   const [gameEnded, setGameEnded] = useState(false);
-  const [isWin, setIsWin] = useState(null); // Set to true if you win, false if you lose
-  const [score, setScore] = useState(0); // Replace with the actual score
-  const [opponentScore, setOpponentScore] = useState(0); // Replace with the actual score
+  const [isWin, setIsWin] = useState(null); 
+  const [score, setScore] = useState(0);
+  const [opponentScore, setOpponentScore] = useState(0);
   const [opponentUsername, setOpponentUsername] = useState("");
   const [potions, setPotions] = useState([]);
   const [opponentPotions, setOpponentPotions] = useState([]);
@@ -42,10 +42,7 @@ const versusPage = ({ params }) => {
   const { data: session, status } = useSession();
   const { push } = useRouter();
 
-  //Completion score, change if you want
   const completionThreshold = 30;
-
-  //timestamp
   const [timeStamp, setTimeStamp] = useState("")
 
   const [nextWord, setNextWord] = useState({
@@ -85,12 +82,6 @@ const versusPage = ({ params }) => {
       versusSocket.on("gameStarted", (timerStartTimestamp) => {
         console.log("The game has started at: ", timerStartTimestamp);
         setTimeStamp(timerStartTimestamp);
-        /* versusSocket.emit("typing");
-        versusSocket.emit("correctAttempt", 1);
-        versusSocket.emit("correctAttempt", 2);
-        versusSocket.emit("correctAttempt", 3);
-        versusSocket.emit("incorrectAttempt"); */
-        //versusSocket.emit("skipWord");
       });
 
       // Listen for incoming messages
@@ -98,11 +89,6 @@ const versusPage = ({ params }) => {
         console.log("nextWord: ", nextWord);
         setNextWord(nextWord);
       });
-
-      /*  versusSocket.on("opponentNextWord", (opponentNextWord) => {
-        console.log("opponentNextWord: ", opponentNextWord);
-        setOpponentNextWord(opponentNextWord)
-      }); */
 
       versusSocket.on("opponentTyping", () => {
         setOpponentIsTyping(true);
@@ -264,31 +250,14 @@ const versusPage = ({ params }) => {
       // console.log("The game has ended");
       versusSocket.emit("userReady");
 
-      // setTimeout(() => {
-      //   versusSocket.emit("userQuits");
-      // }, 25000);
     }
   }, [status]);
 
-  /* useEffect(() => {
-    if (versusSocket) {
-      versusSocket.emit("potionUse", potions[0]);
-      versusSocket.emit("correctAttempt", 1);
-      versusSocket.emit("correctAttempt", 2);
-      versusSocket.emit("correctAttempt", 3);
-    }
-  }, [potions]); */
 
   if (status === "loading") return null;
 
   if (status === "unauthenticated") redirect("/");
 
-  const handlePlayAgain = () => {
-    // Implement your logic to start a new game
-    // setPlayerScore(0);
-    // setOpponentScore(0);
-    // setGameEnded(false);
-  };
 
   const handleUserQuits = () => {
     versusSocket.emit("userQuits");

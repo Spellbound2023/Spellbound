@@ -6,7 +6,7 @@ import OpponentGamebox from "../../components/OpponentGamebox";
 import NavBar from "@/components/NavBar";
 import SpellBoundTitle from "@/components/SpellBoundTitle 2";
 
-/* Homepage. */
+// creates a homepage with the top navigation menu and main menu items
 export default function Home() {
   return (
     <main>
@@ -14,6 +14,7 @@ export default function Home() {
         <SpellBoundTitle/>
         <HomepageNav/>
       </div>
+      {/*altered navigation bar that uses alternative Header for smaller viewport*/}
       <div className={styles.HeaderMobile}>
         <NavBar TitleText={"SpellBound"} showDifficultyText={false}/>
       </div>
