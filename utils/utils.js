@@ -7,5 +7,6 @@ export function upperCaseFirstLetter(str) {
 }
 
 export function checkValidInput(input, target) {
-  return input.toLowerCase() === target.toLowerCase();
+  if (input && target) return input.toLowerCase() === target.toLowerCase();
+  return false;
 }

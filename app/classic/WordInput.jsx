@@ -1,6 +1,6 @@
 import styles from "../../styles/classic/WordInput.module.css";
 
-const WordInput = ({ onSubmitHandler, onTypingHandler, frozen }) => {
+const WordInput = ({ onSubmitHandler, onTypingHandler, frozen, disabled }) => {
 
   return (
     <div className={styles.mainContainer}>
@@ -12,7 +12,7 @@ const WordInput = ({ onSubmitHandler, onTypingHandler, frozen }) => {
             name="wordInput"
             className={styles.input}
             onChange={onTypingHandler}
-            disabled={frozen ? true : false}
+            disabled={(frozen || disabled) ? true : false}
           ></input>
           <br></br>
           <input
@@ -25,7 +25,7 @@ const WordInput = ({ onSubmitHandler, onTypingHandler, frozen }) => {
               document.getElementById("wordInput").value = "";
               onSubmitHandler(input);
             }}
-            disabled={frozen ? true : false}
+            disabled={(frozen || disabled) ? true : false}
           ></input>
         </form>
       </div>
