@@ -11,16 +11,17 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import io from "socket.io-client";
 import { redirect } from "next/navigation";
-import SuccessPopup from "../../classic/successPopup";
+import SuccessPopup from "./successPopup";
 import next from "next";
+import MessagePopup from "./messagePopup";
 
 let versusSocket;
 
 const versusPage = ({ params }) => {
   const [gameEnded, setGameEnded] = useState(false);
-  const [isWin, setIsWin] = useState(null); // Set to true if you win, false if you lose
-  const [score, setScore] = useState(0); // Replace with the actual score
-  const [opponentScore, setOpponentScore] = useState(0); // Replace with the actual score
+  const [isWin, setIsWin] = useState(null); 
+  const [score, setScore] = useState(0);
+  const [opponentScore, setOpponentScore] = useState(0);
   const [opponentUsername, setOpponentUsername] = useState("");
   const [potions, setPotions] = useState([]);
   const [opponentPotions, setOpponentPotions] = useState([]);
@@ -39,14 +40,15 @@ const versusPage = ({ params }) => {
     opponentDoublePointsPotionEffective,
     setOpponentDoublePointsPotionEffective,
   ] = useState(false);
+  const [popupMessage, setPopupMessage] = useState("");
+  const [popupActiveTime, setPopupActiveTime] = useState(0);
   const { data: session, status } = useSession();
   const { push } = useRouter();
 
-  //Completion score, change if you want
   const completionThreshold = 30;
 
   //timestamp
-  const [timeStamp, setTimeStamp] = useState("")
+  const [timeStamp, setTimeStamp] = useState("");
 
   const [nextWord, setNextWord] = useState({
     wordData: { definition: [], audioUrl: "" },
@@ -85,12 +87,6 @@ const versusPage = ({ params }) => {
       versusSocket.on("gameStarted", (timerStartTimestamp) => {
         console.log("The game has started at: ", timerStartTimestamp);
         setTimeStamp(timerStartTimestamp);
-        /* versusSocket.emit("typing");
-        versusSocket.emit("correctAttempt", 1);
-        versusSocket.emit("correctAttempt", 2);
-        versusSocket.emit("correctAttempt", 3);
-        versusSocket.emit("incorrectAttempt"); */
-        //versusSocket.emit("skipWord");
       });
 
       // Listen for incoming messages
@@ -98,11 +94,6 @@ const versusPage = ({ params }) => {
         console.log("nextWord: ", nextWord);
         setNextWord(nextWord);
       });
-
-      /*  versusSocket.on("opponentNextWord", (opponentNextWord) => {
-        console.log("opponentNextWord: ", opponentNextWord);
-        setOpponentNextWord(opponentNextWord)
-      }); */
 
       versusSocket.on("opponentTyping", () => {
         setOpponentIsTyping(true);
@@ -116,16 +107,6 @@ const versusPage = ({ params }) => {
         console.log("Redirecting to :", url);
         push(url, undefined, { shallow: false });
       });
-
-      // versusSocket.on("userWon", () => {
-      //   console.log("You have won the game!");
-      //   setIsWin(true);
-      // });
-
-      // versusSocket.on("opponentWon", () => {
-      //   console.log("Your opponent ", opponentUsername, " has won the game!");
-      //   setIsWin(false);
-      // });
 
       versusSocket.on("potionsChange", (potions) => {
         console.log("Your potions: ", potions);
@@ -204,18 +185,6 @@ const versusPage = ({ params }) => {
         }
       });
 
-      // versusSocket.on("opponentQuit", () => {
-      //   console.log("Your opponent has quit");
-      // });
-
-      // versusSocket.on("opponentDisconnected", () => {
-      //   console.log("Your opponent has disconnected");
-      // });
-
-      // versusSocket.on("timerEnded", () => {
-      //   console.log("The game timer has ended");
-      // });
-
       versusSocket.on("gameEnded", (gameEndInfo) => {
         console.log("The game has ended");
         console.log(gameEndInfo);
@@ -263,31 +232,17 @@ const versusPage = ({ params }) => {
 
       // console.log("The game has ended");
       versusSocket.emit("userReady");
-
-      // setTimeout(() => {
-      //   versusSocket.emit("userQuits");
-      // }, 25000);
     }
   }, [status]);
-
-  /* useEffect(() => {
-    if (versusSocket) {
-      versusSocket.emit("potionUse", potions[0]);
-      versusSocket.emit("correctAttempt", 1);
-      versusSocket.emit("correctAttempt", 2);
-      versusSocket.emit("correctAttempt", 3);
-    }
-  }, [potions]); */
 
   if (status === "loading") return null;
 
   if (status === "unauthenticated") redirect("/");
 
+
   const handlePlayAgain = () => {
     // Implement your logic to start a new game
-    // setPlayerScore(0);
-    // setOpponentScore(0);
-    // setGameEnded(false);
+    // Do nothing for now
   };
 
   const handleUserQuits = () => {
@@ -315,11 +270,29 @@ const versusPage = ({ params }) => {
 
   return (
     <>
-      <SuccessPopup key={isCorrect} isCorrect={isCorrect} />
+      <div className={styles.popupContainer}>
+        <SuccessPopup
+          key={isCorrect}
+          isCorrect={isCorrect}
+          setIsCorrect={setIsCorrect}
+        />
+      </div>
+
+      <div className={styles.popupContainer}>
+        <MessagePopup
+          message={popupMessage}
+          activeTime={popupActiveTime}
+          setPopupMessage={setPopupMessage}
+          setPopupActiveTime={setPopupActiveTime}
+        />
+      </div>
+
       <div className={styles.navContainer}>
         <NavBar showDifficultyText={false} TitleText={"Versus"} />
       </div>
-      <button onClick={handleUserQuits} className={styles.quitButton}>End Game</button>
+      <button onClick={handleUserQuits} className={styles.quitButton}>
+        End Game
+      </button>
       <div className={styles.versusContainer}>
         <div className={styles.opponentBox}>
           <OpponentBox
@@ -347,6 +320,8 @@ const versusPage = ({ params }) => {
             emitSocketEvent={emitSocketEvent}
             frozen={opponentFreezePotionEffective}
             hintActive={hintPotionEffective}
+            setPopupMessage={setPopupMessage}
+            setPopupActiveTime={setPopupActiveTime}
           />
         </div>
         <div className={styles.statusBar}>
@@ -361,7 +336,6 @@ const versusPage = ({ params }) => {
             timeStamp={timeStamp}
           />
         </div>
-        
 
         {gameEnded && (
           <GameEndDisplay

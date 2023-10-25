@@ -1,0 +1,39 @@
+.Popup {
+    width: 50%;
+    border-radius: 30px;
+    /* position: absolute;
+    top: 0; */
+    z-index: 9999;
+    margin: auto;
+    opacity: 0;
+    /* Start with 0 opacity */
+    transition: opacity 0.3s ease-in-out;
+    /* Transition for opacity with a 0.3s duration */
+}
+
+.correct {
+    background-color: green;
+}
+
+.incorrect {
+    background-color: red;
+
+}
+
+.Popup>p {
+    color: white;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: xx-large;
+    padding: 1%;
+    text-align: center;
+}
+
+.Popup.visible {
+    display: block;
+    opacity: 1;
+    /* Show with 100% opacity */
+}
+
+.unmount {
+    opacity: 0;
+}

@@ -9,11 +9,12 @@
 }
 
 .Popup{
-  width: 50%;
+  /* width: 50%; */
+  width: max-content;
   border-radius: 30px;
-  position: absolute;
+  /* position: absolute;
   top: 0;
-  left: 25%;
+  left: 25%; */
   z-index: 9999;
   margin: auto;
   opacity: 0; /* Start with 0 opacity */
@@ -34,6 +35,8 @@
   font-size: xx-large;
   padding: 1%;
   text-align: center;
+  padding-left: 5vw;
+  padding-right: 5vw;
 }
 
 .Popup.visible {

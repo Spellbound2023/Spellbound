@@ -1,7 +1,9 @@
 import React from "react";
 import styles from "../../styles/lobby.module.css";
 
+//a function that allows players to join and request players
 const JoinGame = ({
+  //takes in props needed
   username,
   isRequester,
   isRequestee,
@@ -9,22 +11,26 @@ const JoinGame = ({
   cancelRequest,
   sendRequest,
 }) => {
+  //accept an incoming request by responding to sender
   const accept = () => {
     respondToRequest(true, username);
   };
-
+  //rejects request from sender
   const reject = () => {
     respondToRequest(false, username);
   };
 
+  //retracts request sent to other user
   const cancel = () => {
     cancelRequest(username);
   };
 
+  //sends a request to player chosen 
   const request = () => {
     sendRequest(username);
   };
 
+  //if person on recieving end of request, have option to accept or reject
   if (isRequester) {
     return (
       <div className={styles.userInfoBox}>
@@ -35,6 +41,7 @@ const JoinGame = ({
     );
   }
 
+  //if sending the request, wait for request or cancel your request
   if (isRequestee) {
     return (
       <div className={styles.userInfoBox}>
@@ -45,6 +52,7 @@ const JoinGame = ({
   }
 
   return (
+    //display user info, and appropriate buttons based on gamestate
     <div>
       <div className={styles.userInfoBox}>
         <p>{username}</p>

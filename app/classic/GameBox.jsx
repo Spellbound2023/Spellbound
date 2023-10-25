@@ -10,8 +10,9 @@ import ScoreCounter from "./scoreCount";
 
 const ATTEMPTS_PER_WORD = 3;
 
-/* Container for WordInfo and WordInput */
+// Container for WordInfo and WordInput
 const GameBox = () => {
+//defines varibles being used
   const [word, setWord] = useState("");
   const [definition, setDefinition] = useState([]);
   const [audioUrl, setAudioUrl] = useState("");
@@ -29,6 +30,7 @@ const GameBox = () => {
   // -> if not then print wrong and reset and rerender
 
   const setupRound = () => {
+    //defines logic for every time a new word is fetched
     fetch("/api/randword", { cache: "no-store" })
       .then((response) => response.json())
       .then((wordData) => {
@@ -54,10 +56,12 @@ const GameBox = () => {
       setIsCorrect(true) //CORRECT POPUP
       setScore(score + pointsToAdd); // Update the score
 
-      setupRound();
+      setupRound(); //new word
+      //make popup disappear after 1.5 seconds
       setTimeout(() => setIsCorrect(null), 1500);
     } else {
       if (attempts + 1 >= ATTEMPTS_PER_WORD) {
+        //retract 1 point from the score
         setScore((prevScore) => prevScore - 1);
         setIsCorrect(false) //INCORRECT POPUP
         alert(
@@ -67,6 +71,7 @@ const GameBox = () => {
         setTimeout(() => setIsCorrect(null), 1500);
       } else {
         setIsCorrect(false) //INCORRECT POPUP
+        //reduce attempts remaining by 1
         setAttempts(attempts + 1);
         setTimeout(() => setIsCorrect(null), 1500);
       }
@@ -76,6 +81,7 @@ const GameBox = () => {
   useEffect(() => setupRound(), []);
 
   return (
+    //Places content in gamebox
     <div>
       <nav><SuccessPopup key={isCorrect} isCorrect={isCorrect}/></nav>
       
@@ -84,6 +90,7 @@ const GameBox = () => {
           <a className={`${styles.link} ${styles.linkLeft}`}>
             <div>
               <p className={styles.linkText}>
+                {/*displays attempts remaining*/}
                 Attemps remaining: {ATTEMPTS_PER_WORD - attempts}
               </p>
             </div>
@@ -103,6 +110,7 @@ const GameBox = () => {
         </div>
       </div>
        <div className={styles.mainContainer} >
+          {/*gets the definition and audio from the current word*/}
           <WordInfo
             definition={upperCaseFirstLetter(definition[0])}
             audioUrl={audioUrl}
@@ -112,6 +120,7 @@ const GameBox = () => {
           <br />
           
           <WordInput onSubmitHandler={checkUserInput} />
+          {/*calls the score counter passing score as a prop*/}
           <ScoreCounter score={score}/>
         </div>
     </div>

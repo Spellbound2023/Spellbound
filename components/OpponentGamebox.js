@@ -9,7 +9,6 @@ const OpponentGamebox = () => {
     return (
 
         <GameboxCard>
-            <p>hey</p>
         </GameboxCard>
 
     )

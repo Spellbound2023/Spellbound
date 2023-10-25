@@ -11,7 +11,7 @@ const page = () => {
   const { data: session, status } = useSession();
 
   if (status === "loading") return null;
-
+  //if the user is logged in, then show basic landing page without options to login/sign up
   if (status === "authenticated") {
     return (
       <div className={styles.flexContainer}>
@@ -26,7 +26,8 @@ const page = () => {
       </div>
     );
   }
-
+  //if the user is not logged in, show same as before but include 
+  ///<homepageNav/> component to allow for authentication
   return (
     <div className={styles.flexContainer}>
       <div className={styles.navContainer}>
