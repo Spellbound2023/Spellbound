@@ -9,7 +9,7 @@ import Timer from './timer'
 
 
 const StatusBox = ({ nextWord, potions, hintHandler, freezeHandler, doublePointsHandler, timeStamp }) => {
-
+  //sets progress as a constant out of 30 (typical game point goal)
   const progressPercentage = (nextWord.points / 30) * 100;
 
   return (
@@ -24,6 +24,7 @@ const StatusBox = ({ nextWord, potions, hintHandler, freezeHandler, doublePoints
         </div>
         <div className={styles.Timer}><Timer gameStartTimestamp={timeStamp}/></div>
         
+        {/*displays potions inside potion box as buttons with their respective handlers */}
         <div className={styles.potionsBox}>
           {potions && potions.indexOf("HINT") >= 0 ? (<HintPotion onClick={hintHandler}/>) : (<></>)}
           {potions && potions.indexOf("FREEZE") >= 0 ? (<FreezePotion onClick={freezeHandler}/>) : (<></>)}

@@ -7,8 +7,10 @@ import OpponentStatusBox from "./opponentStatusBar";
 import OpponentUsername from "./opponentUsername";
 import OpponentWordInput from "./opponentWordInput";
 
+//creates opponent box with all necessary information as props from versus page
 const OpponentBox = ({ isTyping, username, points, streak, potions }) => {
   return (
+    //calls in all subcomponents for opponent box
     <div className={styles.opponentBoxContainer}> 
 
         <div className={styles.userAndStatusContainer}>
@@ -35,6 +37,7 @@ const OpponentBox = ({ isTyping, username, points, streak, potions }) => {
 
 
         <div className={styles.wordInputContainer}>
+          {/*creates animation for input container if the opponent is typing*/}
           {isTyping && (
             <div className={styles.waveAnimation}>
               <WaveAnimation />
