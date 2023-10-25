@@ -35,7 +35,7 @@ exports.gameEndReasons = Object.freeze({
 
 // The number of milliseconds for which each potion is active
 let potionActiveTimes = {};
-potionActiveTimes[this.potions.DOUBLE_POINTS] = 20000;
+potionActiveTimes[this.potions.DOUBLE_POINTS] = 10000;
 potionActiveTimes[this.potions.FREEZE] = 10000;
 potionActiveTimes[this.potions.HINT] = 10000;
 exports.potionActiveTimes = Object.freeze(potionActiveTimes);
