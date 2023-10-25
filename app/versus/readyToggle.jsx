@@ -5,7 +5,7 @@ import React from "react";
 const ReadyToggle = ({ onClick : onClickHandler }) => {
   function handleReadyCheck(e) {
     let checkStatus = document.getElementById("ready-checkbox").checked;
-    console.log("Ready: ", checkStatus);
+    // console.log("Ready: ", checkStatus);
     onClickHandler(checkStatus);
   }
 

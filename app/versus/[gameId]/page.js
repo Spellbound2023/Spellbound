@@ -19,7 +19,7 @@ let versusSocket;
 
 const versusPage = ({ params }) => {
   const [gameEnded, setGameEnded] = useState(false);
-  const [isWin, setIsWin] = useState(null); 
+  const [isWin, setIsWin] = useState(null);
   const [score, setScore] = useState(0);
   const [opponentScore, setOpponentScore] = useState(0);
   const [opponentUsername, setOpponentUsername] = useState("");
@@ -60,12 +60,12 @@ const versusPage = ({ params }) => {
   const [opponentIsTyping, setOpponentIsTyping] = useState(false);
 
   useEffect(() => {
-    console.log(session);
+    // console.log(session);
     if (status === "authenticated") {
-      console.log("Router query: ", params.gameId);
+      // console.log("Router query: ", params.gameId);
 
       // Create a socket connection
-      console.log("Connecting web socket");
+      // console.log("Connecting web socket");
       versusSocket = io.connect("/versus", {
         forceNew: true,
         query: { username: session.user.username, gameId: params.gameId },
@@ -73,25 +73,25 @@ const versusPage = ({ params }) => {
 
       // 'Get the opponent's username
       versusSocket.on("opponentUsername", (opponentUsername) => {
-        console.log("The opponents username is: ", opponentUsername);
+        // console.log("The opponents username is: ", opponentUsername);
         setOpponentUsername(opponentUsername);
-        console.log(opponentUsername);
+        // console.log(opponentUsername);
       });
 
       // Listen for incoming messages
       versusSocket.on("opponentReady", () => {
-        console.log("The opponent is ready!");
+        // console.log("The opponent is ready!");
       });
 
       // Listen for incoming messages
       versusSocket.on("gameStarted", (timerStartTimestamp) => {
-        console.log("The game has started at: ", timerStartTimestamp);
+        // console.log("The game has started at: ", timerStartTimestamp);
         setTimeStamp(timerStartTimestamp);
       });
 
       // Listen for incoming messages
       versusSocket.on("nextWord", (nextWord) => {
-        console.log("nextWord: ", nextWord);
+        // console.log("nextWord: ", nextWord);
         setNextWord(nextWord);
       });
 
@@ -104,29 +104,29 @@ const versusPage = ({ params }) => {
       });
 
       versusSocket.on("redirect", (url) => {
-        console.log("Redirecting to :", url);
+        // console.log("Redirecting to :", url);
         push(url, undefined, { shallow: false });
       });
 
       versusSocket.on("potionsChange", (potions) => {
-        console.log("Your potions: ", potions);
+        // console.log("Your potions: ", potions);
         setPotions(potions);
       });
 
       versusSocket.on("opponentPointsChange", (points, streak) => {
-        console.log("Your opponent has ", points, " points");
-        console.log("Your opponent streak is ", streak);
+        // console.log("Your opponent has ", points, " points");
+        // console.log("Your opponent streak is ", streak);
         setOpponentsPoints(points);
         setOpponentStreak(streak);
       });
 
       versusSocket.on("opponentPotionsChange", (potions) => {
-        console.log("Your opponent has the following potions: ", potions);
+        // console.log("Your opponent has the following potions: ", potions);
         setOpponentPotions(potions);
       });
 
       versusSocket.on("potionUseStart", (potion) => {
-        console.log("The potion ", potion, " is now in effect");
+        // console.log("The potion ", potion, " is now in effect");
         switch (potion) {
           case "DOUBLE_POINTS":
             setDoublePointsPotionEffective(true);
@@ -141,7 +141,7 @@ const versusPage = ({ params }) => {
       });
 
       versusSocket.on("opponentPotionUseStart", (potion) => {
-        console.log("Your opponents potion ", potion, " is now in effect");
+        // console.log("Your opponents potion ", potion, " is now in effect");
         switch (potion) {
           case "DOUBLE_POINTS":
             setOpponentDoublePointsPotionEffective(true);
@@ -156,7 +156,7 @@ const versusPage = ({ params }) => {
       });
 
       versusSocket.on("potionUseEnd", (potion) => {
-        console.log("The potion ", potion, " has worn off");
+        // console.log("The potion ", potion, " has worn off");
         switch (potion) {
           case "DOUBLE_POINTS":
             setDoublePointsPotionEffective(false);
@@ -171,7 +171,7 @@ const versusPage = ({ params }) => {
       });
 
       versusSocket.on("opponentPotionUseEnd", (potion) => {
-        console.log("Your opponents potion ", potion, " has worn off");
+        // console.log("Your opponents potion ", potion, " has worn off");
         switch (potion) {
           case "DOUBLE_POINTS":
             setOpponentDoublePointsPotionEffective(false);
@@ -186,8 +186,8 @@ const versusPage = ({ params }) => {
       });
 
       versusSocket.on("gameEnded", (gameEndInfo) => {
-        console.log("The game has ended");
-        console.log(gameEndInfo);
+        // console.log("The game has ended");
+        // console.log(gameEndInfo);
 
         if (gameEndInfo.winner === session.user.username) {
           setIsWin(true);
@@ -238,7 +238,6 @@ const versusPage = ({ params }) => {
   if (status === "loading") return null;
 
   if (status === "unauthenticated") redirect("/");
-
 
   const handlePlayAgain = () => {
     // Implement your logic to start a new game

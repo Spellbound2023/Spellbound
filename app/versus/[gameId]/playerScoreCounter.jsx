@@ -11,7 +11,7 @@ function PlayerScoreCounter({ nextWord }) {
   const setupScore = () => {
     if (nextWord && nextWord.wordData) {
       setStreak(nextWord.streak);
-      console.log("streak: " + nextWord.streak)
+      // console.log("streak: " + nextWord.streak)
     }
   };
 

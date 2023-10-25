@@ -82,8 +82,8 @@ const GameBox = () => {
 
   return (
     //Places content in gamebox
-    <div>
-      <nav><SuccessPopup key={isCorrect} isCorrect={isCorrect}/></nav>
+    <div className={styles.container}>
+      <div className={styles.popupContainer}><SuccessPopup key={isCorrect} isCorrect={isCorrect}/></div>
       
       <div className={styles.attemptsSkipContainer}>
         <div className={styles.linkContainer}>
