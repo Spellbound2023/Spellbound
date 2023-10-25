@@ -7,13 +7,10 @@ import { signOut, useSession } from "next-auth/react";
 const HomePageNav = () => {
   const { data: session } = useSession();
   const loggedOutMenuItems = [
-    // { href: "#", label: "Help" },
     { href: "#", label: "Sign in" },
   ];
 
   const loggedInMenuItems = [
-    // { href: "#", label: "Profile" },
-    // { href: "#", label: "Help" },
     { href: "#", label: "Sign out", onClick: signOut },
   ];
 
@@ -88,6 +85,7 @@ const HomePageNav = () => {
           </div>
         ) : (
           <div>
+            {/* Redirect to signup and login pages */}
             <Link href="/authentication/signup">
               <button style={signUpButtonStyle}>Sign up</button>
             </Link>

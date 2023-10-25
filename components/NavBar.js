@@ -38,7 +38,7 @@ const NavBar = ({ showDifficultyText = true, TitleText}) => {
           <DifficultyText />
         </div>
       ) : (
-        <div style={{ flex: 1 }}></div> // Empty placeholder div
+        <div style={{ flex: 1 }}></div> // Empty placeholder div when in versus mode (dont want to show difficulty text)
       )}
       {session && (
         <HomePageNav/>

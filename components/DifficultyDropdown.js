@@ -26,6 +26,7 @@ const DifficultyDropdown = ({ isDropdownOpen, onSelectDifficulty }) => {
       <div style={DropdownMenuStyle}>
         <div
           style={menuItemStyle}
+          /* Trigger difficulty onclick */
           onClick={() => onSelectDifficulty('Easy')}
         >
           Easy

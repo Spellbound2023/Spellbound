@@ -62,6 +62,7 @@ const DifficultyText = () => {
       >
         {selectedDifficulty}
       </div>
+      {/* Toggle difficulty dropdown under */}
       <DifficultyDropdown
         isDropdownOpen={isDropdownOpen}
         selectedDifficulty={selectedDifficulty}
