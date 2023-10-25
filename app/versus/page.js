@@ -80,7 +80,7 @@ const page = () => {
 
   if (status === "loading") return null;
 
-  //if the user is not logged in, they cannot use this page and get redirected 
+  //if the user is not logged in, they cannot use this page and get redirected
   if (status === "unauthenticated") redirect("/");
 
   // create components for the ready users
@@ -106,7 +106,7 @@ const page = () => {
   // Returns active players in table format displaying username, status and
   return (
     <>
-      <NavBar showDifficultyText={false} TitleText={"Lobby"}/>
+      <NavBar showDifficultyText={false} TitleText={"Lobby"} />
       {/*creates a table to display all ready users in the lobby*/}
       <div className={styles.tableContainer}>
         <table className={styles.lobbyList}>
