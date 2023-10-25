@@ -1,6 +1,7 @@
 import React from 'react';
 
 const WaveAnimation = () => {
+    /* Wave animation of opponent gamebox which is triggered when they type */
     const styles = {
         waveContainer: {
             display: 'flex',

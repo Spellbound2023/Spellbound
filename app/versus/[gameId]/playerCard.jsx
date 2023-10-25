@@ -64,7 +64,7 @@ const GameBox = ({
   const setupRound = () => {
     if (nextWord && nextWord.wordData) {
       setWord(nextWord.wordData.word);
-      console.log("WORD: " + nextWord.wordData.word);
+      // console.log("WORD: " + nextWord.wordData.word);
       setDefinition(nextWord.wordData.definition);
       setAudioUrl(nextWord.wordData.audioUrl);
       setAttempts(0);
@@ -80,9 +80,9 @@ const GameBox = ({
       try {
         setIsCorrect(true); //CORRECT POPUP
         emitSocketEvent("correctAttempt", attempts + 1); //emit correct attempt and amnt of attempts to backend
-        console.log(attempts);
+        // console.log(attempts);
       } catch (error) {
-        console.log("couldnt emit");
+        // console.log("couldnt emit");
       }
       /*       setTimeout(() => setIsCorrect(null), 1500);*/
     } else {
@@ -91,7 +91,7 @@ const GameBox = ({
           setIsCorrect(false); //INCORRECT POPUP
           emitSocketEvent("incorrectAttempt");
         } catch (error) {
-          console.log("couldnt emit");
+          // console.log("couldnt emit");
         }
         alert(
           `Wrong. Again. \n Out of attempts! Correct spelling: \"${word}\"`
